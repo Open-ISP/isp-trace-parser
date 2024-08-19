@@ -1,2 +1,3 @@
-def hello() -> str:
-    return "Hello from isp-trace-parser!"
+from .trace_formatter import trace_formater
+
+__all__ = ["trace_formater"]
