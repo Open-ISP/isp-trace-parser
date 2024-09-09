@@ -1,15 +1,18 @@
 [project]
 name = "isp-trace-parser"
 version = "0.1.0"
-description = "Add your description here"
+description = """A Python package for reformatting and accessing demand, solar, and wind time series data used by the
+Australian Energy Market Operator in their Integrated System Plan modelling study."""
 authors = [
-    { name = "nick-gorman", email = "n.gorman305@gmail.com" }
+    { name = "nick-gorman", email = "n.gorman305@gmail.com" },
+    { name = "prakaa", email = "abiprakash007@gmail.com" },
+    { name = "dylanjmcconnell", email = "dylan.mcconnell@unsw.edu.au" }
 ]
 dependencies = [
     "pandas>=2.2.2",
 ]
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.9"
 
 [build-system]
 requires = ["hatchling"]
@@ -18,7 +21,11 @@ build-backend = "hatchling.build"
 [tool.rye]
 managed = true
 dev-dependencies = [
+    "pre-commit>=3.8.0",
+    "ipython>=8.26.0",
+    "ipdb>=0.13.13",
     "pytest>=8.3.2",
+    "pytest-cov>=5.0.0",
 ]
 
 [tool.hatch.metadata]
@@ -26,3 +33,11 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/isp_trace_parser"]
+
+[tool.pytest.ini_options]
+# path to tests for pytest
+testpaths = ["src", "tests"]
+# addopts = add options
+# --cov points pytest-cov to the src/ dir
+# --cov-branch runs branch coverage
+addopts = "-ra --doctest-modules --cov=src/ --cov-branch --cov-report xml:tests/coverage.xml --cov-report html:tests/htmlcov"

@@ -4,7 +4,7 @@ from datetime import timedelta
 import pandas as pd
 
 
-def trace_formatter(trace_data: pd.DataFrame):
+def trace_formatter(trace_data: pd.DataFrame) -> pd.DataFrame:
     """Takes trace data in the AEMO format and converts it to Datetime column and data column format.
 
     AEMO provides ISP trace data in a format where there are separates columns specifying the year, month, and day,
@@ -14,7 +14,7 @@ def trace_formatter(trace_data: pd.DataFrame):
 
     Examples
 
-    In this example we just specify three of the half your columns for brevity.
+    In this example we just specify three of the half hour columns for brevity.
 
     >>> aemo_format_data = pd.DataFrame({
     ... 'Year': [2024, 2024],
