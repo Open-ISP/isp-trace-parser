@@ -10,9 +10,21 @@
 #   universal: false
 
 -e file:.
+cramjam==2.8.3
+    # via fastparquet
+fastparquet==2024.5.0
+    # via isp-trace-parser
+fsspec==2024.9.0
+    # via fastparquet
 numpy==2.1.0
+    # via fastparquet
     # via pandas
+packaging==24.1
+    # via fastparquet
 pandas==2.2.2
+    # via fastparquet
+    # via isp-trace-parser
+polars==1.6.0
     # via isp-trace-parser
 python-dateutil==2.9.0.post0
     # via pandas
