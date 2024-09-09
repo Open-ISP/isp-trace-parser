@@ -49,12 +49,15 @@ def trace_formatter(trace_data: pd.DataFrame) -> pd.DataFrame:
         column specifying the data for each sample period.
     """
 
-    value_vars = [f'{i:02d}' for i in range(1, 49)]
+    value_vars = [f"{i:02d}" for i in range(1, 49)]
     value_vars = [v for v in value_vars if v in trace_data.columns]
 
-    trace_data = trace_data.melt(id_vars=['Year', 'Month', 'Day'],
-                                 value_vars=value_vars,
-                                 var_name='time_label', value_name='Data')
+    trace_data = trace_data.melt(
+        id_vars=["Year", "Month", "Day"],
+        value_vars=value_vars,
+        var_name="time_label",
+        value_name="Data",
+    )
 
     def get_hour(time_label):
         return timedelta(hours=int(time_label) // 2)
@@ -62,16 +65,26 @@ def trace_formatter(trace_data: pd.DataFrame) -> pd.DataFrame:
     def get_minute(time_label):
         return timedelta(minutes=int(time_label) % 2 * 30)
 
-    trace_data['Hour'] = trace_data['time_label'].apply(lambda x: get_hour(x))
+    trace_data["Hour"] = trace_data["time_label"].apply(lambda x: get_hour(x))
 
-    trace_data['Minute'] = trace_data['time_label'].apply(lambda x: get_minute(x))
+    trace_data["Minute"] = trace_data["time_label"].apply(lambda x: get_minute(x))
 
-    trace_data['Datetime'] = pd.to_datetime(trace_data['Year'].astype(str).str.zfill(2) + '-' +
-                                            trace_data['Month'].astype(str).str.zfill(2) + '-' +
-                                            trace_data['Day'].astype(str).str.zfill(2) + ' ' + '00:00:00')
+    trace_data["Datetime"] = pd.to_datetime(
+        trace_data["Year"].astype(str).str.zfill(2)
+        + "-"
+        + trace_data["Month"].astype(str).str.zfill(2)
+        + "-"
+        + trace_data["Day"].astype(str).str.zfill(2)
+        + " "
+        + "00:00:00"
+    )
 
-    trace_data['Datetime'] = trace_data['Datetime'] + trace_data['Hour'] + trace_data['Minute']
+    trace_data["Datetime"] = (
+        trace_data["Datetime"] + trace_data["Hour"] + trace_data["Minute"]
+    )
 
-    trace_data = trace_data[['Datetime', 'Data']].sort_values('Datetime').reset_index(drop=True)
+    trace_data = (
+        trace_data[["Datetime", "Data"]].sort_values("Datetime").reset_index(drop=True)
+    )
 
     return trace_data
