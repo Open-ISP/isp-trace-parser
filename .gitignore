@@ -11,4 +11,8 @@ wheels/
 
 # pycharm
 .idea/*
+
+# project
 scratch.py
+parquets/*
+parquets_chunked/*
