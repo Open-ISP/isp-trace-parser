@@ -137,7 +137,8 @@ def trace_formatter_pl(trace_data: pl.DataFrame) -> pl.DataFrame:
         - 'Data': A column containing the data for each half-hour period.
     """
 
-    value_vars = [f"{i:02d}" for i in range(1, 49)]
+    # Need both padded 1-9 and not padded because AEMO data files can have both.
+    value_vars = [f"{i:02d}" for i in range(1, 49)] + [str(i) for i in range(1, 10)]
     value_vars = [v for v in value_vars if v in trace_data.columns]
 
     trace_data = trace_data.melt(

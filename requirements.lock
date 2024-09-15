@@ -12,7 +12,12 @@
 -e file:.
 numpy==2.1.0
     # via pandas
+    # via pyarrow
 pandas==2.2.2
+    # via isp-trace-parser
+polars==1.6.0
+    # via isp-trace-parser
+pyarrow==17.0.0
     # via isp-trace-parser
 python-dateutil==2.9.0.post0
     # via pandas

@@ -14,10 +14,6 @@ def get_all_filepaths(dir):
     return [path for path in Path(dir).rglob('*.csv') if path.is_file()]
 
 
-def map_to_workbook_names(name):
-    return name
-
-
 def add_half_year_as_column(df):
 
     def calculate_half_year(dt):
@@ -52,6 +48,7 @@ def extract_solar_trace_meta_data(filename):
 
     meta_data['file_type'] = 'project'
     if 'REZ' in meta_data['name']:
+        meta_data['name'] = meta_data['name'][7:]
         meta_data['file_type'] = 'area'
 
     return meta_data
@@ -98,20 +95,18 @@ def extract_demand_trace_meta_data(filename):
 
 def write_new_solar_filepath(meta_data):
     m = meta_data
-    name = map_to_workbook_names(m['name'])
-    return (f"RefYear{m['year']}/{m['file_type'].capitalize()}/{name}/"
-            f"RefYear{m['year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet")
+    return (f"RefYear{m['year']}/{m['file_type'].capitalize()}/{m['name']}/"
+            f"RefYear{m['year']}_{m['name']}_HalfYear{m['hy']}.parquet")
 
 
 def write_new_wind_filepath(meta_data):
     m = meta_data
-    name = map_to_workbook_names(m['name'])
     if 'resource_type' in m:
-        return (f"RefYear{m['year']}/{m['file_type'].capitalize()}/{name}/{m['resource_type']}/"
-                f"RefYear{m['year']}_{name}_{m['resource_type']}_HalfYear{m['hy']}.parquet")
+        return (f"RefYear{m['year']}/{m['file_type'].capitalize()}/{m['name']}/{m['resource_type']}/"
+                f"RefYear{m['year']}_{m['name']}_{m['resource_type']}_HalfYear{m['hy']}.parquet")
     else:
-        return (f"RefYear{m['year']}/{m['file_type'].capitalize()}/{name}/"
-                f"RefYear{m['year']}_{name}_HalfYear{m['hy']}.parquet")
+        return (f"RefYear{m['year']}/{m['file_type'].capitalize()}/{m['name']}/"
+                f"RefYear{m['year']}_{m['name']}_HalfYear{m['hy']}.parquet")
 
 
 def write_new_demand_filepath(meta_data):
@@ -120,11 +115,17 @@ def write_new_demand_filepath(meta_data):
             f"{m['scenario']}_RefYear{m['year']}_{m['area']}_{m['poe']}_{m['descriptor']}_HalfYear{m['hy']}.parquet")
 
 
-def restructure_file(meta_data_extractor, save_path_writer, new_directory, file):
+def restructure_file(meta_data_extractor, save_path_writer, new_directory, name_mapping, file):
     file_meta_data = meta_data_extractor(file.name)
+    if 'name' in file_meta_data and file_meta_data['file_type'] == 'project':
+        if file_meta_data['name'] in name_mapping.keys():
+            file_meta_data['name'] = name_mapping[file_meta_data['name']].replace(' ', '_')
+        else:
+            print(file_meta_data['name'])
     pl_types = [pl.Int64] * 3 + [pl.Float64] * 48
     trace_data = pl.read_csv(file, schema_overrides=pl_types)
     trace_data = trace_formatter_pl(trace_data)
+    trace_data = trace_data.sort("Datetime")
     trace_data = add_half_year_as_column(trace_data)
     for half_year, data in trace_data.group_by("HY"):
         file_meta_data['hy'] = half_year[0]
@@ -135,35 +136,57 @@ def restructure_file(meta_data_extractor, save_path_writer, new_directory, file)
         data.write_parquet(save_filepath)
 
 
-def restructure_directory(old_directory, new_directory, meta_data_extractor, save_path_writer):
+def restructure_directory(old_directory, new_directory, meta_data_extractor, save_path_writer, use_concurrency):
     files = get_all_filepaths(old_directory)
+    name_mapping = pl.read_csv("generator_name_mapping.csv")
+    name_mapping = dict(zip(name_mapping["Trace_name"].to_list(), name_mapping["Generator"].to_list()))
     # files = files[0:1] + [f for f in files if 'REZ_N1' in str(f) and '2011' in str(f)]
-    max_workers = os.cpu_count() - 2
-    partial_func = functools.partial(restructure_file, meta_data_extractor, save_path_writer, new_directory)
-    with ProcessPoolExecutor(max_workers=max_workers) as executor:
-        executor.map(partial_func, files, chunksize=100)
-    # for file in files:
-    #     partial_func(file)
+    partial_func = functools.partial(restructure_file, meta_data_extractor, save_path_writer, new_directory,
+                                     name_mapping)
+    if use_concurrency:
+        max_workers = os.cpu_count() - 2
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            results = executor.map(partial_func, files, chunksize=100)
+            # Iterate through results to raise any errors that occurred.
+            for result in results:
+                result
+    else:
+        for file in files:
+            partial_func(file)
 
 
-
-def restructure_solar_directory(old_directory, new_directory):
-    restructure_directory(old_directory, new_directory, extract_solar_trace_meta_data, write_new_solar_filepath)
-
-
-def restructure_wind_directory(old_directory, new_directory):
-    restructure_directory(old_directory, new_directory, extract_wind_trace_meta_data, write_new_wind_filepath)
+def restructure_solar_directory(old_directory, new_directory, use_concurrency=True):
+    restructure_directory(old_directory, new_directory, extract_solar_trace_meta_data, write_new_solar_filepath,
+                          use_concurrency)
 
 
-def restructure_demand_directory(old_directory, new_directory):
-    restructure_directory(old_directory, new_directory, extract_demand_trace_meta_data, write_new_demand_filepath)
+def restructure_wind_directory(old_directory, new_directory, use_concurrency=True):
+    restructure_directory(old_directory, new_directory, extract_wind_trace_meta_data, write_new_wind_filepath,
+                          use_concurrency)
+
+
+def restructure_demand_directory(old_directory, new_directory, use_concurrency=True):
+    restructure_directory(old_directory, new_directory, extract_demand_trace_meta_data, write_new_demand_filepath,
+                          use_concurrency)
 
 
 if __name__ == '__main__':
-    old_dir = "D:/isp_2024_data/trace_data/solar"
-    new_dir = "D:/isp_2024_data/trace_data/solar_example"
     t0 = time()
-    restructure_solar_directory(old_dir, new_dir)
+    old_dir = "D:/isp_2024_data/trace_data/solar"
+    new_dir = "D:/isp_2024_data/trace_data/solar_parsed2"
+    restructure_solar_directory(old_dir, new_dir, use_concurrency=True)
+    print(time()-t0)
+
+    t0 = time()
+    old_dir = "D:/isp_2024_data/trace_data/wind"
+    new_dir = "D:/isp_2024_data/trace_data/wind_parsed2"
+    restructure_wind_directory(old_dir, new_dir, use_concurrency=True)
+    print(time()-t0)
+
+    t0 = time()
+    old_dir = "D:/isp_2024_data/trace_data/demand"
+    new_dir = "D:/isp_2024_data/trace_data/demand_parsed2"
+    restructure_demand_directory(old_dir, new_dir, use_concurrency=True)
     print(time()-t0)
 
 
