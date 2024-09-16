@@ -56,7 +56,7 @@ def extract_solar_trace_meta_data(filename):
 
 def extract_wind_trace_meta_data(filename):
     # Case 1: Match filenames that have a simple name followed by RefYear
-    pattern1 = re.compile(r"^(.*)_RefYear(\d{4})\.csv$")
+    pattern1 = re.compile(r"^(?P<project>.*)_RefYear(?P<year>\d{4})\.csv$")
 
     # Case 2: Match filenames that have a resource type and a name followed by RefYear
     pattern2 = re.compile(r"^[A-Z0-9_]*_(W[A-Z]+)_([A-Za-z_\-]+)_RefYear(\d{4})\.csv$")

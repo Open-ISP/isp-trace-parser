@@ -10,20 +10,37 @@
 #   universal: false
 
 -e file:.
-numpy==2.1.0
+annotated-types==0.7.0
+    # via pydantic
+et-xmlfile==1.1.0
+    # via openpyxl
+fuzzywuzzy==0.18.0
+    # via isp-trace-parser
+isp-workbook-parser==1.2.0
+    # via isp-trace-parser
+numpy==2.1.1
     # via pandas
-    # via pyarrow
+openpyxl==3.1.5
+    # via isp-workbook-parser
 pandas==2.2.2
     # via isp-trace-parser
-polars==1.6.0
+    # via isp-workbook-parser
+polars==1.7.1
     # via isp-trace-parser
-pyarrow==17.0.0
-    # via isp-trace-parser
+pydantic==2.9.1
+    # via isp-workbook-parser
+pydantic-core==2.23.3
+    # via pydantic
 python-dateutil==2.9.0.post0
     # via pandas
-pytz==2024.1
+pytz==2024.2
     # via pandas
+pyyaml==6.0.2
+    # via isp-workbook-parser
 six==1.16.0
     # via python-dateutil
+typing-extensions==4.12.2
+    # via pydantic
+    # via pydantic-core
 tzdata==2024.1
     # via pandas
