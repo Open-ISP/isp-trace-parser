@@ -2,9 +2,10 @@ import os
 import re
 
 import pandas as pd
-from fuzzywuzzy import process
-
+from fuzzywuzzy import process, fuzz
 from isp_workbook_parser import Parser, TableConfig
+
+from isp_trace_parser.meta_data_extractors import extract_solar_trace_meta_data, extract_wind_trace_meta_data
 
 
 def get_all_generators(workbook_filepath):
@@ -45,62 +46,71 @@ def gets_rezs(workbook_filepath):
     return rezs
 
 
-
 def find_best_match(plant_name, csv_files):
-    best_match = process.extractOne(plant_name, csv_files)
+    best_match = process.extractOne(plant_name, csv_files, scorer=fuzz.token_set_ratio)
     best_match = best_match[0] if best_match else None
     best_match = best_match
     return best_match
 
 
+def find_best_match_two_columns(row, csv_files):
+    match1 = process.extractOne(row["Generator"], csv_files)
+    best_match_plant_name = match1[0] if match1 else None
+    score_plant_name = match1[1] if match1 else None
+
+    match2 = process.extractOne(row["DUID"], csv_files)
+    best_match_duid = match2[0] if match2 else None
+    score_duid = match2[1] if match2 else None
+
+    if score_plant_name > score_duid:
+        best_match = best_match_plant_name
+    else:
+        best_match = best_match_duid
+    return best_match
+
+
 def draft_solar_generator_to_trace_mapping(solar_generators, solar_trace_directory):
-    # Remove the technology type, reference year, and file type from the filename
-    csv_file_generator_names = [f[:-20] for f in os.listdir(solar_trace_directory) if f.endswith('.csv')]
-    # Filter out REZ trace files
-    csv_file_generator_names = [f for f in csv_file_generator_names if 'REZ' not in f]
-    solar_generators['CSVFile'] = \
-        solar_generators['Generator'].apply(lambda x: find_best_match(x, csv_file_generator_names))
+    csv_file_names = [f for f in os.listdir(solar_trace_directory) if f.endswith('.csv')]
+    csv_file_meta_data = [extract_solar_trace_meta_data(f) for f in csv_file_names]
+    csv_project_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'project']
+    solar_generators['CSVFile'] = solar_generators['Generator'].apply(lambda x: find_best_match(x, csv_project_names))
     solar_generators = solar_generators.set_index('Generator')['CSVFile'].to_dict()
     return solar_generators
-
-
-def extract_solar_rez_name(filename):
-    pattern = re.compile(r"^(?P<filler>[A-Z0-9_]+)_(?P<area>[A-Za-z_\-]+)_(?P<tech>[A-Z]+)_RefYear(?P<year>\d{4})\.csv$")
-    return pattern.match(filename).groupdict()['area']
 
 
 def draft_solar_rez_mapping(rezs, rezs_trace_directory):
-    csv_file_rez_names = [extract_solar_rez_name(f) for f in os.listdir(rezs_trace_directory) if 'REZ' in f]
-    csv_file_rez_names = list(set(csv_file_rez_names))
-    rezs['CSVFile'] = rezs['Name'].apply(lambda x: find_best_match(x, csv_file_rez_names))
+    csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith('.csv')]
+    csv_file_meta_data = [extract_solar_trace_meta_data(f) for f in csv_file_names]
+    csv_rez_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'area']
+    rezs['CSVFile'] = rezs['Name'].apply(lambda x: find_best_match(x, csv_rez_names))
     rezs = rezs.set_index('Name')['CSVFile'].to_dict()
     return rezs
 
-def draft_wind_generator_to_trace_mapping(solar_generators, solar_trace_directory):
-    # Remove the technology type, reference year, and file type from the filename
-    csv_file_generator_names = [f[:-20] for f in os.listdir(solar_trace_directory) if f.endswith('.csv')]
-    # Filter out REZ trace files
-    csv_file_generator_names = [f for f in csv_file_generator_names if 'REZ' not in f]
-    solar_generators['CSVFile'] = \
-        solar_generators['Generator'].apply(lambda x: find_best_match(x, csv_file_generator_names))
-    solar_generators = solar_generators.set_index('Generator')['CSVFile'].to_dict()
-    return solar_generators
 
+def draft_wind_generator_to_trace_mapping(wind_generators, wind_duids_and_station_names, wind_trace_directory):
+    csv_file_names = [f for f in os.listdir(wind_trace_directory) if f.endswith('.csv')]
+    csv_file_meta_data = [extract_wind_trace_meta_data(f) for f in csv_file_names]
+    csv_project_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'project']
 
-def extract_wind_rez_name(filename):
-    pattern = re.compile(r"^(?P<filler>[A-Z0-9_]*)_(?P<resource>W[A-Z]+)_(?P<area>[A-Za-z_\-]+)_RefYear(?P<year>\d{"
-                          r"4})\.csv$")
-    match = pattern.match(filename)
+    words_to_ignore = ['Wind Farm', 'Stage', '-', 'Green Power Hub']
+    wind_station_names = list(wind_duids_and_station_names['Station Name'])
 
-    if match is not None:
-        return match.groupdict()['area']
-    else:
-        return None
+    wind_generators['Station Name'] = wind_generators['Generator'].apply(lambda x: find_best_match(x, wind_station_names))
+    wind_generators = pd.merge(wind_generators, wind_duids_and_station_names, how="left", on="Station Name")
+    wind_generators = wind_generators.drop_duplicates(['Generator'])
+
+    wind_generators['CSVFile'] = wind_generators.apply(lambda x: find_best_match_two_columns(x, csv_project_names), axis=1)
+
+    wind_generators = wind_generators.loc[:, ['Generator', 'Station Name', 'DUID', 'CSVFile']]
+
+    wind_generators = wind_generators.set_index('Generator').to_dict(orient="index")
+    return wind_generators
+
 
 def draft_wind_rez_mapping(rezs, rezs_trace_directory):
-    csv_file_rez_names = [extract_wind_rez_name(f) for f in os.listdir(rezs_trace_directory)]
-    csv_file_rez_names = [f for f in csv_file_rez_names if f is not None]
-    csv_file_rez_names = list(set(csv_file_rez_names))
-    rezs['CSVFile'] = rezs['Name'].apply(lambda x: find_best_match(x, csv_file_rez_names))
+    csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith('.csv')]
+    csv_file_meta_data = [extract_wind_trace_meta_data(f) for f in csv_file_names]
+    csv_rez_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'area']
+    rezs['CSVFile'] = rezs['Name'].apply(lambda x: find_best_match(x, csv_rez_names))
     rezs = rezs.set_index('Name')['CSVFile'].to_dict()
     return rezs
