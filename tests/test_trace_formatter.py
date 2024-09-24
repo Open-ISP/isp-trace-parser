@@ -8,7 +8,7 @@ from isp_trace_parser import trace_formatter, directory_structure_formatter
 def test_trace_formatter():
     # Test trace formatting works by using formatting function works by performing formatting and then
     # reversing the formatting changes and checking the result matches the original data.
-    filepath = ('test_data/demand/demand_CNSW_Green Energy Exports'
+    filepath = ('tests/test_data/demand/demand_CNSW_Green Energy Exports'
                 '/CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv')
     original_trace_data = directory_structure_formatter.read_trace_csv(filepath)
     formatted_data = trace_formatter(original_trace_data)

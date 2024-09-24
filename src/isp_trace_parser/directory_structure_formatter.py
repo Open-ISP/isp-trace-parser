@@ -1,5 +1,6 @@
 from pathlib import Path
 from time import time
+from datetime import datetime, timedelta
 from concurrent.futures import ProcessPoolExecutor
 import os
 import functools
@@ -13,7 +14,11 @@ from isp_trace_parser.trace_formatter import trace_formatter
 
 
 def get_all_filepaths(dir):
-    return [path for path in Path(dir).rglob('*.csv') if path.is_file()]
+    dir = Path(dir)
+    if dir.is_dir():
+        return [path for path in Path(dir).rglob('*.csv') if path.is_file()]
+    else:
+        raise ValueError(f"{dir} not found.")
 
 
 def write_new_solar_filepath(meta_data):
@@ -73,6 +78,7 @@ def calculate_average_trace(traces):
 def add_half_year_as_column(trace):
 
     def calculate_half_year(dt):
+        dt -= timedelta(seconds=1)
         if dt.month < 7:
             half_year = f"{dt.year}-1"
         else:
@@ -171,7 +177,7 @@ def restructure_solar_files(save_name, original_trace_names, all_old_file_meta_d
         files_for_year = get_meta_data_that_matches_reference_year(year, meta_data_for_trace_files)
         techs = get_unique_techs_in_meta_data(files_for_year)
         for tech in techs:
-            files_for_tech = get_meta_data_that_matches_tech(tech, meta_data_for_trace_files)
+            files_for_tech = get_meta_data_that_matches_tech(tech, files_for_year)
             example_meta_data = get_example_meta_data_for_writing_save_name(files_for_tech)
             example_meta_data = overwrite_meta_data_trace_name_with_save_name(example_meta_data, save_name)
             process_and_save_files(files_for_tech, example_meta_data, write_new_filepath, new_directory)
@@ -185,10 +191,10 @@ def restructure_wind_area_files(save_name, original_trace_names, all_old_file_me
         files_for_year = get_meta_data_that_matches_reference_year(year, meta_data_for_trace_files)
         resource_types = get_unique_resource_types_in_meta_data(files_for_year)
         for resource_type in resource_types:
-            files_for_tech = get_meta_data_that_matches_resource_type(resource_type, meta_data_for_trace_files)
-            example_meta_data = get_example_meta_data_for_writing_save_name(files_for_tech)
+            files_for_resource_type = get_meta_data_that_matches_resource_type(resource_type, files_for_year)
+            example_meta_data = get_example_meta_data_for_writing_save_name(files_for_resource_type)
             example_meta_data = overwrite_meta_data_trace_name_with_save_name(example_meta_data, save_name)
-            process_and_save_files(files_for_tech, example_meta_data, write_new_filepath, new_directory)
+            process_and_save_files(files_for_resource_type, example_meta_data, write_new_filepath, new_directory)
 
 
 def restructure_wind_project_files(save_name, original_trace_names, all_old_file_meta_data, new_directory,
@@ -316,19 +322,19 @@ def restructure_demand_directory(old_directory, new_directory, use_concurrency):
 if __name__ == '__main__':
     t0 = time()
     old_dir = "D:/isp_2024_data/trace_data/solar"
-    new_dir = "D:/isp_2024_data/trace_data/solar_parsed3"
+    new_dir = "example_parsed_data/solar"
     restructure_solar_directory(old_dir, new_dir, use_concurrency=True)
     print(time()-t0)
 
     t0 = time()
     old_dir = "D:/isp_2024_data/trace_data/wind"
-    new_dir = "D:/isp_2024_data/trace_data/wind_parsed3"
+    new_dir = "example_parsed_data/wind"
     restructure_wind_directory(old_dir, new_dir, use_concurrency=True)
     print(time()-t0)
 
     t0 = time()
     old_dir = "D:/isp_2024_data/trace_data/demand"
-    new_dir = "D:/isp_2024_data/trace_data/demand_parsed3"
+    new_dir = "example_parsed_data/demand"
     restructure_demand_directory(old_dir, new_dir, use_concurrency=False)
     print(time()-t0)
 
