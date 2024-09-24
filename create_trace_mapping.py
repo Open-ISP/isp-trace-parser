@@ -1,13 +1,14 @@
 import yaml
 
-from nemosis import static_table
 
-from isp_trace_parser.generator_to_trace_draft_mapper import (draft_solar_generator_to_trace_mapping,
-                                                              get_all_generators, gets_rezs, draft_solar_rez_mapping,
-                                                              draft_wind_generator_to_trace_mapping, draft_wind_rez_mapping)
+from isp_trace_parser.generator_to_trace_draft_mapper import (
+    get_all_generators,
+    gets_rezs,
+    draft_wind_rez_mapping,
+)
 
 
-workbook = 'D:/isp_2024_data/2024-isp-inputs-and-assumptions-workbook.xlsx'
+workbook = "D:/isp_2024_data/2024-isp-inputs-and-assumptions-workbook.xlsx"
 all_generators = get_all_generators(workbook)
 
 # solar_traces = 'D:/isp_2024_data/trace_data/solar/solar_2023'
@@ -36,8 +37,8 @@ all_generators = get_all_generators(workbook)
 #     yaml.dump(wind_generator_mapping, file, default_flow_style=False, sort_keys=False)
 
 
-wind_traces = 'D:/isp_2024_data/trace_data/wind/wind_2023'
+wind_traces = "D:/isp_2024_data/trace_data/wind/wind_2023"
 rezs = gets_rezs(workbook)
 wind_rez_mapping = draft_wind_rez_mapping(rezs, wind_traces)
-with open('draft_wind_rez_mapping.yaml', 'w') as file:
+with open("draft_wind_rez_mapping.yaml", "w") as file:
     yaml.dump(wind_rez_mapping, file, default_flow_style=False)

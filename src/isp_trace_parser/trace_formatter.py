@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 
-import pandas as pd
 import polars as pl
 
 
@@ -60,7 +59,7 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         id_vars=["Year", "Month", "Day"],
         value_vars=value_vars,
         variable_name="time_label",
-        value_name="Data"
+        value_name="Data",
     )
 
     def get_hour(time_label):
@@ -69,19 +68,33 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
     def get_minute(time_label):
         return timedelta(minutes=int(time_label) % 2 * 30)
 
-    trace_data = trace_data.with_columns([
-        pl.col("time_label").map_elements(get_hour, return_dtype=pl.Duration).alias("Hour"),
-        pl.col("time_label").map_elements(get_minute, return_dtype=pl.Duration).alias("Minute"),
-        (pl.col("Year").cast(pl.Utf8).str.zfill(2)
-         + "-"
-         + pl.col("Month").cast(pl.Utf8).str.zfill(2)
-         + "-"
-         + pl.col("Day").cast(pl.Utf8).str.zfill(2)
-         + " 00:00:00").str.strptime(pl.Datetime).alias("Datetime")
-    ])
+    trace_data = trace_data.with_columns(
+        [
+            pl.col("time_label")
+            .map_elements(get_hour, return_dtype=pl.Duration)
+            .alias("Hour"),
+            pl.col("time_label")
+            .map_elements(get_minute, return_dtype=pl.Duration)
+            .alias("Minute"),
+            (
+                pl.col("Year").cast(pl.Utf8).str.zfill(2)
+                + "-"
+                + pl.col("Month").cast(pl.Utf8).str.zfill(2)
+                + "-"
+                + pl.col("Day").cast(pl.Utf8).str.zfill(2)
+                + " 00:00:00"
+            )
+            .str.strptime(pl.Datetime)
+            .alias("Datetime"),
+        ]
+    )
 
-    trace_data = trace_data.with_columns([
-        (pl.col("Datetime") + pl.col("Hour") + pl.col("Minute")).alias("Datetime")
-    ]).select(["Datetime", "Data"]).sort("Datetime")
+    trace_data = (
+        trace_data.with_columns(
+            [(pl.col("Datetime") + pl.col("Hour") + pl.col("Minute")).alias("Datetime")]
+        )
+        .select(["Datetime", "Data"])
+        .sort("Datetime")
+    )
 
     return trace_data

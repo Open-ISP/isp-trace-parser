@@ -3,17 +3,17 @@ from scratch import new_dir
 # isp-trace-parser
 
 A Python package for reformatting and accessing demand, solar, and wind time series data used by the Australian Energy
-Market Operator in their Integrated System Plan (ISP) modelling study. Currently, the trace parser only data in the 
+Market Operator in their Integrated System Plan (ISP) modelling study. Currently, the trace parser only data in the
 format of 2024 ISP.
 
 ## Examples
 
-The trace parser has two core functionalities. Firstly reformatted or parsing raw AEMO trace data into a more 
-standard programmatic format. Secondly querying the parsed data. 
+The trace parser has two core functionalities. Firstly reformatted or parsing raw AEMO trace data into a more
+standard programmatic format. Secondly querying the parsed data.
 
 ### Reformatting (parsing) trace data
 
-If AEMO trace data is downloaded onto a local machine it can be reformatted using isp_trace_parser. To perform the 
+If AEMO trace data is downloaded onto a local machine it can be reformatted using isp_trace_parser. To perform the
 restructuring solar, wind, and demand data should each be store in separate directories, then the following code can be
 used to parse the data. No exact directory structure within solar, wind, and demand subdirectories needs to be followed.
 

@@ -1,33 +1,44 @@
 import os
-import re
 
 import pandas as pd
 from fuzzywuzzy import process, fuzz
 from isp_workbook_parser import Parser, TableConfig
 
-from isp_trace_parser.meta_data_extractors import extract_solar_trace_meta_data, extract_wind_trace_meta_data
+from isp_trace_parser.meta_data_extractors import (
+    extract_solar_trace_meta_data,
+    extract_wind_trace_meta_data,
+)
 
 
 def get_all_generators(workbook_filepath):
-
     workbook = Parser(workbook_filepath)
     existing_gens = workbook.get_table("existing_generator_summary")
-    existing_gens['Status'] = 'existing'
+    existing_gens["Status"] = "existing"
     committed_gens = workbook.get_table("committed_generator_summary")
-    committed_gens['Status'] = 'committed'
+    committed_gens["Status"] = "committed"
     anticipated_gens = workbook.get_table("anticipated_projects_summary")
-    anticipated_gens['Status'] = 'anticipated'
+    anticipated_gens["Status"] = "anticipated"
     additional_gens = workbook.get_table("additional_projects_summary")
-    additional_gens['Status'] = 'additional'
+    additional_gens["Status"] = "additional"
 
-    existing_gens = existing_gens.rename(columns={existing_gens.columns.values[0]: 'Generator'})
-    committed_gens = committed_gens.rename(columns={committed_gens.columns.values[0]: 'Generator'})
-    anticipated_gens = anticipated_gens.rename(columns={anticipated_gens.columns.values[0]: 'Generator'})
-    additional_gens = additional_gens.rename(columns={additional_gens.columns.values[0]: 'Generator'})
+    existing_gens = existing_gens.rename(
+        columns={existing_gens.columns.values[0]: "Generator"}
+    )
+    committed_gens = committed_gens.rename(
+        columns={committed_gens.columns.values[0]: "Generator"}
+    )
+    anticipated_gens = anticipated_gens.rename(
+        columns={anticipated_gens.columns.values[0]: "Generator"}
+    )
+    additional_gens = additional_gens.rename(
+        columns={additional_gens.columns.values[0]: "Generator"}
+    )
 
-    all_gens = pd.concat([existing_gens, committed_gens, anticipated_gens, additional_gens])
+    all_gens = pd.concat(
+        [existing_gens, committed_gens, anticipated_gens, additional_gens]
+    )
 
-    all_gens = all_gens.loc[:, ['Generator', 'Technology type']]
+    all_gens = all_gens.loc[:, ["Generator", "Technology type"]]
 
     return all_gens
 
@@ -38,11 +49,11 @@ def gets_rezs(workbook_filepath):
         sheet_name="Renewable Energy Zones",
         header_rows=7,
         end_row=50,
-        column_range="B:G"
+        column_range="B:G",
     )
     workbook = Parser(workbook_filepath)
     rezs = workbook.get_table_from_config(table_config)
-    rezs = rezs.loc[:, ['Name']]
+    rezs = rezs.loc[:, ["Name"]]
     return rezs
 
 
@@ -70,47 +81,65 @@ def find_best_match_two_columns(row, csv_files):
 
 
 def draft_solar_generator_to_trace_mapping(solar_generators, solar_trace_directory):
-    csv_file_names = [f for f in os.listdir(solar_trace_directory) if f.endswith('.csv')]
+    csv_file_names = [
+        f for f in os.listdir(solar_trace_directory) if f.endswith(".csv")
+    ]
     csv_file_meta_data = [extract_solar_trace_meta_data(f) for f in csv_file_names]
-    csv_project_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'project']
-    solar_generators['CSVFile'] = solar_generators['Generator'].apply(lambda x: find_best_match(x, csv_project_names))
-    solar_generators = solar_generators.set_index('Generator')['CSVFile'].to_dict()
+    csv_project_names = [
+        f["name"] for f in csv_file_meta_data if f["file_type"] == "project"
+    ]
+    solar_generators["CSVFile"] = solar_generators["Generator"].apply(
+        lambda x: find_best_match(x, csv_project_names)
+    )
+    solar_generators = solar_generators.set_index("Generator")["CSVFile"].to_dict()
     return solar_generators
 
 
 def draft_solar_rez_mapping(rezs, rezs_trace_directory):
-    csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith('.csv')]
+    csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith(".csv")]
     csv_file_meta_data = [extract_solar_trace_meta_data(f) for f in csv_file_names]
-    csv_rez_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'area']
-    rezs['CSVFile'] = rezs['Name'].apply(lambda x: find_best_match(x, csv_rez_names))
-    rezs = rezs.set_index('Name')['CSVFile'].to_dict()
+    csv_rez_names = [f["name"] for f in csv_file_meta_data if f["file_type"] == "area"]
+    rezs["CSVFile"] = rezs["Name"].apply(lambda x: find_best_match(x, csv_rez_names))
+    rezs = rezs.set_index("Name")["CSVFile"].to_dict()
     return rezs
 
 
-def draft_wind_generator_to_trace_mapping(wind_generators, wind_duids_and_station_names, wind_trace_directory):
-    csv_file_names = [f for f in os.listdir(wind_trace_directory) if f.endswith('.csv')]
+def draft_wind_generator_to_trace_mapping(
+    wind_generators, wind_duids_and_station_names, wind_trace_directory
+):
+    csv_file_names = [f for f in os.listdir(wind_trace_directory) if f.endswith(".csv")]
     csv_file_meta_data = [extract_wind_trace_meta_data(f) for f in csv_file_names]
-    csv_project_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'project']
+    csv_project_names = [
+        f["name"] for f in csv_file_meta_data if f["file_type"] == "project"
+    ]
 
-    words_to_ignore = ['Wind Farm', 'Stage', '-', 'Green Power Hub']
-    wind_station_names = list(wind_duids_and_station_names['Station Name'])
+    words_to_ignore = ["Wind Farm", "Stage", "-", "Green Power Hub"]
+    wind_station_names = list(wind_duids_and_station_names["Station Name"])
 
-    wind_generators['Station Name'] = wind_generators['Generator'].apply(lambda x: find_best_match(x, wind_station_names))
-    wind_generators = pd.merge(wind_generators, wind_duids_and_station_names, how="left", on="Station Name")
-    wind_generators = wind_generators.drop_duplicates(['Generator'])
+    wind_generators["Station Name"] = wind_generators["Generator"].apply(
+        lambda x: find_best_match(x, wind_station_names)
+    )
+    wind_generators = pd.merge(
+        wind_generators, wind_duids_and_station_names, how="left", on="Station Name"
+    )
+    wind_generators = wind_generators.drop_duplicates(["Generator"])
 
-    wind_generators['CSVFile'] = wind_generators.apply(lambda x: find_best_match_two_columns(x, csv_project_names), axis=1)
+    wind_generators["CSVFile"] = wind_generators.apply(
+        lambda x: find_best_match_two_columns(x, csv_project_names), axis=1
+    )
 
-    wind_generators = wind_generators.loc[:, ['Generator', 'Station Name', 'DUID', 'CSVFile']]
+    wind_generators = wind_generators.loc[
+        :, ["Generator", "Station Name", "DUID", "CSVFile"]
+    ]
 
-    wind_generators = wind_generators.set_index('Generator').to_dict(orient="index")
+    wind_generators = wind_generators.set_index("Generator").to_dict(orient="index")
     return wind_generators
 
 
 def draft_wind_rez_mapping(rezs, rezs_trace_directory):
-    csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith('.csv')]
+    csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith(".csv")]
     csv_file_meta_data = [extract_wind_trace_meta_data(f) for f in csv_file_names]
-    csv_rez_names = [f['name'] for f in csv_file_meta_data if f['file_type'] == 'area']
-    rezs['CSVFile'] = rezs['Name'].apply(lambda x: find_best_match(x, csv_rez_names))
-    rezs = rezs.set_index('Name')['CSVFile'].to_dict()
+    csv_rez_names = [f["name"] for f in csv_file_meta_data if f["file_type"] == "area"]
+    rezs["CSVFile"] = rezs["Name"].apply(lambda x: find_best_match(x, csv_rez_names))
+    rezs = rezs.set_index("Name")["CSVFile"].to_dict()
     return rezs

@@ -6,7 +6,9 @@ import polars as pl
 import pandas as pd
 
 
-def solar_project_single_reference_year(start_year, end_year, reference_year, project, directory, year_type='fy'):
+def solar_project_single_reference_year(
+    start_year, end_year, reference_year, project, directory, year_type="fy"
+):
     """Reads solar project trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -46,12 +48,21 @@ def solar_project_single_reference_year(start_year, end_year, reference_year, pr
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {'project': project}
-    return generic_single_reference_year('solar_project', start_year, end_year, reference_year, year_type,
-                                         directory, **kwargs)
+    kwargs = {"project": project}
+    return generic_single_reference_year(
+        "solar_project",
+        start_year,
+        end_year,
+        reference_year,
+        year_type,
+        directory,
+        **kwargs,
+    )
 
 
-def solar_project_multiple_reference_years(reference_years, project, directory, year_type='fy'):
+def solar_project_multiple_reference_years(
+    reference_years, project, directory, year_type="fy"
+):
     """Reads solar project trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -89,12 +100,15 @@ def solar_project_multiple_reference_years(reference_years, project, directory, 
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {'project': project}
-    return generic_multi_reference_year_mapping('solar_project', reference_years, year_type, directory,
-                                                **kwargs)
+    kwargs = {"project": project}
+    return generic_multi_reference_year_mapping(
+        "solar_project", reference_years, year_type, directory, **kwargs
+    )
 
 
-def solar_area_single_reference_year(start_year, end_year, reference_year, area, technology, directory, year_type='fy'):
+def solar_area_single_reference_year(
+    start_year, end_year, reference_year, area, technology, directory, year_type="fy"
+):
     """Reads solar area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -137,15 +151,21 @@ def solar_area_single_reference_year(start_year, end_year, reference_year, area,
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {
-        'area': area,
-        'technology': technology
-    }
-    return generic_single_reference_year('solar_area', start_year, end_year, reference_year, year_type,
-                                         directory, **kwargs)
+    kwargs = {"area": area, "technology": technology}
+    return generic_single_reference_year(
+        "solar_area",
+        start_year,
+        end_year,
+        reference_year,
+        year_type,
+        directory,
+        **kwargs,
+    )
 
 
-def solar_area_multiple_reference_years(reference_years, area, technology, directory, year_type='fy'):
+def solar_area_multiple_reference_years(
+    reference_years, area, technology, directory, year_type="fy"
+):
     """Reads solar area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -185,15 +205,15 @@ def solar_area_multiple_reference_years(reference_years, area, technology, direc
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {
-        'area': area,
-        'technology': technology
-    }
-    return generic_multi_reference_year_mapping('solar_area', reference_years, year_type, directory,
-                                                **kwargs)
+    kwargs = {"area": area, "technology": technology}
+    return generic_multi_reference_year_mapping(
+        "solar_area", reference_years, year_type, directory, **kwargs
+    )
 
 
-def wind_project_single_reference_year(start_year, end_year, reference_year, project, directory, year_type='fy'):
+def wind_project_single_reference_year(
+    start_year, end_year, reference_year, project, directory, year_type="fy"
+):
     """Reads wind project trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -234,12 +254,21 @@ def wind_project_single_reference_year(start_year, end_year, reference_year, pro
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {'project': project}
-    return generic_single_reference_year('wind_project', start_year, end_year, reference_year, year_type,
-                                         directory, **kwargs)
+    kwargs = {"project": project}
+    return generic_single_reference_year(
+        "wind_project",
+        start_year,
+        end_year,
+        reference_year,
+        year_type,
+        directory,
+        **kwargs,
+    )
 
 
-def wind_project_multiple_reference_years(reference_years, project, directory, year_type='fy'):
+def wind_project_multiple_reference_years(
+    reference_years, project, directory, year_type="fy"
+):
     """Reads wind project trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -277,13 +306,21 @@ def wind_project_multiple_reference_years(reference_years, project, directory, y
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {'project': project}
-    return generic_multi_reference_year_mapping('wind_project', reference_years, year_type, directory,
-                                                **kwargs)
+    kwargs = {"project": project}
+    return generic_multi_reference_year_mapping(
+        "wind_project", reference_years, year_type, directory, **kwargs
+    )
 
 
-def wind_area_single_reference_year(start_year, end_year, reference_year, area, resource_quality, directory,
-                                    year_type='fy'):
+def wind_area_single_reference_year(
+    start_year,
+    end_year,
+    reference_year,
+    area,
+    resource_quality,
+    directory,
+    year_type="fy",
+):
     """Reads wind area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -326,13 +363,21 @@ def wind_area_single_reference_year(start_year, end_year, reference_year, area, 
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {'area': area,
-              'resource_type': resource_quality}
-    return generic_single_reference_year('wind_area', start_year, end_year, reference_year, year_type,
-                                         directory, **kwargs)
+    kwargs = {"area": area, "resource_type": resource_quality}
+    return generic_single_reference_year(
+        "wind_area",
+        start_year,
+        end_year,
+        reference_year,
+        year_type,
+        directory,
+        **kwargs,
+    )
 
 
-def wind_area_multiple_reference_years(reference_years, area, resource_quality, directory, year_type='fy'):
+def wind_area_multiple_reference_years(
+    reference_years, area, resource_quality, directory, year_type="fy"
+):
     """Reads wind area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -372,14 +417,23 @@ def wind_area_multiple_reference_years(reference_years, area, resource_quality, 
 
     Returns: pd.DataFrame with columns Datetime and Data
     """
-    kwargs = {'area': area,
-              'resource_type': resource_quality}
-    return generic_multi_reference_year_mapping('wind_area', reference_years, year_type, directory,
-                                                **kwargs)
+    kwargs = {"area": area, "resource_type": resource_quality}
+    return generic_multi_reference_year_mapping(
+        "wind_area", reference_years, year_type, directory, **kwargs
+    )
 
 
-def demand_single_reference_year(start_year, end_year, reference_year, subregion, scenario, poe, descriptor, directory,
-                                 year_type='fy'):
+def demand_single_reference_year(
+    start_year,
+    end_year,
+    reference_year,
+    subregion,
+    scenario,
+    poe,
+    descriptor,
+    directory,
+    year_type="fy",
+):
     """Reads demand trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -427,16 +481,19 @@ def demand_single_reference_year(start_year, end_year, reference_year, subregion
     Returns: pd.DataFrame with columns Datetime and Data
     """
     kwargs = {
-        'area': subregion,
-        'scenario': scenario,
-        'poe': poe,
-        'descriptor': descriptor
+        "area": subregion,
+        "scenario": scenario,
+        "poe": poe,
+        "descriptor": descriptor,
     }
-    return generic_single_reference_year('demand', start_year, end_year, reference_year, year_type,
-                                         directory, **kwargs)
+    return generic_single_reference_year(
+        "demand", start_year, end_year, reference_year, year_type, directory, **kwargs
+    )
 
 
-def demand_multiple_reference_years(reference_years, subregion, scenario, poe, descriptor, directory, year_type='fy'):
+def demand_multiple_reference_years(
+    reference_years, subregion, scenario, poe, descriptor, directory, year_type="fy"
+):
     """Reads wind area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
@@ -481,48 +538,55 @@ def demand_multiple_reference_years(reference_years, subregion, scenario, poe, d
     Returns: pd.DataFrame with columns Datetime and Data
     """
     kwargs = {
-        'area': subregion,
-        'scenario': scenario,
-        'poe': poe,
-        'descriptor': descriptor
+        "area": subregion,
+        "scenario": scenario,
+        "poe": poe,
+        "descriptor": descriptor,
     }
-    return generic_multi_reference_year_mapping('demand', reference_years, year_type, directory,
-                                                **kwargs)
+    return generic_multi_reference_year_mapping(
+        "demand", reference_years, year_type, directory, **kwargs
+    )
 
 
 def get_years_and_half_years(start_year, end_year, year_type):
-    if year_type == 'calendar':
+    if year_type == "calendar":
         years = range(start_year, end_year + 1)
-        half_years = [1 ,2]
+        half_years = [1, 2]
         years_and_half_years = itertools.product(years, half_years)
-    elif year_type == 'fy':
+    elif year_type == "fy":
         years = range(start_year - 1, end_year + 1)
-        half_years = [1 ,2]
+        half_years = [1, 2]
         years_and_half_years = list(itertools.product(years, half_years))[1:-1]
     else:
         raise ValueError(f"The year_type {year_type} is not recognised.")
     return years_and_half_years
 
 
-def generic_multi_reference_year_mapping(data_type, reference_year_mapping, year_type, directory, **kwargs):
+def generic_multi_reference_year_mapping(
+    data_type, reference_year_mapping, year_type, directory, **kwargs
+):
     data = []
     for year, reference_year in reference_year_mapping.items():
         data.append(
-            generic_single_reference_year(data_type, year, year, reference_year, year_type, directory, **kwargs)
+            generic_single_reference_year(
+                data_type, year, year, reference_year, year_type, directory, **kwargs
+            )
         )
     data = pd.concat(data)
     return data
 
 
-def generic_single_reference_year(data_type, start_year, end_year, reference_year, year_type, directory, **kwargs):
+def generic_single_reference_year(
+    data_type, start_year, end_year, reference_year, year_type, directory, **kwargs
+):
     years_and_half_years = get_years_and_half_years(start_year, end_year, year_type)
     data = []
     for i, (year, half_year) in enumerate(years_and_half_years):
         filepath_args = {
-            'year': year,
-            'half_year': half_year,
-            'reference_year': reference_year,
-            'directory': directory
+            "year": year,
+            "half_year": half_year,
+            "reference_year": reference_year,
+            "directory": directory,
         }
         filepath_args.update(kwargs)
         filepath = filepath_writers[data_type](**filepath_args)
@@ -533,36 +597,66 @@ def generic_single_reference_year(data_type, start_year, end_year, reference_yea
 
 def get_solar_project_filepath(year, half_year, reference_year, directory, project):
     filepath_template = "RefYear{ry}/Project/{project}/RefYear{ry}_{project}_FFP_HalfYear{y}-{hy}.parquet"
-    project = project.replace(' ', '_').replace('*', '')
-    return Path(directory) / filepath_template.format(ry=reference_year, project=project, y=year, hy=half_year)
+    project = project.replace(" ", "_").replace("*", "")
+    return Path(directory) / filepath_template.format(
+        ry=reference_year, project=project, y=year, hy=half_year
+    )
 
-def get_solar_area_filepath(year, half_year, reference_year, directory, area, technology):
+
+def get_solar_area_filepath(
+    year, half_year, reference_year, directory, area, technology
+):
     filepath_template = "RefYear{ry}/Area/{area}/{tech}/RefYear{ry}_{area}_{tech}_HalfYear{y}-{hy}.parquet"
-    return Path(directory) / filepath_template.format(ry=reference_year, area=area, y=year, hy=half_year,
-                                                      tech=technology)
+    return Path(directory) / filepath_template.format(
+        ry=reference_year, area=area, y=year, hy=half_year, tech=technology
+    )
+
 
 def get_wind_project_filepath(year, half_year, reference_year, directory, project):
-    filepath_template = "RefYear{ry}/Project/{project}/RefYear{ry}_{project}_HalfYear{y}-{hy}.parquet"
-    project = project.replace(' ', '_').replace('*', '')
-    return Path(directory) / filepath_template.format(ry=reference_year, project=project, y=year, hy=half_year)
+    filepath_template = (
+        "RefYear{ry}/Project/{project}/RefYear{ry}_{project}_HalfYear{y}-{hy}.parquet"
+    )
+    project = project.replace(" ", "_").replace("*", "")
+    return Path(directory) / filepath_template.format(
+        ry=reference_year, project=project, y=year, hy=half_year
+    )
 
-def get_wind_area_filepath(year, half_year, reference_year, directory, area, resource_type):
-    filepath_template = ("RefYear{ry}/Area/{area}/{resource_type}/"
-                         "RefYear{ry}_{area}_{resource_type}_HalfYear{y}-{hy}.parquet")
-    return Path(directory) / filepath_template.format(ry=reference_year, area=area, y=year, hy=half_year,
-                                                      resource_type=resource_type)
 
-def get_demand_file_path(year, half_year, reference_year, directory, area, scenario, poe, descriptor):
-    scenario = scenario.replace(' ', '_')
-    filepath_template =  ("{scenario}/RefYear{ry}/{area}/{poe}/{descriptor}/"
-                          "{scenario}_RefYear{ry}_{area}_{poe}_{descriptor}_HalfYear{y}-{hy}.parquet")
-    return Path(directory) / filepath_template.format(ry=reference_year, area=area, y=year, hy=half_year,
-                                                      scenario=scenario, poe=poe, descriptor=descriptor)
+def get_wind_area_filepath(
+    year, half_year, reference_year, directory, area, resource_type
+):
+    filepath_template = (
+        "RefYear{ry}/Area/{area}/{resource_type}/"
+        "RefYear{ry}_{area}_{resource_type}_HalfYear{y}-{hy}.parquet"
+    )
+    return Path(directory) / filepath_template.format(
+        ry=reference_year, area=area, y=year, hy=half_year, resource_type=resource_type
+    )
+
+
+def get_demand_file_path(
+    year, half_year, reference_year, directory, area, scenario, poe, descriptor
+):
+    scenario = scenario.replace(" ", "_")
+    filepath_template = (
+        "{scenario}/RefYear{ry}/{area}/{poe}/{descriptor}/"
+        "{scenario}_RefYear{ry}_{area}_{poe}_{descriptor}_HalfYear{y}-{hy}.parquet"
+    )
+    return Path(directory) / filepath_template.format(
+        ry=reference_year,
+        area=area,
+        y=year,
+        hy=half_year,
+        scenario=scenario,
+        poe=poe,
+        descriptor=descriptor,
+    )
+
 
 filepath_writers = {
-    'solar_project': get_solar_project_filepath,
-    'solar_area': get_solar_area_filepath,
-    'wind_project': get_wind_project_filepath,
-    'wind_area': get_wind_area_filepath,
-    'demand': get_demand_file_path
+    "solar_project": get_solar_project_filepath,
+    "solar_area": get_solar_area_filepath,
+    "wind_project": get_wind_project_filepath,
+    "wind_area": get_wind_area_filepath,
+    "demand": get_demand_file_path,
 }
