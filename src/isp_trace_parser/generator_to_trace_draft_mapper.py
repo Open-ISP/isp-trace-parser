@@ -113,7 +113,6 @@ def draft_wind_generator_to_trace_mapping(
         f["name"] for f in csv_file_meta_data if f["file_type"] == "project"
     ]
 
-    words_to_ignore = ["Wind Farm", "Stage", "-", "Green Power Hub"]
     wind_station_names = list(wind_duids_and_station_names["Station Name"])
 
     wind_generators["Station Name"] = wind_generators["Generator"].apply(
