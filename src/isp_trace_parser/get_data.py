@@ -19,18 +19,18 @@ def solar_project_single_reference_year(
     ... reference_year=2011,
     ... project='Adelaide Desalination Plant Solar Farm',
     ... directory='example_parsed_data/solar')
-                     Datetime  Data
-    0     2021-07-01 00:30:00   0.0
-    1     2021-07-01 01:00:00   0.0
-    2     2021-07-01 01:30:00   0.0
-    3     2021-07-01 02:00:00   0.0
-    4     2021-07-01 02:30:00   0.0
+                     Datetime  Value
+    0     2021-07-01 00:30:00    0.0
+    1     2021-07-01 01:00:00    0.0
+    2     2021-07-01 01:30:00    0.0
+    3     2021-07-01 02:00:00    0.0
+    4     2021-07-01 02:30:00    0.0
     ...                   ...   ...
-    52603 2024-06-30 22:00:00   0.0
-    52604 2024-06-30 22:30:00   0.0
-    52605 2024-06-30 23:00:00   0.0
-    52606 2024-06-30 23:30:00   0.0
-    52607 2024-07-01 00:00:00   0.0
+    52603 2024-06-30 22:00:00    0.0
+    52604 2024-06-30 22:30:00    0.0
+    52605 2024-06-30 23:00:00    0.0
+    52606 2024-06-30 23:30:00    0.0
+    52607 2024-07-01 00:00:00    0.0
     <BLANKLINE>
     [52608 rows x 2 columns]
 
@@ -46,7 +46,7 @@ def solar_project_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"project": project}
     return generic_single_reference_year(
@@ -71,18 +71,18 @@ def solar_project_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... project='Adelaide Desalination Plant Solar Farm',
     ... directory='example_parsed_data/solar')
-                     Datetime  Data
-    0     2021-07-01 00:30:00   0.0
-    1     2021-07-01 01:00:00   0.0
-    2     2021-07-01 01:30:00   0.0
-    3     2021-07-01 02:00:00   0.0
-    4     2021-07-01 02:30:00   0.0
+                     Datetime  Value
+    0     2021-07-01 00:30:00    0.0
+    1     2021-07-01 01:00:00    0.0
+    2     2021-07-01 01:30:00    0.0
+    3     2021-07-01 02:00:00    0.0
+    4     2021-07-01 02:30:00    0.0
     ...                   ...   ...
-    17563 2024-06-30 22:00:00   0.0
-    17564 2024-06-30 22:30:00   0.0
-    17565 2024-06-30 23:00:00   0.0
-    17566 2024-06-30 23:30:00   0.0
-    17567 2024-07-01 00:00:00   0.0
+    17563 2024-06-30 22:00:00    0.0
+    17564 2024-06-30 22:30:00    0.0
+    17565 2024-06-30 23:00:00    0.0
+    17566 2024-06-30 23:30:00    0.0
+    17567 2024-07-01 00:00:00    0.0
     <BLANKLINE>
     [35088 rows x 2 columns]
 
@@ -98,7 +98,7 @@ def solar_project_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"project": project}
     return generic_multi_reference_year_mapping(
@@ -120,18 +120,18 @@ def solar_area_single_reference_year(
     ... area='Q1',
     ... technology='SAT',
     ... directory='example_parsed_data/solar')
-                     Datetime  Data
-    0     2021-07-01 00:30:00   0.0
-    1     2021-07-01 01:00:00   0.0
-    2     2021-07-01 01:30:00   0.0
-    3     2021-07-01 02:00:00   0.0
-    4     2021-07-01 02:30:00   0.0
+                     Datetime  Value
+    0     2021-07-01 00:30:00    0.0
+    1     2021-07-01 01:00:00    0.0
+    2     2021-07-01 01:30:00    0.0
+    3     2021-07-01 02:00:00    0.0
+    4     2021-07-01 02:30:00    0.0
     ...                   ...   ...
-    52603 2024-06-30 22:00:00   0.0
-    52604 2024-06-30 22:30:00   0.0
-    52605 2024-06-30 23:00:00   0.0
-    52606 2024-06-30 23:30:00   0.0
-    52607 2024-07-01 00:00:00   0.0
+    52603 2024-06-30 22:00:00    0.0
+    52604 2024-06-30 22:30:00    0.0
+    52605 2024-06-30 23:00:00    0.0
+    52606 2024-06-30 23:30:00    0.0
+    52607 2024-07-01 00:00:00    0.0
     <BLANKLINE>
     [52608 rows x 2 columns]
 
@@ -149,7 +149,7 @@ def solar_area_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"area": area, "technology": technology}
     return generic_single_reference_year(
@@ -175,18 +175,18 @@ def solar_area_multiple_reference_years(
     ... area='Q1',
     ... technology='SAT',
     ... directory='example_parsed_data/solar')
-                     Datetime  Data
-    0     2021-07-01 00:30:00   0.0
-    1     2021-07-01 01:00:00   0.0
-    2     2021-07-01 01:30:00   0.0
-    3     2021-07-01 02:00:00   0.0
-    4     2021-07-01 02:30:00   0.0
+                     Datetime  Value
+    0     2021-07-01 00:30:00    0.0
+    1     2021-07-01 01:00:00    0.0
+    2     2021-07-01 01:30:00    0.0
+    3     2021-07-01 02:00:00    0.0
+    4     2021-07-01 02:30:00    0.0
     ...                   ...   ...
-    17563 2024-06-30 22:00:00   0.0
-    17564 2024-06-30 22:30:00   0.0
-    17565 2024-06-30 23:00:00   0.0
-    17566 2024-06-30 23:30:00   0.0
-    17567 2024-07-01 00:00:00   0.0
+    17563 2024-06-30 22:00:00    0.0
+    17564 2024-06-30 22:30:00    0.0
+    17565 2024-06-30 23:00:00    0.0
+    17566 2024-06-30 23:30:00    0.0
+    17567 2024-07-01 00:00:00    0.0
     <BLANKLINE>
     [35088 rows x 2 columns]
 
@@ -203,7 +203,7 @@ def solar_area_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"area": area, "technology": technology}
     return generic_multi_reference_year_mapping(
@@ -224,7 +224,7 @@ def wind_project_single_reference_year(
     ... reference_year=2011,
     ... project='Bango 973 Wind Farm',
     ... directory='example_parsed_data/wind')
-                     Datetime      Data
+                     Datetime     Value
     0     2021-07-01 00:30:00  0.162167
     1     2021-07-01 01:00:00  0.153542
     2     2021-07-01 01:30:00  0.131597
@@ -252,7 +252,7 @@ def wind_project_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"project": project}
     return generic_single_reference_year(
@@ -277,7 +277,7 @@ def wind_project_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... project='Bango 973 Wind Farm',
     ... directory='example_parsed_data/wind')
-                     Datetime      Data
+                     Datetime     Value
     0     2021-07-01 00:30:00  0.162167
     1     2021-07-01 01:00:00  0.153542
     2     2021-07-01 01:30:00  0.131597
@@ -304,7 +304,7 @@ def wind_project_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"project": project}
     return generic_multi_reference_year_mapping(
@@ -332,7 +332,7 @@ def wind_area_single_reference_year(
     ... area='Q1',
     ... resource_quality='WH',
     ... directory='example_parsed_data/wind')
-                     Datetime      Data
+                     Datetime     Value
     0     2021-07-01 00:30:00  0.790868
     1     2021-07-01 01:00:00  0.816555
     2     2021-07-01 01:30:00  0.762126
@@ -361,7 +361,7 @@ def wind_area_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"area": area, "resource_type": resource_quality}
     return generic_single_reference_year(
@@ -387,7 +387,7 @@ def wind_area_multiple_reference_years(
     ... area='Q1',
     ... resource_quality='WH',
     ... directory='example_parsed_data/wind')
-                     Datetime      Data
+                     Datetime     Value
     0     2021-07-01 00:30:00  0.790868
     1     2021-07-01 01:00:00  0.816555
     2     2021-07-01 01:30:00  0.762126
@@ -415,7 +415,7 @@ def wind_area_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {"area": area, "resource_type": resource_quality}
     return generic_multi_reference_year_mapping(
@@ -447,7 +447,7 @@ def demand_single_reference_year(
     ... poe='POE10',
     ... descriptor='OPSO_MODELLING',
     ... directory='example_parsed_data/demand')
-                     Datetime         Data
+                     Datetime        Value
     0     2023-07-01 00:30:00  1021.534634
     1     2023-07-01 01:00:00   997.293145
     2     2023-07-01 01:30:00   971.978426
@@ -478,7 +478,7 @@ def demand_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {
         "area": subregion,
@@ -505,7 +505,7 @@ def demand_multiple_reference_years(
     ... poe='POE10',
     ... descriptor='OPSO_MODELLING',
     ... directory='example_parsed_data/demand')
-                     Datetime         Data
+                     Datetime        Value
     0     2023-07-01 00:30:00  1021.534634
     1     2023-07-01 01:00:00   997.293145
     2     2023-07-01 01:30:00   971.978426
@@ -535,7 +535,7 @@ def demand_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime and Data
+    Returns: pd.DataFrame with columns Datetime andValue
     """
     kwargs = {
         "area": subregion,

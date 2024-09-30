@@ -2,17 +2,13 @@ from pathlib import Path
 import yaml
 import itertools
 
-from isp_trace_parser import restructure_solar_directory
+from isp_trace_parser import parse_solar_traces, parse_demand_traces, parse_wind_traces
 
 import end_to_end_test_data_config as config
 from create_end_to_end_test_data import (
     create_solar_csvs,
     create_demand_csvs,
     create_wind_csvs,
-)
-from isp_trace_parser.directory_structure_formatter import (
-    restructure_wind_directory,
-    restructure_demand_directory,
 )
 
 
@@ -22,9 +18,9 @@ def test_solar_directory_restructure(tmp_path):
     new_dir = tmp_path / Path("solar_new_directory")
     new_dir.mkdir()
     create_solar_csvs(old_dir)
-    restructure_solar_directory(old_dir, new_dir, use_concurrency=False)
+    parse_solar_traces(old_dir, new_dir, use_concurrency=False)
     project_mapping_yaml = Path(__file__).parent.parent / Path(
-        "src/name_mapping/solar_project_mapping.yaml"
+        "src/isp_trace_name_mapping_configs/solar_project_mapping.yaml"
     )
     with open(project_mapping_yaml) as f:
         project_name_mapping = yaml.safe_load(f)
@@ -66,9 +62,9 @@ def test_wind_directory_restructure(tmp_path):
     new_dir = tmp_path / Path("wind_new_directory")
     new_dir.mkdir()
     create_wind_csvs(old_dir)
-    restructure_wind_directory(old_dir, new_dir, use_concurrency=False)
+    parse_wind_traces(old_dir, new_dir, use_concurrency=False)
     project_mapping_yaml = Path(__file__).parent.parent / Path(
-        "src/name_mapping/wind_project_mapping.yaml"
+        "src/isp_trace_name_mapping_configs/wind_project_mapping.yaml"
     )
     with open(project_mapping_yaml) as f:
         project_name_mapping = yaml.safe_load(f)
@@ -116,9 +112,9 @@ def test_demand_directory_restructure(tmp_path):
     new_dir = tmp_path / Path("demand_new_directory")
     new_dir.mkdir()
     create_demand_csvs(old_dir)
-    restructure_demand_directory(old_dir, new_dir, use_concurrency=False)
+    parse_demand_traces(old_dir, new_dir, use_concurrency=False)
     demand_scenario_mapping_yaml = Path(__file__).parent.parent / Path(
-        "src/name_mapping/demand_scenario_mapping.yaml"
+        "src/isp_trace_name_mapping_configs/demand_scenario_mapping.yaml"
     )
     with open(demand_scenario_mapping_yaml) as f:
         demand_scenario_mapping = yaml.safe_load(f)
@@ -132,10 +128,10 @@ def test_demand_directory_restructure(tmp_path):
         config.demand_type,
         config.scenarios,
     )
-    for ry, y, half_year, area, poe, demand_type, scenario in combos:
+    for ry, y, half_year, subregion, poe, demand_type, scenario in combos:
         scenario = demand_scenario_mapping[scenario].replace(" ", "_")
         parquet_file = Path(
-            f"{scenario}/RefYear{ry}/{area}/{poe}/{demand_type}/"
-            f"{scenario}_RefYear{ry}_{area}_{poe}_{demand_type}_HalfYear{y}-{half_year}.parquet"
+            f"{scenario}/RefYear{ry}/{subregion}/{poe}/{demand_type}/"
+            f"{scenario}_RefYear{ry}_{subregion}_{poe}_{demand_type}_HalfYear{y}-{half_year}.parquet"
         )
         assert (new_dir / parquet_file).is_file()

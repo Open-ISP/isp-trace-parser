@@ -19,8 +19,8 @@ readme = "README.md"
 requires-python = ">= 3.9"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.rye]
 managed = true
@@ -33,12 +33,6 @@ dev-dependencies = [
     "pre-commit>=3.8.0",
 ]
 
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/isp_trace_parser"]
-
 [tool.pytest.ini_options]
 # path to tests for pytest
 testpaths = ["src", "tests"]
@@ -46,3 +40,9 @@ testpaths = ["src", "tests"]
 # --cov points pytest-cov to the src/ dir
 # --cov-branch runs branch coverage
 addopts = "-ra --doctest-modules --cov=src/ --cov-branch --cov-report xml:tests/coverage.xml --cov-report html:tests/htmlcov"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+isp_trace_name_mapping_configs = ["**/*.yaml"]

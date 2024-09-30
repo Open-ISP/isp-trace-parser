@@ -18,20 +18,20 @@ restructuring solar, wind, and demand data should each be store in separate dire
 used to parse the data. No exact directory structure within solar, wind, and demand subdirectories needs to be followed.
 
 ```python
-import isp_trace_parser
+from isp_trace_parser import parse_solar_traces, parse_wind_traces, parse_demand_traces
 
-isp_trace_parser.restructure_solar_directory(
-    old_directory='<path/to/aemo/solar/traces>',
+parse_solar_traces(
+    input_directory='<path/to/aemo/solar/traces>',
     new_directory='<path/to/store/solar/output>',
 )
 
-isp_trace_parser.restructure_wind_directory(
-    old_directory='<path/to/aemo/wind/traces>',
-    new_directory='<path/to/store/wind/output>',
+parse_wind_traces(
+    input_directory='<path/to/aemo/wind/traces>',
+    parsed_directory='<path/to/store/wind/output>',
 )
 
-isp_trace_parser.restructure_solar_directory(
-    old_directory='<path/to/aemo/demand/traces>',
+parse_solar_traces(
+    input_directory='<path/to/aemo/demand/traces>',
     new_directory='<path/to/store/demand/output>',
 )
 ```

@@ -27,18 +27,19 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
 
     >>> trace_formatter(aemo_format_data)
     shape: (6, 2)
-    ┌─────────────────────┬──────┐
-    │ Datetime            ┆ Data │
-    │ ---                 ┆ ---  │
-    │ datetime[μs]        ┆ f64  │
-    ╞═════════════════════╪══════╡
-    │ 2024-06-01 00:30:00 ┆ 11.2 │
-    │ 2024-06-01 01:00:00 ┆ 30.7 │
-    │ 2024-06-02 00:00:00 ┆ 17.1 │
-    │ 2024-06-02 00:30:00 ┆ 15.3 │
-    │ 2024-06-02 01:00:00 ┆ 20.4 │
-    │ 2024-06-03 00:00:00 ┆ 18.9 │
-    └─────────────────────┴──────┘
+    ┌─────────────────────┬───────┐
+    │ Datetime            ┆ Value │
+    │ ---                 ┆ ---   │
+    │ datetime[μs]        ┆ f64   │
+    ╞═════════════════════╪═══════╡
+    │ 2024-06-01 00:30:00 ┆ 11.2  │
+    │ 2024-06-01 01:00:00 ┆ 30.7  │
+    │ 2024-06-02 00:00:00 ┆ 17.1  │
+    │ 2024-06-02 00:30:00 ┆ 15.3  │
+    │ 2024-06-02 01:00:00 ┆ 20.4  │
+    │ 2024-06-03 00:00:00 ┆ 18.9  │
+    └─────────────────────┴───────┘
+
 
 
     Args:
@@ -55,11 +56,11 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
     value_vars = [f"{i:02d}" for i in range(1, 49)] + [str(i) for i in range(1, 10)]
     value_vars = [v for v in value_vars if v in trace_data.columns]
 
-    trace_data = trace_data.melt(
-        id_vars=["Year", "Month", "Day"],
-        value_vars=value_vars,
+    trace_data = trace_data.unpivot(
+        index=["Year", "Month", "Day"],
+        on=value_vars,
         variable_name="time_label",
-        value_name="Data",
+        value_name="Value",
     )
 
     def get_hour(time_label):
@@ -93,7 +94,7 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         trace_data.with_columns(
             [(pl.col("Datetime") + pl.col("Hour") + pl.col("Minute")).alias("Datetime")]
         )
-        .select(["Datetime", "Data"])
+        .select(["Datetime", "Value"])
         .sort("Datetime")
     )
 

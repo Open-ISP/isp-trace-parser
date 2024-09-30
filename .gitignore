@@ -163,5 +163,3 @@ cython_debug/
 
 # project
 scratch.py
-parquets/*
-parquets_chunked/*

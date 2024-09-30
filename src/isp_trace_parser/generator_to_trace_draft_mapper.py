@@ -4,9 +4,9 @@ import pandas as pd
 from fuzzywuzzy import process, fuzz
 from isp_workbook_parser import Parser, TableConfig
 
-from isp_trace_parser.meta_data_extractors import (
-    extract_solar_trace_meta_data,
-    extract_wind_trace_meta_data,
+from isp_trace_parser.metadata_extractors import (
+    extract_solar_trace_metadata,
+    extract_wind_trace_metadata,
 )
 
 
@@ -84,9 +84,9 @@ def draft_solar_generator_to_trace_mapping(solar_generators, solar_trace_directo
     csv_file_names = [
         f for f in os.listdir(solar_trace_directory) if f.endswith(".csv")
     ]
-    csv_file_meta_data = [extract_solar_trace_meta_data(f) for f in csv_file_names]
+    csv_file_metadata = [extract_solar_trace_metadata(f) for f in csv_file_names]
     csv_project_names = [
-        f["name"] for f in csv_file_meta_data if f["file_type"] == "project"
+        f["name"] for f in csv_file_metadata if f["file_type"] == "project"
     ]
     solar_generators["CSVFile"] = solar_generators["Generator"].apply(
         lambda x: find_best_match(x, csv_project_names)
@@ -97,8 +97,8 @@ def draft_solar_generator_to_trace_mapping(solar_generators, solar_trace_directo
 
 def draft_solar_rez_mapping(rezs, rezs_trace_directory):
     csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith(".csv")]
-    csv_file_meta_data = [extract_solar_trace_meta_data(f) for f in csv_file_names]
-    csv_rez_names = [f["name"] for f in csv_file_meta_data if f["file_type"] == "area"]
+    csv_file_metadata = [extract_solar_trace_metadata(f) for f in csv_file_names]
+    csv_rez_names = [f["name"] for f in csv_file_metadata if f["file_type"] == "area"]
     rezs["CSVFile"] = rezs["Name"].apply(lambda x: find_best_match(x, csv_rez_names))
     rezs = rezs.set_index("Name")["CSVFile"].to_dict()
     return rezs
@@ -108,9 +108,9 @@ def draft_wind_generator_to_trace_mapping(
     wind_generators, wind_duids_and_station_names, wind_trace_directory
 ):
     csv_file_names = [f for f in os.listdir(wind_trace_directory) if f.endswith(".csv")]
-    csv_file_meta_data = [extract_wind_trace_meta_data(f) for f in csv_file_names]
+    csv_file_metadata = [extract_wind_trace_metadata(f) for f in csv_file_names]
     csv_project_names = [
-        f["name"] for f in csv_file_meta_data if f["file_type"] == "project"
+        f["name"] for f in csv_file_metadata if f["file_type"] == "project"
     ]
 
     wind_station_names = list(wind_duids_and_station_names["Station Name"])
@@ -137,8 +137,8 @@ def draft_wind_generator_to_trace_mapping(
 
 def draft_wind_rez_mapping(rezs, rezs_trace_directory):
     csv_file_names = [f for f in os.listdir(rezs_trace_directory) if f.endswith(".csv")]
-    csv_file_meta_data = [extract_wind_trace_meta_data(f) for f in csv_file_names]
-    csv_rez_names = [f["name"] for f in csv_file_meta_data if f["file_type"] == "area"]
+    csv_file_metadata = [extract_wind_trace_metadata(f) for f in csv_file_names]
+    csv_rez_names = [f["name"] for f in csv_file_metadata if f["file_type"] == "area"]
     rezs["CSVFile"] = rezs["Name"].apply(lambda x: find_best_match(x, csv_rez_names))
     rezs = rezs.set_index("Name")["CSVFile"].to_dict()
     return rezs
