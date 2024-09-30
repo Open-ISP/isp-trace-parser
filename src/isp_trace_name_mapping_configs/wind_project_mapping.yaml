@@ -1,0 +1,356 @@
+Bango 973 Wind Farm:
+  Station Name: Bango 973 Wind Farm
+  DUID: BANGOWF1
+  CSVFile: BANGOWF1
+Bango 999 Wind Farm:
+  Station Name: Bango 999 Wind Farm
+  DUID: BANGOWF2
+  CSVFile: BANGOWF2
+Boco Rock Wind Farm:
+  Station Name: Boco Rock Wind Farm
+  DUID: BOCORWF1
+  CSVFile: BOCORWF1
+Bodangora Wind Farm:
+  Station Name: Bodangora Wind Farm
+  DUID: BODWF1
+  CSVFile: BODWF1
+Capital Wind Farm:
+  Station Name: Capital Wind Farm
+  DUID: CAPTL_WF
+  CSVFile: CAPTL_WF
+Collector Wind Farm:
+  Station Name: Collector Wind Farm 1
+  DUID: COLWF01
+  CSVFile: COLWF01
+Crookwell 2 Wind Farm:
+  Station Name: Crookwell 2 Wind Farm
+  DUID: CROOKWF2
+  CSVFile: CROOKWF2
+Crudine Ridge Wind Farm:
+  Station Name: Crudine Ridge Wind Farm
+  DUID: CRURWF1
+  CSVFile: CRURWF1
+Cullerin Range Wind Farm:
+  Station Name: Cullerin Range Wind Farm
+  DUID: CULLRGWF
+  CSVFile: CULLRGWF
+Gullen Range Wind Farm:
+  Station Name: Gullen Range Wind Farm
+  DUID: GULLRWF1
+  CSVFile: GULLRWF1
+Gullen Range Wind Farm 2:
+  Station Name: Gullen Range Wind Farm
+  DUID: GULLRWF1
+  CSVFile: GULLRWF2
+Gunning Wind Farm:
+  Station Name: Gunning Wind Farm
+  DUID: GUNNING1
+  CSVFile: GUNNING1
+Sapphire Wind Farm:
+  Station Name: Sapphire Wind Farm
+  DUID: SAPHWF1
+  CSVFile: SAPHWF1
+Silverton Wind Farm:
+  Station Name: Silverton Wind Farm
+  DUID: STWF1
+  CSVFile: STWF1
+Taralga Wind Farm:
+  Station Name: Taralga Wind Farm
+  DUID: TARALGA1
+  CSVFile: TARALGA1
+White Rock Wind Farm - Stage 1:
+  Station Name: White Rock Wind Farm
+  DUID: WRWF1
+  CSVFile: WRWF1
+Woodlawn Wind Farm:
+  Station Name: Woodlawn Wind Farm
+  DUID: WOODLWN1
+  CSVFile: WOODLWN1
+Coopers Gap Wind Farm:
+  Station Name: Coopers Gap Wind Farm
+  DUID: COOPGWF1
+  CSVFile: COOPGWF1
+Kaban Green Power Hub - Wind Farm:
+  Station Name: Kaban Wind Farm
+  DUID: KABANWF1
+  CSVFile: KABANWF1
+Kennedy Energy Park Wind Farm:
+  Station Name: Kennedy Energy Park
+  DUID: KEPWF1
+  CSVFile: KEPWF1
+Mount Emerald Wind Farm:
+  Station Name: Mount Emerald Wind Farm
+  DUID: MEWF1
+  CSVFile: MEWF1
+Canunda Wind Farm:
+  Station Name: Canunda Wind Farm
+  DUID: CNUNDAWF
+  CSVFile: CNUNDAWF
+Cathedral Rocks Wind Farm:
+  Station Name: Cathedral Rocks
+  DUID: CATHROCK
+  CSVFile: CATHROCK
+Clements Gap Wind Farm:
+  Station Name: Clements Gap Wind Farm
+  DUID: CLEMGPWF
+  CSVFile: CLEMGPWF
+Hallett 4 North Brown Hill Wind Farm:
+  Station Name: North Brown Hill Wind Farm
+  DUID: NBHWF1
+  CSVFile: NBHWF1
+Hallett 5 The Bluff Wind Farm:
+  Station Name: The Bluff Wind Farm
+  DUID: BLUFF1
+  CSVFile: BLUFF1
+Hallett Stage 1 Brown Hill Wind Farm:
+  Station Name: Hallett 1 Wind Farm
+  DUID: HALLWF1
+  CSVFile: HALLWF1
+Hallett Stage 2 Hallett Hill Wind Farm:
+  Station Name: Hallett 2 Wind Farm
+  DUID: HALLWF2
+  CSVFile: HALLWF2
+Hornsdale Wind Farm Stage 1:
+  Station Name: Hornsdale Wind Farm
+  DUID: HDWF1
+  CSVFile: HDWF1
+Hornsdale Wind Farm Stage 2:
+  Station Name: Hornsdale Wind Farm
+  DUID: HDWF1
+  CSVFile: HDWF2
+Hornsdale Wind Farm Stage 3:
+  Station Name: Hornsdale Wind Farm
+  DUID: HDWF1
+  CSVFile: HDWF3
+Lake Bonney 1 Wind Farm:
+  Station Name: Lake Bonney Wind Farm Stage 1
+  DUID: LKBONNY1
+  CSVFile: LKBONNY1
+Lake Bonney 2 Wind Farm:
+  Station Name: Lake Bonney Stage 3 Wind Farm
+  DUID: LKBONNY3
+  CSVFile: LKBONNY2
+Lake Bonney 3 Wind Farm:
+  Station Name: Lake Bonney Stage 3 Wind Farm
+  DUID: LKBONNY3
+  CSVFile: LKBONNY3
+Lincoln Gap Wind Farm - stage 1:
+  Station Name: Lincoln Gap Wind Farm
+  DUID: LGAPWF1
+  CSVFile: LGAPWF1
+Lincoln Gap Wind Farm - stage 2:
+  Station Name: Lincoln Gap Wind Farm
+  DUID: LGAPWF1
+  CSVFile: LGAPWF2
+Mount Millar Wind Farm:
+  Station Name: Mt Millar Wind Farm
+  DUID: MTMILLAR
+  CSVFile: MTMILLAR
+Port Augusta Renewable Energy Park - Wind:
+  Station Name: Port Augusta Renewable Energy Park
+  DUID: PAREPW1
+  CSVFile: PAREPW1
+Snowtown S2 Wind Farm:
+  Station Name: Snowtown South Wind Farm
+  DUID: SNOWSTH1
+  CSVFile: ['SNOWSTH1', 'SNOWNTH1']
+Snowtown Wind Farm:
+  Station Name: Snowtown South Wind Farm
+  DUID: SNOWSTH1
+  CSVFile: SNOWTWN1
+Starfish Hill Wind Farm:
+  Station Name: Starfish Hill Wind Farm
+  DUID: STARHLWF
+  CSVFile: STARHLWF
+Waterloo Wind Farm:
+  Station Name: Waterloo Wind Farm
+  DUID: WATERLWF
+  CSVFile: WATERLWF
+Wattle Point Wind Farm:
+  Station Name: Wattle Point Wind Farm
+  DUID: WPWF
+  CSVFile: WPWF
+Willogoleche Wind Farm:
+  Station Name: Willogoleche Wind Farm
+  DUID: WGWF1
+  CSVFile: WGWF1
+Cattle Hill Wind Farm:
+  Station Name: Cattle Hill Wind Farm
+  DUID: CTHLWF1
+  CSVFile: CTHLWF1
+Granville Harbour Wind Farm:
+  Station Name: Granville Harbour Wind Farm
+  DUID: GRANWF1
+  CSVFile: GRANWF1
+Musselroe Wind Farm:
+  Station Name: Musselroe Wind Farm
+  DUID: MUSSELR1
+  CSVFile: MUSSELR1
+Woolnorth Wind Farm:
+  Station Name: Woolnorth Studland Bay / Bluff Point Wind Farm
+  DUID: WOOLNTH1
+  CSVFile: WOOLNTH1
+Ararat Wind Farm:
+  Station Name: Ararat Wind Farm
+  DUID: ARWF1
+  CSVFile: ARWF1
+Bald Hills Wind Farm:
+  Station Name: Bald Hills Wind Farm
+  DUID: BALDHWF1
+  CSVFile: BALDHWF1
+Berrybank Wind Farm:
+  Station Name: Berrybank 2 Wind Farm
+  DUID: BRYB2WF2
+  CSVFile: BRYB1WF1
+Bulgana Green Power Hub - Wind Farm:
+  Station Name: Bulgana Green Power Hub
+  DUID: BULGANA1
+  CSVFile: BULGANA1
+Challicum Hills Wind Farm:
+  Station Name: Challicum Hills Wind Farm
+  DUID: CHALLHWF
+  CSVFile: CHALLHWF
+Cherry Tree Wind Farm:
+  Station Name: Cherry Tree Wind Farm
+  DUID: CHYTWF1
+  CSVFile: CHYTWF1
+Crowlands Wind Farm:
+  Station Name: Crowlands Wind Farm
+  DUID: CROWLWF1
+  CSVFile: CROWLWF1
+Dulacca Wind Farm:
+  Station Name: Dulacca Wind Farm
+  DUID: DULAWF1
+  CSVFile: DULAWF1
+Dundonnell Wind Farm:
+  Station Name: Dundonnell Wind Farm
+  DUID: DUNDWF1
+  CSVFile: ['DUNDWF1', 'DUNDWF2', 'DUNDWF3']
+Elaine Wind Farm:
+  Station Name: Elaine Wind Farm
+  DUID: ELAINWF1
+  CSVFile: ELAINWF1
+Kiata Wind Farm:
+  Station Name: Kiata Wind Farm
+  DUID: KIATAWF1
+  CSVFile: KIATAWF1
+Macarthur Wind Farm:
+  Station Name: Macarthur Wind Farm
+  DUID: MACARTH1
+  CSVFile: MACARTH1
+Moorabool Wind Farm:
+  Station Name: Moorabool Wind Farm
+  DUID: MOORAWF1
+  CSVFile: MOORAWF1
+Mortlake South Wind Farm:
+  Station Name: Mortlake South Wind Farm
+  DUID: MRTLSWF1
+  CSVFile: MRTLSWF1
+Mortons Lane Wind Farm:
+  Station Name: Mortons Lane Wind Farm
+  DUID: MLWF1
+  CSVFile: MLWF1
+Mt Gellibrand Wind Farm:
+  Station Name: Mt Gellibrand Wind Farm
+  DUID: MTGELWF1
+  CSVFile: MTGELWF1
+Mt Mercer Wind Farm:
+  Station Name: Mt Mercer Wind Farm
+  DUID: MERCER01
+  CSVFile: MERCER01
+Murra Warra Wind Farm - stage 1:
+  Station Name: Murra Warra Wind Farm
+  DUID: MUWAWF1
+  CSVFile: MUWAWF1
+Murra Warra Wind Farm - stage 2:
+  Station Name: Murra Warra Wind Farm
+  DUID: MUWAWF1
+  CSVFile: MUWAWF2
+Oaklands Hill Wind Farm:
+  Station Name: Oaklands Hill Wind Farm
+  DUID: OAKLAND1
+  CSVFile: OAKLAND1
+Portland Wind Farm:
+  Station Name: Crowlands Wind Farm
+  DUID: CROWLWF1
+  CSVFile: PORTWF
+Salt Creek Wind Farm:
+  Station Name: Salt Creek Wind Farm
+  DUID: SALTCRK1
+  CSVFile: SALTCRK1
+Stockyard Hill Wind Farm:
+  Station Name: Stockyard Hill Wind Farm
+  DUID: STOCKYD1
+  CSVFile: STOCKYD1
+Waubra Wind Farm:
+  Station Name: Waubra Wind Farm
+  DUID: WAUBRAWF
+  CSVFile: WAUBRAWF
+Yaloak South Wind Farm:
+  Station Name: Yaloak South Wind Farm
+  DUID: YSWF1
+  CSVFile: YSWF1
+Yambuk Wind Farm:
+  Station Name: Yambuk Wind Farm
+  DUID: YAMBUKWF
+  CSVFile: YAMBUKWF
+Yendon Wind Farm:
+  Station Name: Yendon Wind Farm
+  DUID: YENDWF1
+  CSVFile: YENDWF1
+Clarke Creek Wind Farm:
+  Station Name: Salt Creek Wind Farm
+  DUID: SALTCRK1
+  CSVFile: ['CLRKCWF1', 'CLRKCWF2']
+Crookwell 3 Wind Farm:
+  Station Name: Crookwell 3 Wind Farm
+  DUID: CROOKWF3
+  CSVFile: CROOKWF3
+Flyers Creek Wind Farm:
+  Station Name: Flyers Creek Wind Farm
+  DUID: FLYCRKWF
+  CSVFile: Flyers_Creek
+Golden Plains Wind Farm East:
+  Station Name: Golden Plains Wind Farm East
+  DUID: GPWFEST1
+  CSVFile: Golden_Plains_East
+Goyder South Wind Farm 1A:
+  Station Name: Goyder South Wind Farm 1A
+  DUID: GSWF1A
+  CSVFile: Goyder_South
+Goyder South Wind Farm 1B:
+  Station Name: Goyder South Wind Farm 1B
+  DUID: GSWF1B1
+  CSVFile: Goyder_South
+Hawkesdale Wind Farm:
+  Station Name: Hawkesdale Wind Farm
+  DUID: HD1WF1
+  CSVFile: HDWF1
+Ryan Corner Wind Farm:
+  Station Name: Ryan Corner Wind Farm
+  DUID: RYANCWF1
+  CSVFile: Ryan_Corner
+Rye Park Wind Farm:
+  Station Name: Ararat Wind Farm
+  DUID: ARWF1
+  CSVFile: Rye_Park
+Wambo Wind Farm:
+  Station Name: Waubra Wind Farm
+  DUID: WAUBRAWF
+  CSVFile: Wambo
+MacIntyre Wind Farm:
+  Station Name: MacIntyre Wind Farm
+  DUID: MCINTYR1
+  CSVFile: Macintyre
+Uungula Wind Farm:
+  Station Name: Canunda Wind Farm
+  DUID: CNUNDAWF
+  CSVFile: Uungula
+Woolsthorpe Wind Farm:
+  Station Name: Kaban Wind Farm
+  DUID: KABANWF1
+  CSVFile: Woolsthorpe
+Coppabella Wind Farm:
+  Station Name: Capital Wind Farm
+  DUID: CAPTL_WF
+  CSVFile: Coppabella

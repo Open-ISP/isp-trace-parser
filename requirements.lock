@@ -10,13 +10,15 @@
 #   universal: false
 
 -e file:.
-numpy==2.1.0
+numpy==2.1.1
     # via pandas
 pandas==2.2.2
     # via isp-trace-parser
+polars==1.7.1
+    # via isp-trace-parser
 python-dateutil==2.9.0.post0
     # via pandas
-pytz==2024.1
+pytz==2024.2
     # via pandas
 six==1.16.0
     # via python-dateutil
