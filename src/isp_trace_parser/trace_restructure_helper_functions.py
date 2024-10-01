@@ -6,20 +6,20 @@ import polars as pl
 from isp_trace_parser.trace_formatter import trace_formatter
 
 
-def get_all_filepaths(dir):
-    dir = Path(dir)
-    if dir.is_dir():
-        return [path for path in Path(dir).rglob("*.csv") if path.is_file()]
+def get_all_filepaths(directory: str | Path) -> list[Path]:
+    directory = Path(directory)
+    if directory.is_dir():
+        return [path for path in Path(directory).rglob("*.csv") if path.is_file()]
     else:
-        raise ValueError(f"{dir} not found.")
+        raise ValueError(f"{directory} not found.")
 
 
-def read_trace_csv(file):
+def read_trace_csv(file: Path) -> pl.DataFrame:
     pl_types = [pl.Int64] * 3 + [pl.Float64] * 48
     return pl.read_csv(file, schema_overrides=pl_types)
 
 
-def read_and_format_traces(files):
+def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:
     traces = []
     for f in files:
         trace_data = read_trace_csv(f)
@@ -28,7 +28,7 @@ def read_and_format_traces(files):
     return traces
 
 
-def calculate_average_trace(traces):
+def calculate_average_trace(traces: list[pl.DataFrame]) -> pl.DataFrame:
     combined_traces = pl.concat(traces)
     average_trace = combined_traces.group_by("Datetime").agg(
         [pl.col("Value").mean().alias("Value")]
@@ -36,7 +36,7 @@ def calculate_average_trace(traces):
     return average_trace
 
 
-def add_half_year_as_column(trace):
+def add_half_year_as_column(trace: pl.DataFrame) -> pl.DataFrame:
     def calculate_half_year(dt):
         dt -= timedelta(seconds=1)
         if dt.month < 7:
@@ -55,8 +55,12 @@ def add_half_year_as_column(trace):
 
 
 def save_half_year_chunk_of_trace(
-    chunk, file_metadata, half_year, output_directory, write_output_filepath
-):
+    chunk: pl.DataFrame,
+    file_metadata: dict[str, str],
+    half_year: tuple[str],
+    output_directory: str | Path,
+    write_output_filepath: callable,
+) -> None:
     file_metadata["hy"] = half_year[0]
     data = chunk.drop("HY")
     path_in_output_directory = write_output_filepath(file_metadata)
@@ -66,8 +70,11 @@ def save_half_year_chunk_of_trace(
 
 
 def process_and_save_files(
-    files, file_metadata, write_output_filepath, output_directory
-):
+    files: list[Path],
+    file_metadata: dict[str, str],
+    write_output_filepath: callable,
+    output_directory: str | Path,
+) -> None:
     traces = read_and_format_traces(files)
 
     if len(traces) > 1:
@@ -83,7 +90,9 @@ def process_and_save_files(
         )
 
 
-def get_metadata_that_matches_trace_names(trace_names, all_input_file_metadata):
+def get_metadata_that_matches_trace_names(
+    trace_names: list[str], all_input_file_metadata: dict[Path, dict[str, str]]
+) -> dict[Path, dict[str, str]]:
     return {
         f: metadata
         for f, metadata in all_input_file_metadata.items()
@@ -91,11 +100,15 @@ def get_metadata_that_matches_trace_names(trace_names, all_input_file_metadata):
     }
 
 
-def get_unique_reference_years_in_metadata(metadata_for_trace_files):
+def get_unique_reference_years_in_metadata(
+    metadata_for_trace_files: dict[Path, dict[str, str]],
+) -> list[str]:
     return list(set(metadata["year"] for metadata in metadata_for_trace_files.values()))
 
 
-def get_metadata_that_matches_reference_year(year, metadata_for_trace_files):
+def get_metadata_that_matches_reference_year(
+    year: str, metadata_for_trace_files: dict[Path, dict[str, str]]
+) -> dict[str | Path, dict[str, str]]:
     return {
         f: metadata
         for f, metadata in metadata_for_trace_files.items()
@@ -103,16 +116,22 @@ def get_metadata_that_matches_reference_year(year, metadata_for_trace_files):
     }
 
 
-def get_metadata_for_writing_save_name(metadata_for_trace_files):
+def get_metadata_for_writing_save_name(
+    metadata_for_trace_files: dict[Path, dict[str, str]],
+) -> dict[str, str]:
     return next(iter(metadata_for_trace_files.values()))
 
 
-def overwrite_metadata_trace_name_with_output_name(metadata, save_name):
+def overwrite_metadata_trace_name_with_output_name(
+    metadata: dict[str, str], save_name: str
+) -> dict[str, str]:
     metadata["name"] = save_name
     return metadata
 
 
-def check_filter_by_metadata(metadata, filters):
+def check_filter_by_metadata(
+    metadata: dict[str, str], filters: dict[str, list[str]] | None
+) -> bool:
     parse_file = True
     for metadata_type, metadata_value in metadata.items():
         # If element of the metadata is present in filter but not one the values in the
@@ -126,14 +145,18 @@ def check_filter_by_metadata(metadata, filters):
     return parse_file
 
 
-def get_unique_project_and_area_names_in_input_files(metadata_for_trace_files):
+def get_unique_project_and_area_names_in_input_files(
+    metadata_for_trace_files: dict[Path, dict[str, str]],
+) -> list[str]:
     names = []
     for filepath, meta_data in metadata_for_trace_files.items():
         names.append(meta_data["name"])
     return list(set(names))
 
 
-def filter_mapping_by_names_in_input_files(name_mapping, names_in_input_files):
+def filter_mapping_by_names_in_input_files(
+    name_mapping: dict[str, str | list[str]], names_in_input_files: list[str]
+) -> dict[str, str | list[str]]:
     filtered_mapping = {}
     for output_name, input_name in name_mapping.items():
         if isinstance(input_name, list):

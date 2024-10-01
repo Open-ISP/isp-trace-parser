@@ -20,9 +20,43 @@ from isp_trace_parser.trace_restructure_helper_functions import (
 
 
 def parse_solar_traces(
-    input_directory, parsed_directory, use_concurrency=True, filters=None
+    input_directory: str | Path,
+    parsed_directory: str | Path,
+    use_concurrency: bool = True,
+    filters: dict[str : list[str]] = None,
 ):
-    """
+    """Takes a directory with AEMO solar trace data and reformats the data, saving it to a new directory.
+
+    AEMO solar trace data comes in CSVs with columns specifying the year, day, and month, and data columns
+    (labeled 01, 02, ... 48) storing the solar generation values for each half hour of the day. The file name of the CSV
+    contains metadata in the following format "<project or area name>_<technology>_RefYear<reference year>.csv".
+    For example, "Adelaide_Desal_FFP_RefYear2011.csv" for a project or "REZ_N0_NSW_Non-REZ_CST_RefYear2023.csv" for an area.
+
+    The trace parser reformats the data, modifies the file naming convention, and stores
+    the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
+    changed to a two column format with a column "Datetime" specifying the end of the half hour period the measurement
+    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "Value" specifying the measurement value. The data is saved
+    in parquet format in half-yearly chunks to improved read speeds. The files are saved with the following
+    directory structure and naming convention:
+
+    For projects:
+         "RefYear<reference year>/Project/<project name>/"
+         "RefYear<reference year>_<project name>_<technology>_HalfYear<year>-<half of year>.parquet"
+
+    For areas:
+         "RefYear<reference year>/Area/<area name>/<technology>/"
+         "RefYear<reference year>_<area name>_<technology>_HalfYear<year>-<half of year>.parquet"
+
+    With the project and area names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
+    For one half-yearly chunk of the CSV example above, the parsed filepath for a project would be:
+
+        "RefYear2011/Project/Adelaide_Desalination_Plant_Solar_Farm/"
+        "RefYear2011_Adelaide_Desalination_Plant_Solar_Farm_FFP_HalfYear2030-1.parquet"
+
+    By default, all trace data in the input directory is parsed. However, a filters dictionary can be provided to
+    filter the traces to pass based on metadata. If a metadata type is present in the filters then only traces with a
+    metadata value present in the corresponding filter list will be passed, see examples below.
+
     Examples:
 
     Parse whole directory of trace data.
@@ -33,6 +67,35 @@ def parse_solar_traces(
     ... use_concurrency=False
     ... )
 
+    Parse only a subset of the input traces.
+
+    Excluding one type of metadata (key) from the
+    filter will result in no filtering on
+    that component of the metadata and more elements can
+    be added to each list in the filter to selectively
+    expand which traces are parsed.
+
+    >>> metadata_filters={
+    ... 'technology': ['FFP', 'SAT'],
+    ... 'file_type': ['project'],
+    ... }
+
+    >>> parse_solar_traces(
+    ... input_directory='example_input_data/solar',
+    ... parsed_directory='example_parsed_data/solar',
+    ... filters=metadata_filters,
+    ... use_concurrency=False
+    ... )
+
+
+    Args:
+        input_directory: str or pathlib.Path, path to data to parse.
+        parsed_directory: str or pathlib.Path, path to directory where parsed traces will be saved.
+        use_concurrency: boolean, default True, specifies whether to use parallel processing
+        filters: dict{str: list[str]}, dict that specifies which traces to parse, if a component
+            of the metadata is missing from the dict no filtering on that component occurs. See example.
+
+    Returns: None
     """
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_solar_files(files)
@@ -87,12 +150,44 @@ def parse_solar_traces(
 
 
 def restructure_solar_files(
-    output_project_or_area_name,
-    input_trace_names,
-    all_input_file_metadata,
-    output_directory,
-    filters=None,
-):
+    output_project_or_area_name: str,
+    input_trace_names: list[str],
+    all_input_file_metadata: dict[str, dict[str, str]],
+    output_directory: str | Path,
+    filters: dict[str, list[str]] = None,
+) -> None:
+    """
+    Restructures solar trace files and saves them in a new format.
+
+    This function processes solar trace files, restructures them based on the provided metadata,
+    and saves them in a new format. It handles both project and area solar trace files.
+
+    Args:
+        output_project_or_area_name: The name of the project or area in the output files.
+        input_trace_names: List of input trace names to process.
+        all_input_file_metadata: Metadata for all input files.
+        output_directory: Directory where restructured files will be saved.
+        filters: Filters to apply to the metadata. Keys are metadata fields, values are lists of allowed values.
+
+    Returns:
+        None: Files are saved to disk, but the function doesn't return any value.
+
+    Example:
+        >>> input_metadata = {
+        ...     'file1.csv': {'name': 'Project1', 'year': '2020', 'technology': 'FFP', 'file_type': 'project'},
+        ...     'file2.csv': {'name': 'Area1', 'year': '2020', 'technology': 'SAT', 'file_type': 'area'}
+        ... }  # doctest: +SKIP
+
+        >>> restructure_solar_files(
+        ...     output_project_or_area_name='NewProject1',
+        ...     input_trace_names=['Project1'],
+        ...     all_input_file_metadata=input_metadata,
+        ...     output_directory='/path/to/output',
+        ...     filters={'technology': ['FFP']}
+        ... )  # doctest: +SKIP
+
+        # This will process 'file1.csv' and save it with the new name 'NewProject1' in the specified output directory
+    """
     metadata_for_trace_files = get_metadata_that_matches_trace_names(
         input_trace_names, all_input_file_metadata
     )
@@ -118,7 +213,16 @@ def restructure_solar_files(
                 )
 
 
-def write_output_solar_filepath(metadata):
+def write_output_solar_filepath(metadata: dict[str, str]) -> str:
+    """
+    Generates the output filepath for a solar trace file.
+
+    Args:
+        metadata: Dictionary containing metadata for the solar trace file.
+
+    Returns:
+        A string representing the filepath.
+    """
     m = metadata
     name = m["name"].replace(" ", "_")
 
@@ -134,18 +238,52 @@ def write_output_solar_filepath(metadata):
         )
 
 
-def extract_metadata_for_all_solar_files(filenames):
-    file_metadata = [extract_solar_trace_metadata(str(f.name)) for f in filenames]
-    return dict(zip(filenames, file_metadata))
+def extract_metadata_for_all_solar_files(
+    filepaths: list[Path],
+) -> dict[Path, dict[str, str]]:
+    """
+    Extracts metadata for all solar trace files.
+
+    Args:
+        filepaths: List of Path objects representing the solar trace files.
+
+    Returns:
+        A dictionary with filepaths as keys and metadata dicts as values.
+    """
+    file_metadata = [extract_solar_trace_metadata(str(f.name)) for f in filepaths]
+    return dict(zip(filepaths, file_metadata))
 
 
-def get_unique_techs_in_metadata(metadata_for_trace_files):
+def get_unique_techs_in_metadata(
+    metadata_for_trace_files: dict[Path, dict[str, str]],
+) -> list[str]:
+    """
+    Gets unique technologies from the metadata of trace files.
+
+    Args:
+        metadata_for_trace_files: Dictionary containing metadata for trace files.
+
+    Returns:
+        A list of unique technologies.
+    """
     return list(
         set(metadata["technology"] for metadata in metadata_for_trace_files.values())
     )
 
 
-def get_metadata_that_matches_tech(tech, metadata_for_trace_files):
+def get_metadata_that_matches_tech(
+    tech: str, metadata_for_trace_files: dict[Path, dict[str, str]]
+) -> dict[Path, dict[str, str]]:
+    """
+    Filters metadata to only include files matching a specific technology.
+
+    Args:
+        tech: The technology to filter by.
+        metadata_for_trace_files: Dictionary containing metadata for trace files.
+
+    Returns:
+        A dictionary of metadata for files matching the specified technology.
+    """
     return {
         f: metadata
         for f, metadata in metadata_for_trace_files.items()
