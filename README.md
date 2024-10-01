@@ -1,11 +1,9 @@
 # AEMO Integrated System Plan Trace Parser
 
-[![PyPI version](https://badge.fury.io/py/isp-workbook-trace.svg)](https://badge.fury.io/py/isp-trace-parser)
-[![Continuous Integration and Deployment](https://github.com/Open-ISP/isp-trace-parser/actions/workflows/cicd.yml/badge.
-svg)](https://github.com/Open-ISP/isp-trace-parser/actions/workflows/cicd.yml)
+[![PyPI version](https://badge.fury.io/py/isp-trace-parser.svg)](https://badge.fury.io/py/isp-trace-parser)
+[![Continuous Integration and Deployment](https://github.com/Open-ISP/isp-trace-parser/actions/workflows/cicd.yml/badge.svg)](https://github.com/Open-ISP/isp-trace-parser/actions/workflows/cicd.yml)
 [![codecov](https://codecov.io/gh/Open-ISP/isp-trace-parser/graph/badge.svg?token=HLRLX78WHP)](https://codecov.io/gh/Open-ISP/isp-trace-parser)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Open-ISP/isp-trace-parser/main.svg)]
-(https://results.pre-commit.ci/latest/github/Open-ISP/isp-trace-parser/main)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Open-ISP/isp-trace-parser/main.svg)](https://results.pre-commit.ci/latest/github/Open-ISP/isp-trace-parser/main)
 [![Rye](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/rye/main/artwork/badge.json)](https://rye.astral.sh)
 
 A Python package for reformatting and accessing demand, solar, and wind time series data used by the Australian Energy
