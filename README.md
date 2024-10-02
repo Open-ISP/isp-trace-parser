@@ -33,9 +33,12 @@ pip install isp-trace-parser
 1. Parse raw AEMO trace data using the functions `parse_wind_traces`, `parse_solar_traces`, and
    `parse_demand_traces`. This reformats the data, saving it to a specified directory. The data reformatting
    restructures the data to a standard time series format with a 'Datetime' column and 'Values' column. Additionally,
-   the data is saved in half-yearly chunks in parquet files, which significantly improves the read from disk speeds.
+   the data is saved in half-yearly chunks in parquet files, which significantly improves read from disk speeds. For
+   further information (via the API docs) you can run `help` in the Python console, e.g. `help(parse_wind_traces)`.
 2. Query the parsed data using the naming conventions for generators, REZs, and subregions established in the
    IASR workbook using the `get_data` functions, see the [Querying parsed trace data](https://github.com/Open-ISP/isp-trace-parser#querying-parsed-trace-data).
+   For further information on querying run `help` in the Python console, e.g.
+  `help(solar_project_trace_single_reference_year)`.
 
 ## Examples
 

@@ -158,9 +158,11 @@ def parse_wind_traces(
                 result
 
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            executor = ProcessPoolExecutor(max_workers=max_workers)
             results = executor.map(
                 project_partial_func, project_output_names, project_input_names
             )
+
             # Iterate through results to raise any errors that occurred.
             for result in results:
                 result

@@ -605,14 +605,14 @@ def get_years_and_half_years(
 
         Using 'calendar' year type:
 
-        >>> get_years_and_half_years(2022, 2023, 'calendar')
+        >>> list(get_years_and_half_years(2022, 2023, 'calendar'))
         [(2022, 1), (2022, 2), (2023, 1), (2023, 2)]
 
         This returns all half-years for 2022 and 2023 in calendar year format.
 
         Using 'fy' (fiscal year) type:
 
-        >>> get_years_and_half_years(2022, 2023, 'fy')
+        >>> list(get_years_and_half_years(2022, 2023, 'fy'))
         [(2021, 2), (2022, 1), (2022, 2), (2023, 1)]
 
         This returns fiscal years 2021/22 and 2022/23. Note that:
@@ -652,33 +652,33 @@ def generic_multi_reference_year_mapping(
         Retrieving solar project data for multiple years:
         >>> df = generic_multi_reference_year_mapping(
         ...     'solar_project',
-        ...     reference_years={2022: 2011, 2023: 2012, 2024: 2011},
+        ...     reference_year_mapping={2022: 2011, 2023: 2012, 2024: 2011},
         ...     year_type='fy',
         ...     directory='path/to/solar/data',
         ...     project='Solar Farm A'
-        ... )
+        ... )  # doctest: +SKIP
 
         Retrieving wind area data for multiple years:
         >>> df = generic_multi_reference_year_mapping(
         ...     'wind_area',
-        ...     reference_years={2022: 2010, 2023: 2010, 2024: 2011},
+        ...     reference_year_mapping={2022: 2010, 2023: 2010, 2024: 2011},
         ...     year_type='calendar',
         ...     directory='path/to/wind/data',
         ...     area='Wind Area B',
         ...     resource_quality='high'
-        ... )
+        ... )  # doctest: +SKIP
 
         Retrieving demand data for multiple years:
         >>> df = generic_multi_reference_year_mapping(
         ...     'demand',
-        ...     reference_years={2022: 2011, 2023: 2011, 2024: 2012},
+        ...     reference_year_mapping={2022: 2011, 2023: 2011, 2024: 2012},
         ...     year_type='fy',
         ...     directory='path/to/demand/data',
         ...     subregion='Region C',
-        ...     scenario='High Growth',
-        ...     poe='P50',
-        ...     descriptor='Total Demand'
-        ... )
+        ...     scenario='Step Change',
+        ...     poe='POE50',
+        ...     descriptor='OPSO_MODELLING'
+        ... )  # doctest: +SKIP
 
     Args:
         data_type (str): Type of data to retrieve. Must be one of 'solar_project',

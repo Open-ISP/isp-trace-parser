@@ -16,7 +16,8 @@ def get_all_filepaths(directory: str | Path) -> list[Path]:
 
 def read_trace_csv(file: Path) -> pl.DataFrame:
     pl_types = [pl.Int64] * 3 + [pl.Float64] * 48
-    return pl.read_csv(file, schema_overrides=pl_types)
+    data = pl.read_csv(file, schema_overrides=pl_types)
+    return data
 
 
 def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:

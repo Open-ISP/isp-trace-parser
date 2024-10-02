@@ -2,7 +2,7 @@ import yaml
 
 from nemosis import static_table
 
-from isp_trace_parser.generator_to_trace_draft_mapper import (
+from generator_to_trace_draft_mapper import (
     get_all_generators,
     gets_rezs,
     draft_wind_rez_mapping,
