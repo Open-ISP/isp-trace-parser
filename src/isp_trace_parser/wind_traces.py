@@ -282,8 +282,8 @@ def write_output_wind_project_filepath(metadata: dict) -> str:
     m = metadata
     name = m["name"].replace(" ", "_")
     return (
-        f"RefYear{m['year']}/{m['file_type'].capitalize()}/{name}/"
-        f"RefYear{m['year']}_{name}_HalfYear{m['hy']}.parquet"
+        f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/"
+        f"RefYear{m['reference_year']}_{name}_HalfYear{m['hy']}.parquet"
     )
 
 
@@ -296,8 +296,8 @@ def write_output_wind_area_filepath(metadata: dict) -> str:
     m = metadata
     name = m["name"].replace(" ", "_")
     return (
-        f"RefYear{m['year']}/{m['file_type'].capitalize()}/{name}/{m['resource_quality']}/"
-        f"RefYear{m['year']}_{name}_{m['resource_quality']}_HalfYear{m['hy']}.parquet"
+        f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/{m['resource_quality']}/"
+        f"RefYear{m['reference_year']}_{name}_{m['resource_quality']}_HalfYear{m['hy']}.parquet"
     )
 
 

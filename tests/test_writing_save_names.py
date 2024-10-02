@@ -4,7 +4,7 @@ import isp_trace_parser
 def test_write_solar_save_names():
     meta_data = {
         "name": "a",
-        "year": "1",
+        "reference_year": "1",
         "technology": "x",
         "file_type": "project",
         "hy": "2",
@@ -16,7 +16,7 @@ def test_write_solar_save_names():
 
     meta_data = {
         "name": "a",
-        "year": "1",
+        "reference_year": "1",
         "technology": "x",
         "file_type": "area",
         "hy": "2",
@@ -28,7 +28,7 @@ def test_write_solar_save_names():
 
 
 def test_write_wind_save_names():
-    meta_data = {"name": "a", "year": "1", "file_type": "project", "hy": "2"}
+    meta_data = {"name": "a", "reference_year": "1", "file_type": "project", "hy": "2"}
 
     save_filepath = isp_trace_parser.wind_traces.write_output_wind_project_filepath(
         meta_data
@@ -38,7 +38,7 @@ def test_write_wind_save_names():
 
     meta_data = {
         "name": "a",
-        "year": "1",
+        "reference_year": "1",
         "resource_quality": "x",
         "file_type": "area",
         "hy": "2",
@@ -54,7 +54,7 @@ def test_write_wind_save_names():
 def test_write_demand_save_names():
     meta_data = {
         "scenario": "a",
-        "year": "1",
+        "reference_year": "1",
         "subregion": "x",
         "poe": "poe10",
         "demand_type": "y",

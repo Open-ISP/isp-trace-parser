@@ -40,7 +40,7 @@ def parse_demand_traces(
          "<scenario>_RefYear<reference year>_<subregion ID>_<poe>_<data type>_HalfYear<year>-<half of year>.parquet"
 
     With the scenario name mapped from the name used in the raw AEMO trace data to the name used in the IASR workbook.
-    For one half-yearly chunk of the CSV example above the parsed filepath would be:
+    For one half-yearly chunk of the CSV example above, the parsed filepath would be:
 
         "Green_Energy_Exports/RefYear2011/CNSW/POE10/OPSO_MODELLING/"
         "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING_HalfYear2020-1.parquet"
@@ -204,8 +204,8 @@ def write_new_demand_filepath(metadata: dict[str, str]) -> str:
     scenario = m["scenario"].replace(" ", "_")
 
     return (
-        f"{scenario}/RefYear{m['year']}/{subregion}/{m['poe']}/{m['demand_type']}/"
-        f"{scenario}_RefYear{m['year']}_{subregion}_{m['poe']}_{m['demand_type']}_HalfYear{m['hy']}.parquet"
+        f"{scenario}/RefYear{m['reference_year']}/{subregion}/{m['poe']}/{m['demand_type']}/"
+        f"{scenario}_RefYear{m['reference_year']}_{subregion}_{m['poe']}_{m['demand_type']}_HalfYear{m['hy']}.parquet"
     )
 
 

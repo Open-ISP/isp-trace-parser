@@ -1,5 +1,5 @@
 def construct_reference_year_mapping(start_year, end_year, reference_years):
-    """Constructs a dict mapping a sequence of modelling years to a cycle of reference years.
+    """Constructs a dictionary mapping a sequence of modeling years to a cycle of reference years.
 
     Examples:
 

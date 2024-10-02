@@ -51,7 +51,7 @@ def solar_project_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"project": project}
     return generic_single_reference_year(
@@ -106,7 +106,7 @@ def solar_project_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"project": project}
     return generic_multi_reference_year_mapping(
@@ -163,7 +163,7 @@ def solar_area_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"area": area, "technology": technology}
     return generic_single_reference_year(
@@ -221,7 +221,7 @@ def solar_area_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"area": area, "technology": technology}
     return generic_multi_reference_year_mapping(
@@ -275,7 +275,7 @@ def wind_project_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"project": project}
     return generic_single_reference_year(
@@ -330,7 +330,7 @@ def wind_project_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"project": project}
     return generic_multi_reference_year_mapping(
@@ -380,14 +380,14 @@ def wind_area_single_reference_year(
         reference_year: int, the reference year of the trace data to retrieve.
         area: str, the ISP code for the area (typically a REZ) to return data for. Codes need to be as given in the IASR
             workbook.
-        resource_quality: str, the resource quality of the trace to retrieve usaual 'WH' or 'WM'.
+        resource_quality: str, the resource quality of the trace to retrieve usual 'WH' or 'WM'.
         directory: str or pathlib.Path, the directory were the trace data is stored. Trace data needs to be in the
             format as produced by isp_trace_parser.restructure_solar_directory.
         year_type: str, 'fy' or 'calendar', if 'fy' then time filtering is by financial year with start_year and
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"area": area, "resource_quality": resource_quality}
     return generic_single_reference_year(
@@ -438,14 +438,14 @@ def wind_area_multiple_reference_years(
             each financial or calendar year (value).
         area: str, the ISP code for the area (typically a REZ) to return data for. Codes need to be as given in the IASR
             workbook.
-        resource_quality: str, the resource quality of the trace to retrieve usaual 'WH' or 'WM'.
+        resource_quality: str, the resource quality of the trace to retrieve usual 'WH' or 'WM'.
         directory: str or pathlib.Path, the directory were the trace data is stored. Trace data needs to be in the
             format as produced by isp_trace_parser.restructure_solar_directory.
         year_type: str, 'fy' or 'calendar', if 'fy' then time filtering is by financial year with start_year and
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {"area": area, "resource_quality": resource_quality}
     return generic_multi_reference_year_mapping(
@@ -508,7 +508,7 @@ def demand_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {
         "area": subregion,
@@ -571,7 +571,7 @@ def demand_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
     kwargs = {
         "area": subregion,

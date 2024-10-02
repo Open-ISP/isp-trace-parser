@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import timedelta
 
 import polars as pl
+from pydantic import BaseModel
 
 from isp_trace_parser.trace_formatter import trace_formatter
 
@@ -104,7 +105,11 @@ def get_metadata_that_matches_trace_names(
 def get_unique_reference_years_in_metadata(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
-    return list(set(metadata["year"] for metadata in metadata_for_trace_files.values()))
+    return list(
+        set(
+            metadata["reference_year"] for metadata in metadata_for_trace_files.values()
+        )
+    )
 
 
 def get_metadata_that_matches_reference_year(
@@ -113,7 +118,7 @@ def get_metadata_that_matches_reference_year(
     return {
         f: metadata
         for f, metadata in metadata_for_trace_files.items()
-        if metadata["year"] == year
+        if metadata["reference_year"] == year
     }
 
 
@@ -131,19 +136,17 @@ def overwrite_metadata_trace_name_with_output_name(
 
 
 def check_filter_by_metadata(
-    metadata: dict[str, str], filters: dict[str, list[str]] | None
+    metadata: dict[str, str], filters: BaseModel | None
 ) -> bool:
-    parse_file = True
-    for metadata_type, metadata_value in metadata.items():
-        # If element of the metadata is present in filter but not one the values in the
-        # list under that key then we dont parse this file.
-        if (
-            filters is not None
-            and metadata_type in filters
-            and metadata_value not in filters[metadata_type]
-        ):
-            parse_file = False
-    return parse_file
+    if filters is None:
+        return True
+
+    for field, allowed_values in filters.model_dump(exclude_unset=True).items():
+        if field in metadata and allowed_values is not None:
+            if metadata[field] not in allowed_values:
+                return False
+
+    return True
 
 
 def get_unique_project_and_area_names_in_input_files(
@@ -167,3 +170,7 @@ def filter_mapping_by_names_in_input_files(
             if input_name in names_in_input_files:
                 filtered_mapping[output_name] = input_name
     return filtered_mapping
+
+
+def get_just_filepaths(metadata_for_files):
+    return [file for file, metadata in metadata_for_files.items()]

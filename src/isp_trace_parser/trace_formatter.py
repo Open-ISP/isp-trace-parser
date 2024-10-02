@@ -15,7 +15,8 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
 
     Example:
 
-    Input format:
+    Input format (example):
+
     >>> aemo_format_data = pl.DataFrame({
     ... 'Year': [2024, 2024],
     ... 'Month': [6, 6],

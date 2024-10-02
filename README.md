@@ -249,6 +249,7 @@ print(mapping)
 `DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown 
 below, the polars package also provides [functionality for converting to and from `pandas`](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
 
+
 ```python
 import polars as pl
 import pandas as pd
@@ -279,10 +280,12 @@ print(trace_parser_format_data.to_pandas())
 
 ## Contributing
 
-Interested in contributing to the source code or adding table configurations? Check out the [contributing instructions](https://github.com/Open-ISP/isp-trace-parser/blob/main/CONTRIBUTING.md), which also includes steps to install `isp-trace-parser` for development.
+Interested in contributing to the source code? Check out the [contributing instructions](https://github.com/Open-ISP/isp-trace-parser/blob/main/CONTRIBUTING.md), which also includes steps to install `isp-trace-parser` for development.
+
 
 Please note that this project is released with a [Code of Conduct](https://github.com/Open-ISP/isp-trace-parser/blob/main/CONDUCT.md). By contributing to this project, you agree to abide by its terms.
 
 ## License
 
 `isp-trace-parser` was created as a part of the [OpenISP project](https://github.com/Open-ISP). It is licensed under the terms of [GNU GPL-3.0-or-later](https://github.com/Open-ISP/isp-trace-parser/blob/main/LICENSE) licences.
+
