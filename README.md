@@ -9,7 +9,7 @@
 A Python package for reformatting and accessing demand, solar generation and wind generation time series data used by the Australian Energy
 Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > Currently, `isp-trace-parser` only supports trace data in the format of the 2024 ISP.
 
 ## Table of contents
