@@ -2,25 +2,65 @@ import functools
 import os
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-
+from typing import Optional, Literal
 import yaml
 
-from isp_trace_parser import trace_formatter
+from pydantic import BaseModel, validate_call
+
+from isp_trace_parser.metadata_extractors import extract_demand_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
     get_all_filepaths,
     check_filter_by_metadata,
     read_trace_csv,
+    trace_formatter,
     add_half_year_as_column,
-    save_half_year_chunk_of_trace,
+    save_half_year_chunk_of_trace
 )
-from isp_trace_parser.metadata_extractors import extract_demand_trace_metadata
+from isp_trace_parser import input_validation
 
 
+class DemandMetadataFilter(BaseModel):
+    """A Pydantic class for defining a metadata based filter that specifies which wind trace files to parser.
+
+    All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
+    included then only traces with metadata matching the values in the corresponding list will be parsed.
+
+    Examples:
+
+    Filter for only subregions that are in a list of names.
+
+    >>> metadata_filters = DemandMetadataFilter(
+    ... subregion=['A', 'B', 'x'],
+    ... )
+
+    Filter for only POE50 and one type of demand data.
+
+    >>> metadata_filters = DemandMetadataFilter(
+    ... poe=['POE50'],
+    ... demand_type=['OPSO_MODELLING'],
+    ... )
+
+    Attributes:
+        subregion: list of names of subregions.
+        scenario: list of scenarios, only including "Step Change", "Progressive Change", and "Green Energy Exports"
+        poe: list of POE levels, only including "POE10" and "POE50"
+        demand_type, list of demand types, only including "OPSO_MODELLING", "OPSO_MODELLING_PVLITE", and "PV_TOT"
+        reference_year: list of ints specifying reference_years
+    """
+
+    subregion: Optional[list[str]] = None
+    scenario: Optional[list[Literal["Step Change", "Progressive Change", "Green Energy Exports"]]] = None
+    poe: Optional[list[Literal["POE50", "POE10"]]] = None
+    demand_type: Optional[list[Literal["OPSO_MODELLING", "OPSO_MODELLING_PVLITE", "PV_TOT"]]] = None
+    reference_year: Optional[list[int]] = None
+
+
+@validate_call
 def parse_demand_traces(
     input_directory: str | Path,
     parsed_directory: str | Path,
     use_concurrency: bool = True,
-    filters: dict[str : list[str]] = None,
+    filters: DemandMetadataFilter | None  = None,
 ):
     """Takes a directory with AEMO demand trace data and reformats the data, saving it to a new directory.
 
@@ -61,18 +101,18 @@ def parse_demand_traces(
 
     Parse only a subset of the input traces.
 
-    Excluding one type of metadata (key) from the
+    Excluding a type of metadata from the
     filter will result in no filtering on
-    that component of the metadata and more elements can
+    that component of the metadata and elements can
     be added to each list in the filter to selectively
     expand which traces are parsed.
 
-    >>> metadata_filters={
-    ... 'scenario': ['Green Energy Exports'],
-    ... 'subregion': ['CNSW'],
-    ... 'poe': ['POE10'],
-    ... 'type': ['OPSO_MODELLING']
-    ... }
+    >>> metadata_filters = DemandMetadataFilter(
+    ... scenario=['Green Energy Exports'],
+    ... subregion=['CNSW'],
+    ... poe=['POE10'],
+    ... demand_type=['OPSO_MODELLING']
+    ... )
 
     >>> parse_demand_traces(
     ... input_directory='example_input_data/demand',
@@ -91,6 +131,9 @@ def parse_demand_traces(
 
     Returns: None
     """
+    input_directory = input_validation.input_directory(input_directory)
+    parsed_directory = input_validation.parsed_directory(parsed_directory)
+
     files = get_all_filepaths(input_directory)
 
     with open(
@@ -148,8 +191,7 @@ def restructure_demand_file(
         >>> restructure_demand_file(
         ...     input_filepath=input_filepath,
         ...     demand_scenario_mapping=demand_scenario_mapping,
-        ...     output_directory='/path/to/output',
-        ...     filters={'poe': ['POE10']}
+        ...     output_directory='/path/to/output'
         ... )  # doctest: +SKIP
 
         # This will process the input file and save it with the new scenario name in the specified output directory

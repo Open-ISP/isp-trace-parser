@@ -2,8 +2,10 @@ import functools
 import os
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-
+from typing import Optional, Literal
 import yaml
+
+from pydantic import BaseModel, validate_call
 
 from isp_trace_parser.metadata_extractors import extract_wind_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
@@ -18,13 +20,49 @@ from isp_trace_parser.trace_restructure_helper_functions import (
     get_unique_project_and_area_names_in_input_files,
     filter_mapping_by_names_in_input_files,
 )
+from isp_trace_parser import input_validation
 
 
+class WindMetadataFilter(BaseModel):
+    """A Pydantic class for defining a metadata based filter that specifies which wind trace files to parser.
+
+    All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
+    included then only traces with metadata matching the values in the corresponding list will be parsed.
+
+    Examples:
+
+    Filter for only projects or areas that are in a list of names.
+
+    >>> metadata_filters = WindMetadataFilter(
+    ... name=['A', 'B', 'x'],
+    ... )
+
+    Filter for areas with a high wind resource.
+
+    >>> metadata_filters = WindMetadataFilter(
+    ... resource_quality=['WH'],
+    ... file_type=['area'],
+    ... )
+
+    Attributes:
+        name: list of names for projects and/or IDs for areas.
+        file_type: list of 'project' and/or 'area' (area typically refers to REZs)
+        resource_quality: list of resource_quality types, only including 'WH', 'WM', 'WL, or 'WX'.
+        reference_year: list of ints specifying reference_years
+    """
+
+    name: Optional[list[str]] = None
+    file_type: Optional[list[Literal["area", "project"]]] = None
+    resource_quality: Optional[list[Literal["WH", "WM", "WL", "WX"]]] = None
+    reference_year: Optional[list[int]] = None
+
+
+@validate_call
 def parse_wind_traces(
     input_directory: str | Path,
     parsed_directory: str | Path,
     use_concurrency: bool = True,
-    filters: dict[str : list[str]] = None,
+    filters: WindMetadataFilter | None = None,
 ):
     """Takes a directory with AEMO wind trace data and reformats the data, saving it to a new directory.
 
@@ -71,16 +109,16 @@ def parse_wind_traces(
 
     Parse only a subset of the input traces.
 
-    Excluding one type of metadata (key) from the
+    Excluding a type of metadata from the
     filter will result in no filtering on
-    that component of the metadata and more elements can
+    that component of the metadata and elements can
     be added to each list in the filter to selectively
     expand which traces are parsed.
 
-    >>> metadata_filters={
-    ... 'file_type': ['project'],
-    ... 'year': ['2011', '2012'],
-    ... }
+    >>> metadata_filters = WindMetadataFilter(
+    ... file_type=['area'],
+    ... reference_year=[2011, 2012],
+    ... )
 
     >>> parse_wind_traces(
     ... input_directory='example_input_data/wind',
@@ -99,6 +137,9 @@ def parse_wind_traces(
 
     Returns: None
     """
+    input_directory = input_validation.input_directory(input_directory)
+    parsed_directory = input_validation.parsed_directory(parsed_directory)
+
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_wind_files(files)
 
@@ -197,8 +238,7 @@ def restructure_wind_area_files(
         ...     output_area_name='NewArea1',
         ...     input_trace_names=['Area1'],
         ...     all_input_file_metadata=all_metadata,
-        ...     output_directory='output/wind',
-        ...     filters={'year': ['2020'], 'resource_quality': ['WH']}
+        ...     output_directory='output/wind'
         ... ) # doctest: +SKIP
 
         # This will process only 'file1.csv' and save it in the new structure

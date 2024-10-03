@@ -7,8 +7,7 @@ from pydantic import BaseModel
 from isp_trace_parser.trace_formatter import trace_formatter
 
 
-def get_all_filepaths(directory: str | Path) -> list[Path]:
-    directory = Path(directory)
+def get_all_filepaths(directory: Path) -> list[Path]:
     if directory.is_dir():
         return [path for path in Path(directory).rglob("*.csv") if path.is_file()]
     else:
@@ -60,13 +59,13 @@ def save_half_year_chunk_of_trace(
     chunk: pl.DataFrame,
     file_metadata: dict[str, str],
     half_year: tuple[str],
-    output_directory: str | Path,
+    output_directory: Path,
     write_output_filepath: callable,
 ) -> None:
     file_metadata["hy"] = half_year[0]
     data = chunk.drop("HY")
     path_in_output_directory = write_output_filepath(file_metadata)
-    save_filepath = Path(output_directory) / path_in_output_directory
+    save_filepath = output_directory / path_in_output_directory
     save_filepath.parent.mkdir(parents=True, exist_ok=True)
     data.write_parquet(save_filepath)
 

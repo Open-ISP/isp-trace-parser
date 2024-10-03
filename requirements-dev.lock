@@ -22,7 +22,11 @@ cfgv==3.4.0
     # via pre-commit
 charset-normalizer==3.3.2
     # via requests
+colorama==0.4.6
+    # via ipython
+    # via pytest
 coverage==7.6.1
+    # via coverage
     # via pytest-cov
 decorator==5.1.1
     # via ipdb
@@ -71,8 +75,6 @@ pandas==2.2.2
     # via nemosis
 parso==0.8.4
     # via jedi
-pexpect==4.9.0
-    # via ipython
 platformdirs==4.3.6
     # via virtualenv
 pluggy==1.5.0
@@ -82,8 +84,6 @@ polars==1.7.1
 pre-commit==3.8.0
 prompt-toolkit==3.0.47
     # via ipython
-ptyprocess==0.7.0
-    # via pexpect
 pure-eval==0.2.3
     # via stack-data
 pyarrow==17.0.0
@@ -118,12 +118,9 @@ stack-data==0.6.3
 traitlets==5.14.3
     # via ipython
     # via matplotlib-inline
-typeguard==4.3.0
-    # via isp-trace-parser
 typing-extensions==4.12.2
     # via pydantic
     # via pydantic-core
-    # via typeguard
 tzdata==2024.1
     # via pandas
 urllib3==2.2.3

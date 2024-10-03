@@ -3,9 +3,9 @@ import os
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import Optional, Literal
-
-from pydantic import BaseModel
 import yaml
+
+from pydantic import BaseModel, validate_call
 
 from isp_trace_parser.metadata_extractors import extract_solar_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
@@ -20,10 +20,11 @@ from isp_trace_parser.trace_restructure_helper_functions import (
     get_unique_project_and_area_names_in_input_files,
     get_just_filepaths,
 )
+from isp_trace_parser import input_validation
 
 
 class SolarMetadataFilter(BaseModel):
-    """ "A Pydantic class for defining a metadata based filter that specifies which solar trace files to parser.
+    """A Pydantic class for defining a metadata based filter that specifies which solar trace files to parser.
 
     All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
     included then only traces with metadata matching the values in the corresponding list will be parsed.
@@ -55,12 +56,12 @@ class SolarMetadataFilter(BaseModel):
     technology: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
     reference_year: Optional[list[int]] = None
 
-
+@validate_call
 def parse_solar_traces(
     input_directory: str | Path,
     parsed_directory: str | Path,
     use_concurrency: bool = True,
-    filters: SolarMetadataFilter = None,
+    filters: SolarMetadataFilter | None = None,
 ):
     """Takes a directory with AEMO solar trace data and reformats the data, saving it to a new directory.
 
@@ -106,9 +107,9 @@ def parse_solar_traces(
 
     Parse only a subset of the input traces.
 
-    Excluding one type of metadata (key) from the
+    Excluding a type of metadata from the
     filter will result in no filtering on
-    that component of the metadata and more elements can
+    that component of the metadata and elements can
     be added to each list in the filter to selectively
     expand which traces are parsed.
 
@@ -134,6 +135,9 @@ def parse_solar_traces(
 
     Returns: None
     """
+    input_directory = input_validation.input_directory(input_directory)
+    parsed_directory = input_validation.parsed_directory(parsed_directory)
+
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_solar_files(files)
     with open(
@@ -224,6 +228,7 @@ def restructure_solar_files(
 
         # This will process 'file1.csv' and save it with the new name 'NewProject1' in the specified output directory
     """
+
     metadata_for_trace_files = get_metadata_that_matches_trace_names(
         input_trace_names, all_input_file_metadata
     )

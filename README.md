@@ -75,6 +75,8 @@ To perform the reformatting and restructuring, the solar, wind and demand data s
 
 The following code can then be used to parse the data:
 
+### Parsing all files in a directory
+
 ```python
 from isp_trace_parser import parse_solar_traces, parse_wind_traces, parse_demand_traces
 
@@ -91,6 +93,61 @@ parse_wind_traces(
 parse_demand_traces(
     input_directory='<path/to/aemo/demand/traces>',
     parsed_directory='<path/to/store/demand/output>',
+)
+```
+
+### Filtering which files get parsed
+
+```python
+from isp_trace_parser import (
+    parse_solar_traces, 
+    SolarMetadataFilter, 
+    parse_wind_traces, 
+    WindMetadataFilter, 
+    parse_demand_traces, 
+    DemandMetadataFilter
+)
+
+# Note: to not filter on a component of the metadata it can be excluded from the filter definition.
+
+solar_filters = SolarMetadataFilter(
+    name=['N1'], 
+    file_type=['area'],
+    technology=['SAT'],
+    reference_year=[2011]
+) 
+
+parse_solar_traces(
+    input_directory='<path/to/aemo/solar/traces>',
+    parsed_directory='<path/to/store/solar/output>',
+    filters=solar_filters
+)
+
+wind_filters = WindMetadataFilter(
+    name=['N1'],
+    file_type=['area'],
+    resouce_quality=['WH'],
+    reference_year=[2011]
+) 
+
+parse_wind_traces(
+    input_directory='<path/to/aemo/wind/traces>',
+    parsed_directory='<path/to/store/wind/output>',
+    filters=wind_filters
+)
+
+demand_filters = DemandMetadataFilter(
+    scenario=['Green Energy Exports'],
+    subregion=['CNSW'],
+    poe=['POE50'],
+    demand_type=['OPSO_MODELLING'],
+    reference_year=[2011]
+) 
+
+parse_demand_traces(
+    input_directory='<path/to/aemo/demand/traces>',
+    parsed_directory='<path/to/store/demand/output>',
+    filters=demand_filters
 )
 ```
 

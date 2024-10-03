@@ -1,4 +1,9 @@
-def construct_reference_year_mapping(start_year, end_year, reference_years):
+from pydantic import validate_call
+
+from isp_trace_parser import input_validation
+
+@validate_call
+def construct_reference_year_mapping(start_year: int, end_year: int, reference_years: list[int]):
     """Constructs a dictionary mapping a sequence of modeling years to a cycle of reference years.
 
     Examples:
@@ -15,6 +20,7 @@ def construct_reference_year_mapping(start_year, end_year, reference_years):
         end_year: int, last year in sequence of modelling years
         reference_years: list[int], list of reference years to cycle through when constructing the mapping.
     """
+    input_validation.start_year_before_end_year(start_year, end_year)
     years = range(start_year, end_year + 1)
     mapping_length = len(years)
     length_of_cycle = len(reference_years)
