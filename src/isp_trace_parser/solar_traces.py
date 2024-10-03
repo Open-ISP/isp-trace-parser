@@ -56,6 +56,7 @@ class SolarMetadataFilter(BaseModel):
     technology: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
     reference_year: Optional[list[int]] = None
 
+
 @validate_call
 def parse_solar_traces(
     input_directory: str | Path,
