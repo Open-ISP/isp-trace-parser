@@ -100,22 +100,22 @@ parse_demand_traces(
 
 ```python
 from isp_trace_parser import (
-    parse_solar_traces, 
-    SolarMetadataFilter, 
-    parse_wind_traces, 
-    WindMetadataFilter, 
-    parse_demand_traces, 
+    parse_solar_traces,
+    SolarMetadataFilter,
+    parse_wind_traces,
+    WindMetadataFilter,
+    parse_demand_traces,
     DemandMetadataFilter
 )
 
 # Note: to not filter on a component of the metadata it can be excluded from the filter definition.
 
 solar_filters = SolarMetadataFilter(
-    name=['N1'], 
+    name=['N1'],
     file_type=['area'],
     technology=['SAT'],
     reference_year=[2011]
-) 
+)
 
 parse_solar_traces(
     input_directory='<path/to/aemo/solar/traces>',
@@ -128,7 +128,7 @@ wind_filters = WindMetadataFilter(
     file_type=['area'],
     resouce_quality=['WH'],
     reference_year=[2011]
-) 
+)
 
 parse_wind_traces(
     input_directory='<path/to/aemo/wind/traces>',
@@ -142,7 +142,7 @@ demand_filters = DemandMetadataFilter(
     poe=['POE50'],
     demand_type=['OPSO_MODELLING'],
     reference_year=[2011]
-) 
+)
 
 parse_demand_traces(
     input_directory='<path/to/aemo/demand/traces>',
@@ -302,8 +302,8 @@ print(mapping)
 
 ### polars Dataframe trace parsing
 
-`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/) 
-`DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown 
+`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/)
+`DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown
 below, the polars package also provides [functionality for converting to and from `pandas`](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
 
 
@@ -345,4 +345,3 @@ Please note that this project is released with a [Code of Conduct](https://githu
 ## License
 
 `isp-trace-parser` was created as a part of the [OpenISP project](https://github.com/Open-ISP). It is licensed under the terms of [GNU GPL-3.0-or-later](https://github.com/Open-ISP/isp-trace-parser/blob/main/LICENSE) licences.
-

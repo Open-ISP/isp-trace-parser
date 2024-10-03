@@ -17,5 +17,5 @@ __all__ = [
     "construct_reference_year_mapping",
     "WindMetadataFilter",
     "SolarMetadataFilter",
-    "DemandMetadataFilter"
+    "DemandMetadataFilter",
 ]

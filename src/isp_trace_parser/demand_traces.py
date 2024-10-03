@@ -14,7 +14,7 @@ from isp_trace_parser.trace_restructure_helper_functions import (
     read_trace_csv,
     trace_formatter,
     add_half_year_as_column,
-    save_half_year_chunk_of_trace
+    save_half_year_chunk_of_trace,
 )
 from isp_trace_parser import input_validation
 
@@ -49,9 +49,13 @@ class DemandMetadataFilter(BaseModel):
     """
 
     subregion: Optional[list[str]] = None
-    scenario: Optional[list[Literal["Step Change", "Progressive Change", "Green Energy Exports"]]] = None
+    scenario: Optional[
+        list[Literal["Step Change", "Progressive Change", "Green Energy Exports"]]
+    ] = None
     poe: Optional[list[Literal["POE50", "POE10"]]] = None
-    demand_type: Optional[list[Literal["OPSO_MODELLING", "OPSO_MODELLING_PVLITE", "PV_TOT"]]] = None
+    demand_type: Optional[
+        list[Literal["OPSO_MODELLING", "OPSO_MODELLING_PVLITE", "PV_TOT"]]
+    ] = None
     reference_year: Optional[list[int]] = None
 
 
@@ -60,7 +64,7 @@ def parse_demand_traces(
     input_directory: str | Path,
     parsed_directory: str | Path,
     use_concurrency: bool = True,
-    filters: DemandMetadataFilter | None  = None,
+    filters: DemandMetadataFilter | None = None,
 ):
     """Takes a directory with AEMO demand trace data and reformats the data, saving it to a new directory.
 
