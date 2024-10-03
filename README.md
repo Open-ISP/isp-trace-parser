@@ -245,8 +245,8 @@ print(mapping)
 
 ### polars Dataframe trace parsing
 
-`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/) 
-`DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown 
+`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/)
+`DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown
 below, the polars package also provides [functionality for converting to and from `pandas`](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
 
 ```python
