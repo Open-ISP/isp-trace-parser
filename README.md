@@ -245,14 +245,16 @@ print(mapping)
 
 ### polars Dataframe trace parsing
 
-`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/) `DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). The polars package also provides [functionality for converting to and from `pandas` if
-required](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
+`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/) 
+`DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown 
+below, the polars package also provides [functionality for converting to and from `pandas`](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
 
 ```python
 import polars as pl
+import pandas as pd
 from isp_trace_parser import trace_formatter
 
-aemo_format_data = pl.DataFrame({
+aemo_format_data = pd.DataFrame({
     'Year': [2024, 2024],
     'Month': [6, 6],
     'Day': [1, 2],
@@ -261,20 +263,18 @@ aemo_format_data = pl.DataFrame({
     '48': [17.1, 18.9]
 })
 
-print(trace_formatter(aemo_format_data))
-# shape: (6, 2)
-# ┌─────────────────────┬───────┐
-# │ Datetime            ┆ Value │
-# │ ---                 ┆ ---   │
-# │ datetime[μs]        ┆ f64   │
-# ╞═════════════════════╪═══════╡
-# │ 2024-06-01 00:30:00 ┆ 11.2  │
-# │ 2024-06-01 01:00:00 ┆ 30.7  │
-# │ 2024-06-02 00:00:00 ┆ 17.1  │
-# │ 2024-06-02 00:30:00 ┆ 15.3  │
-# │ 2024-06-02 01:00:00 ┆ 20.4  │
-# │ 2024-06-03 00:00:00 ┆ 18.9  │
-# └─────────────────────┴───────┘
+aemo_format_data_as_polars = pl.from_pandas(aemo_format_data)
+
+trace_parser_format_data = trace_formatter(aemo_format_data_as_polars)
+
+print(trace_parser_format_data.to_pandas())
+#              Datetime  Value
+# 0 2024-06-01 00:30:00   11.2
+# 1 2024-06-01 01:00:00   30.7
+# 2 2024-06-02 00:00:00   17.1
+# 3 2024-06-02 00:30:00   15.3
+# 4 2024-06-02 01:00:00   20.4
+# 5 2024-06-03 00:00:00   18.9
 ```
 
 ## Contributing
