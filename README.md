@@ -46,6 +46,12 @@ pip install isp-trace-parser
     - To access the full documentation for these functions, you can run `help` in the Python console, e.g.
   `help(get_data.solar_project_trace_single_reference_year)`.
 
+## Accessing raw trace data
+
+Currently, AEMO trace data needs to be downloaded from the [AEMO website](https://aemo.com.au/en/energy-systems/major-publications/integrated-system-plan-isp/2024-integrated-system-plan-isp)
+and unzipped manually before the trace parser can be used. However, it is likely future versions of the trace parser 
+will automate this process by using a third party platform to host the trace data.
+
 ## Key terminology
 
 ### Solar/wind
@@ -229,7 +235,8 @@ demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference
 
 A helper function is provided to allow you to construct reference year mappings for use with the `get_data` multiple reference year functions.
 
-The sequence of reference years specified is cycled from first to last to construct and mapoped to data years starting from `start_year` and ending in `end_year`.
+The sequence of reference years specified is cycled from first to last to construct and mapped to data years starting 
+from `start_year` and ending in `end_year`.
 
 ```python
 from isp_trace_parser import construct_reference_year_mapping
@@ -247,7 +254,9 @@ print(mapping)
 
 `isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/)
 `DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown
-below, the polars package also provides [functionality for converting to and from `pandas`](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
+below, the data can be converted to polars from pandas before performing Dataframe trace parsing, and back to pandas
+after the parsing is complete, the polars package provides [functionality for converting to and from `pandas`]
+(https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
 
 ```python
 import polars as pl
