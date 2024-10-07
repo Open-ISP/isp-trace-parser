@@ -236,7 +236,7 @@ demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference
 
 A helper function is provided to allow you to construct reference year mappings for use with the `get_data` multiple reference year functions.
 
-The sequence of reference years specified is cycled from first to last to construct and mapped to data years starting
+The sequence of reference years specified is cycled from first to last and mapped to data years starting
 from `start_year` and ending in `end_year`.
 
 ```python
