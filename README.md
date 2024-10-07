@@ -16,6 +16,7 @@ Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 
 - [Install](#install)
 - [How the package works](#how-the-package-works)
+- [Accessing raw trace data](#accessing-raw-trace-data)
 - [Key terminology](#key-terminology)
 - [Examples](#examples)
     - [Parsing trace data](#parsing-trace-data)
