@@ -49,7 +49,7 @@ pip install isp-trace-parser
 ## Accessing raw trace data
 
 Currently, AEMO trace data needs to be downloaded from the [AEMO website](https://aemo.com.au/en/energy-systems/major-publications/integrated-system-plan-isp/2024-integrated-system-plan-isp)
-and unzipped manually before the trace parser can be used. However, it is likely future versions of the trace parser 
+and unzipped manually before the trace parser can be used. However, it is likely future versions of the trace parser
 will automate this process by using a third party platform to host the trace data.
 
 ## Key terminology
@@ -235,7 +235,7 @@ demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference
 
 A helper function is provided to allow you to construct reference year mappings for use with the `get_data` multiple reference year functions.
 
-The sequence of reference years specified is cycled from first to last to construct and mapped to data years starting 
+The sequence of reference years specified is cycled from first to last to construct and mapped to data years starting
 from `start_year` and ending in `end_year`.
 
 ```python
