@@ -1,6 +1,6 @@
 import functools
 import os
-from concurrent.futures import ProcessPoolExecutor
+from joblib import Parallel, delayed
 from pathlib import Path
 
 import yaml
@@ -109,11 +109,9 @@ def parse_demand_traces(
 
     if use_concurrency:
         max_workers = os.cpu_count() - 2
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            results = executor.map(partial_func, files)
-            # Iterate through results to raise any errors that occurred.
-            for result in results:
-                result
+
+        Parallel(n_jobs=max_workers)(delayed(partial_func)(file) for file in files)
+
     else:
         for file in files:
             partial_func(file)
