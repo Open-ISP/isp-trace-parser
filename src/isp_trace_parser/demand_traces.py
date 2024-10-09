@@ -1,6 +1,6 @@
 import functools
 import os
-from concurrent.futures import ProcessPoolExecutor
+from joblib import Parallel, delayed
 from pathlib import Path
 
 import yaml
@@ -109,19 +109,49 @@ def parse_demand_traces(
 
     if use_concurrency:
         max_workers = os.cpu_count() - 2
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            results = executor.map(partial_func, files)
-            # Iterate through results to raise any errors that occurred.
-            for result in results:
-                result
+
+        Parallel(n_jobs=max_workers)(delayed(partial_func)(file) for file in files)
+
     else:
         for file in files:
             partial_func(file)
 
 
 def restructure_demand_file(
-    input_filepath, demand_scenario_mapping, output_directory, filters
-):
+    input_filepath: Path,
+    demand_scenario_mapping: dict[str, str],
+    output_directory: str | Path,
+    filters: dict[str, list[str]] = None,
+) -> None:
+    """
+    Restructures a single demand trace file and saves it in a new format.
+
+    This function processes a demand trace file, restructures and saves it in a new format. It handles the mapping of
+    scenario names and applies filters if provided.
+
+    Args:
+        input_filepath: Path object representing the input demand trace file.
+        demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
+        output_directory: Directory where restructured files will be saved.
+        filters: Filters to apply to the metadata. Keys are metadata fields, values are lists of allowed values.
+
+    Returns:
+        None: Files are saved to disk, but the function doesn't return any value.
+
+    Example:
+        >>> input_filepath = Path('CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv')
+
+        >>> demand_scenario_mapping = {'HYDROGEN_EXPORT': 'Green Energy Exports'}
+
+        >>> restructure_demand_file(
+        ...     input_filepath=input_filepath,
+        ...     demand_scenario_mapping=demand_scenario_mapping,
+        ...     output_directory='/path/to/output',
+        ...     filters={'poe': ['POE10']}
+        ... )  # doctest: +SKIP
+
+        # This will process the input file and save it with the new scenario name in the specified output directory
+    """
     file_metadata = extract_demand_trace_metadata(input_filepath.name)
     file_metadata["scenario"] = get_save_scenario_for_demand_trace(
         file_metadata, demand_scenario_mapping
@@ -141,21 +171,53 @@ def restructure_demand_file(
             )
 
 
-def get_save_scenario_for_demand_trace(file_metadata, demand_scenario_mapping):
+def get_save_scenario_for_demand_trace(
+    file_metadata: dict[str, str], demand_scenario_mapping: dict[str, str]
+) -> str:
+    """
+    Maps the raw scenario name to the IASR workbook scenario name.
+
+    Args:
+        file_metadata: Dictionary containing metadata for the demand trace file.
+        demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
+
+    Returns:
+        The mapped scenario name as a string.
+    """
     return demand_scenario_mapping[file_metadata["scenario"]]
 
 
-def write_new_demand_filepath(metadata):
+def write_new_demand_filepath(metadata: dict[str, str]) -> str:
+    """
+    Generates the output filepath for a demand trace file.
+
+    Args:
+        metadata: Dictionary containing metadata for the demand trace file.
+
+    Returns:
+        A string representing the filepath.
+    """
     m = metadata
     subregion = m["subregion"].replace(" ", "_")
     scenario = m["scenario"].replace(" ", "_")
 
     return (
-        f"{scenario}/RefYear{m['year']}/{subregion}/{m['poe']}/{m['type']}/"
-        f"{scenario}_RefYear{m['year']}_{subregion}_{m['poe']}_{m['type']}_HalfYear{m['hy']}.parquet"
+        f"{scenario}/RefYear{m['year']}/{subregion}/{m['poe']}/{m['demand_type']}/"
+        f"{scenario}_RefYear{m['year']}_{subregion}_{m['poe']}_{m['demand_type']}_HalfYear{m['hy']}.parquet"
     )
 
 
-def extract_metadata_for_all_demand_files(filenames):
+def extract_metadata_for_all_demand_files(
+    filenames: list[Path],
+) -> dict[Path, dict[str, str]]:
+    """
+    Extracts metadata for all demand trace files.
+
+    Args:
+        filenames: List of Path objects representing the demand trace files.
+
+    Returns:
+        A dictionary with filepaths as keys and metadata dicts as values.
+    """
     file_metadata = [extract_demand_trace_metadata(str(f.name)) for f in filenames]
     return dict(zip(filenames, file_metadata))

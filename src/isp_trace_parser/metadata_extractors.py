@@ -35,7 +35,7 @@ def extract_wind_trace_metadata(filename):
 
     # Case 2: Match filenames that have a resource type and a name followed by RefYear
     pattern2 = re.compile(
-        r"^(?P<name>[A-Z0-9]+)_(?P<resource_type>W[A-Z]+)_[A-Za-z_\-]+_RefYear(?P<year>\d{4})\.csv$"
+        r"^(?P<name>[A-Z0-9]+)_(?P<resource_quality>W[A-Z]+)_[A-Za-z_\-]+_RefYear(?P<year>\d{4})\.csv$"
     )
 
     # Try to match with pattern 2 first
@@ -58,7 +58,7 @@ def extract_wind_trace_metadata(filename):
 def extract_demand_trace_metadata(filename):
     # Regex pattern to match the structure of the filename
     pattern = re.compile(
-        r"^(?P<subregion>[A-Z]+)_RefYear_(?P<year>\d{4})_(?P<scenario>[A-Z_]+)_(?P<poe>POE\d{2})_(?P<type>["
+        r"^(?P<subregion>[A-Z]+)_RefYear_(?P<year>\d{4})_(?P<scenario>[A-Z_]+)_(?P<poe>POE\d{2})_(?P<demand_type>["
         r"A-Z_]+)\.csv$"
     )
 

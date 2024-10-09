@@ -39,7 +39,7 @@ def test_write_wind_save_names():
     meta_data = {
         "name": "a",
         "year": "1",
-        "resource_type": "x",
+        "resource_quality": "x",
         "file_type": "area",
         "hy": "2",
     }
@@ -57,7 +57,7 @@ def test_write_demand_save_names():
         "year": "1",
         "subregion": "x",
         "poe": "poe10",
-        "type": "y",
+        "demand_type": "y",
         "hy": "2",
     }
 

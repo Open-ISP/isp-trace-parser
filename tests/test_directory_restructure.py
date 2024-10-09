@@ -1,6 +1,9 @@
 from pathlib import Path
 import yaml
 import itertools
+import multiprocessing as mp
+
+import pytest
 
 from isp_trace_parser import parse_solar_traces, parse_demand_traces, parse_wind_traces
 
@@ -11,8 +14,11 @@ from create_end_to_end_test_data import (
     create_wind_csvs,
 )
 
+mp.set_start_method("spawn", force=True)
 
-def test_solar_directory_restructure(tmp_path):
+
+@pytest.mark.parametrize("use_concurrency", [True, False])
+def test_solar_directory_restructure(tmp_path, use_concurrency):
     old_dir = tmp_path / Path("solar_old_directory")
     old_dir.mkdir()
     new_dir = tmp_path / Path("solar_new_directory")
@@ -56,13 +62,14 @@ def test_solar_directory_restructure(tmp_path):
         assert (new_dir / parquet_file).is_file()
 
 
-def test_wind_directory_restructure(tmp_path):
+@pytest.mark.parametrize("use_concurrency", [True, False])
+def test_wind_directory_restructure(tmp_path, use_concurrency):
     old_dir = tmp_path / Path("wind_old_directory")
     old_dir.mkdir()
     new_dir = tmp_path / Path("wind_new_directory")
     new_dir.mkdir()
     create_wind_csvs(old_dir)
-    parse_wind_traces(old_dir, new_dir, use_concurrency=False)
+    parse_wind_traces(old_dir, new_dir, use_concurrency=use_concurrency)
     project_mapping_yaml = Path(__file__).parent.parent / Path(
         "src/isp_trace_name_mapping_configs/wind_project_mapping.yaml"
     )
@@ -106,13 +113,14 @@ def test_wind_directory_restructure(tmp_path):
         assert (new_dir / parquet_file).is_file()
 
 
-def test_demand_directory_restructure(tmp_path):
+@pytest.mark.parametrize("use_concurrency", [True, False])
+def test_demand_directory_restructure(tmp_path, use_concurrency):
     old_dir = tmp_path / Path("demand_old_directory")
     old_dir.mkdir()
     new_dir = tmp_path / Path("demand_new_directory")
     new_dir.mkdir()
     create_demand_csvs(old_dir)
-    parse_demand_traces(old_dir, new_dir, use_concurrency=False)
+    parse_demand_traces(old_dir, new_dir, use_concurrency=use_concurrency)
     demand_scenario_mapping_yaml = Path(__file__).parent.parent / Path(
         "src/isp_trace_name_mapping_configs/demand_scenario_mapping.yaml"
     )

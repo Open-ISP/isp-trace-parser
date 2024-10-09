@@ -11,6 +11,7 @@ authors = [
 dependencies = [
     "polars>=1.7.1",
     "pandas>=2.2.2",
+    "joblib>=1.4.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.9"
@@ -40,6 +41,7 @@ testpaths = ["src", "tests"]
 # --cov points pytest-cov to the src/ dir
 # --cov-branch runs branch coverage
 addopts = "-ra --doctest-modules --cov=src/ --cov-branch --cov-report xml:tests/coverage.xml --cov-report html:tests/htmlcov"
+
 
 [tool.setuptools.packages.find]
 where = ["src"]

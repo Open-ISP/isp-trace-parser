@@ -40,7 +40,7 @@ def test_wind_trace_metadata_extraction():
     file_name = "N8_WH_Cooma-Monaro_RefYear2023.csv"
     metadata = metadata_extractors.extract_wind_trace_metadata(file_name)
     assert metadata["name"] == "N8"
-    assert metadata["resource_type"] == "WH"
+    assert metadata["resource_quality"] == "WH"
     assert metadata["year"] == "2023"
     assert metadata["file_type"] == "area"
 
@@ -52,4 +52,4 @@ def test_demand_trace_metadata_extraction():
     assert metadata["year"] == "2011"
     assert metadata["scenario"] == "STEP_CHANGE"
     assert metadata["poe"] == "POE10"
-    assert metadata["type"] == "OPSO_MODELLING"
+    assert metadata["demand_type"] == "OPSO_MODELLING"
