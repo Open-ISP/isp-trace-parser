@@ -21,6 +21,7 @@ Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 - [Examples](#examples)
     - [Parsing trace data](#parsing-trace-data)
     - [Querying parsed trace data](#querying-parsed-trace-data)
+    - [Querying trace data for a sets of generators, areas or subregions](#querying-trace-data-for-a-sets-of-generators-areas-or-subregions)
     - [Constructing reference year mapping](#constructing-reference-year-mapping)
     - [Dataframe trace parsing](#dataframe-trace-parsing)
 - [Contributing](#contributing)
