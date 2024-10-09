@@ -65,7 +65,9 @@ and unzipped manually before the trace parser can be used.
 - _**Reference year**_: A historical weather year that is used to produce the generation trace.
   - Modelled years are mapped to reference years, e.g. generation data for one or multiple years can be mapped to a single reference year, or generation data for each year can be mapped to different reference years (refer to the [Querying parsed trace data example](https://github.com/Open-ISP/isp-trace-parser#querying-parsed-trace-data)).
 - _**Technology**_ (solar): Fixed flat plate (FFP), single-axis tracking (SAT), concentrated solar thermal (CST).
-- _**Resource quality**_ (wind): Wind High (WH), Wind Low (WL).
+- _**Resource quality**_ (wind):
+    - Onshore wind: Wind High (WH) and Wind Low (WL)
+    - Offshore wind: Wind Offshore Fixed (WFX) and Wind Offshore Floating (WFL)
 
 ### Demand
 - _**Reference year**_: A historical weather year that is used to produce the demand trace.
