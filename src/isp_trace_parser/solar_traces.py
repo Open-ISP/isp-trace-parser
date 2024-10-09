@@ -2,8 +2,10 @@ import functools
 import os
 from joblib import Parallel, delayed
 from pathlib import Path
-
+from typing import Optional, Literal
 import yaml
+
+from pydantic import BaseModel, validate_call
 
 from isp_trace_parser.metadata_extractors import extract_solar_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
@@ -16,14 +18,51 @@ from isp_trace_parser.trace_restructure_helper_functions import (
     check_filter_by_metadata,
     process_and_save_files,
     get_unique_project_and_area_names_in_input_files,
+    get_just_filepaths,
 )
+from isp_trace_parser import input_validation
 
 
+class SolarMetadataFilter(BaseModel):
+    """A Pydantic class for defining a metadata based filter that specifies which solar trace files to parser.
+
+    All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
+    included then only traces with metadata matching the values in the corresponding list will be parsed.
+
+    Examples:
+
+    Filter for only projects or areas that are in a list of names.
+
+    >>> metadata_filters = SolarMetadataFilter(
+    ... name=['A', 'B', 'x'],
+    ... )
+
+    Filter for projects that use single axis tracking.
+
+    >>> metadata_filters = SolarMetadataFilter(
+    ... technology=['SAT'],
+    ... file_type=['project'],
+    ... )
+
+    Attributes:
+        name: list of names for projects and/or IDs for areas.
+        file_type: list of 'project' and/or 'area' (area typically refers to REZs)
+        technology: list of technology types of traces, only including 'SAT', 'FFP', or 'CST'.
+        reference_year: list of ints specifying reference_years
+    """
+
+    name: Optional[list[str]] = None
+    file_type: Optional[list[Literal["area", "project"]]] = None
+    technology: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
+    reference_year: Optional[list[int]] = None
+
+
+@validate_call
 def parse_solar_traces(
     input_directory: str | Path,
     parsed_directory: str | Path,
     use_concurrency: bool = True,
-    filters: dict[str : list[str]] = None,
+    filters: SolarMetadataFilter | None = None,
 ):
     """Takes a directory with AEMO solar trace data and reformats the data, saving it to a new directory.
 
@@ -69,16 +108,16 @@ def parse_solar_traces(
 
     Parse only a subset of the input traces.
 
-    Excluding one type of metadata (key) from the
+    Excluding a type of metadata from the
     filter will result in no filtering on
-    that component of the metadata and more elements can
+    that component of the metadata and elements can
     be added to each list in the filter to selectively
     expand which traces are parsed.
 
-    >>> metadata_filters={
-    ... 'technology': ['FFP', 'SAT'],
-    ... 'file_type': ['project'],
-    ... }
+    >>> metadata_filters = SolarMetadataFilter(
+    ... technology=['FFP', 'SAT'],
+    ... file_type=['project'],
+    ... )
 
     >>> parse_solar_traces(
     ... input_directory='example_input_data/solar',
@@ -97,6 +136,9 @@ def parse_solar_traces(
 
     Returns: None
     """
+    input_directory = input_validation.input_directory(input_directory)
+    parsed_directory = input_validation.parsed_directory(parsed_directory)
+
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_solar_files(files)
     with open(
@@ -149,9 +191,9 @@ def parse_solar_traces(
 def restructure_solar_files(
     output_project_or_area_name: str,
     input_trace_names: list[str],
-    all_input_file_metadata: dict[str, dict[str, str]],
+    all_input_file_metadata: dict[Path, dict[str, str]],
     output_directory: str | Path,
-    filters: dict[str, list[str]] = None,
+    filters: SolarMetadataFilter = None,
 ) -> None:
     """
     Restructures solar trace files and saves them in a new format.
@@ -164,27 +206,27 @@ def restructure_solar_files(
         input_trace_names: List of input trace names to process.
         all_input_file_metadata: Metadata for all input files.
         output_directory: Directory where restructured files will be saved.
-        filters: Filters to apply to the metadata. Keys are metadata fields, values are lists of allowed values.
+        filters: Filters to apply to the metadata (SolarMetadataFilter).
 
     Returns:
         None: Files are saved to disk, but the function doesn't return any value.
 
     Example:
         >>> input_metadata = {
-        ...     'file1.csv': {'name': 'Project1', 'year': '2020', 'technology': 'FFP', 'file_type': 'project'},
-        ...     'file2.csv': {'name': 'Area1', 'year': '2020', 'technology': 'SAT', 'file_type': 'area'}
+        ...     Path('file1.csv'): {'name': 'Project1', 'year': '2020', 'technology': 'FFP', 'file_type': 'project'},
+        ...     Path('file2.csv'): {'name': 'Area1', 'year': '2020', 'technology': 'SAT', 'file_type': 'area'}
         ... }  # doctest: +SKIP
 
         >>> restructure_solar_files(
         ...     output_project_or_area_name='NewProject1',
         ...     input_trace_names=['Project1'],
         ...     all_input_file_metadata=input_metadata,
-        ...     output_directory='/path/to/output',
-        ...     filters={'technology': ['FFP']}
+        ...     output_directory='/path/to/output'
         ... )  # doctest: +SKIP
 
         # This will process 'file1.csv' and save it with the new name 'NewProject1' in the specified output directory
     """
+
     metadata_for_trace_files = get_metadata_that_matches_trace_names(
         input_trace_names, all_input_file_metadata
     )
@@ -203,7 +245,7 @@ def restructure_solar_files(
             parse_file = check_filter_by_metadata(metadata, filters)
             if parse_file:
                 process_and_save_files(
-                    files_for_tech,
+                    get_just_filepaths(files_for_tech),
                     metadata,
                     write_output_solar_filepath,
                     output_directory,
@@ -225,13 +267,13 @@ def write_output_solar_filepath(metadata: dict[str, str]) -> str:
 
     if m["file_type"] == "project":
         return (
-            f"RefYear{m['year']}/{m['file_type'].capitalize()}/{name}/"
-            f"RefYear{m['year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
+            f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/"
+            f"RefYear{m['reference_year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
         )
     else:
         return (
-            f"RefYear{m['year']}/{m['file_type'].capitalize()}/{name}/{m['technology']}/"
-            f"RefYear{m['year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
+            f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/{m['technology']}/"
+            f"RefYear{m['reference_year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
         )
 
 

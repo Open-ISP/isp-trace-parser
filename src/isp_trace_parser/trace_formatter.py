@@ -2,8 +2,10 @@ from datetime import timedelta
 
 
 import polars as pl
+from pydantic import validate_call, config
 
 
+@validate_call(config=config.ConfigDict(arbitrary_types_allowed=True))
 def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
     """
     Takes trace data in the AEMO format and converts it to a format with 'Datetime' and 'Data' columns.
@@ -15,7 +17,8 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
 
     Example:
 
-    Input format:
+    Input format (example):
+
     >>> aemo_format_data = pl.DataFrame({
     ... 'Year': [2024, 2024],
     ... 'Month': [6, 6],

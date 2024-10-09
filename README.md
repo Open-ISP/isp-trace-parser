@@ -84,6 +84,8 @@ To perform the reformatting and restructuring, the solar, wind and demand data s
 
 The following code can then be used to parse the data:
 
+### Parsing all files in a directory
+
 ```python
 from isp_trace_parser import parse_solar_traces, parse_wind_traces, parse_demand_traces
 
@@ -100,6 +102,61 @@ parse_wind_traces(
 parse_demand_traces(
     input_directory='<path/to/aemo/demand/traces>',
     parsed_directory='<path/to/store/demand/output>',
+)
+```
+
+### Filtering which files get parsed
+
+```python
+from isp_trace_parser import (
+    parse_solar_traces,
+    SolarMetadataFilter,
+    parse_wind_traces,
+    WindMetadataFilter,
+    parse_demand_traces,
+    DemandMetadataFilter
+)
+
+# Note: to not filter on a component of the metadata it can be excluded from the filter definition.
+
+solar_filters = SolarMetadataFilter(
+    name=['N1'],
+    file_type=['area'],
+    technology=['SAT'],
+    reference_year=[2011]
+)
+
+parse_solar_traces(
+    input_directory='<path/to/aemo/solar/traces>',
+    parsed_directory='<path/to/store/solar/output>',
+    filters=solar_filters
+)
+
+wind_filters = WindMetadataFilter(
+    name=['N1'],
+    file_type=['area'],
+    resouce_quality=['WH'],
+    reference_year=[2011]
+)
+
+parse_wind_traces(
+    input_directory='<path/to/aemo/wind/traces>',
+    parsed_directory='<path/to/store/wind/output>',
+    filters=wind_filters
+)
+
+demand_filters = DemandMetadataFilter(
+    scenario=['Green Energy Exports'],
+    subregion=['CNSW'],
+    poe=['POE50'],
+    demand_type=['OPSO_MODELLING'],
+    reference_year=[2011]
+)
+
+parse_demand_traces(
+    input_directory='<path/to/aemo/demand/traces>',
+    parsed_directory='<path/to/store/demand/output>',
+    filters=demand_filters
 )
 ```
 
@@ -532,8 +589,8 @@ print(mapping)
 `isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/)
 `DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown
 below, the data can be converted to polars from pandas before performing Dataframe trace parsing, and back to pandas
-after the parsing is complete, the polars package provides [functionality for converting to and from `pandas`]
-(https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
+after the parsing is complete, the polars package provides [functionality for converting to and from `pandas`](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
+
 
 ```python
 import polars as pl
@@ -565,7 +622,8 @@ print(trace_parser_format_data.to_pandas())
 
 ## Contributing
 
-Interested in contributing to the source code or adding table configurations? Check out the [contributing instructions](https://github.com/Open-ISP/isp-trace-parser/blob/main/CONTRIBUTING.md), which also includes steps to install `isp-trace-parser` for development.
+Interested in contributing to the source code? Check out the [contributing instructions](https://github.com/Open-ISP/isp-trace-parser/blob/main/CONTRIBUTING.md), which also includes steps to install `isp-trace-parser` for development.
+
 
 Please note that this project is released with a [Code of Conduct](https://github.com/Open-ISP/isp-trace-parser/blob/main/CONDUCT.md). By contributing to this project, you agree to abide by its terms.
 

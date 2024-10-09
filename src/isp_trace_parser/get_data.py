@@ -1,18 +1,23 @@
 import itertools
 from pathlib import Path
-
+from typing import Literal
 
 import polars as pl
 import pandas as pd
+from pydantic import validate_call
 
 
+from isp_trace_parser import input_validation
+
+
+@validate_call
 def solar_project_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
     project: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
@@ -51,8 +56,11 @@ def solar_project_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
+    input_validation.start_year_before_end_year(start_year, end_year)
+
     kwargs = {"project": project}
     return generic_single_reference_year(
         "solar_project",
@@ -65,11 +73,12 @@ def solar_project_single_reference_year(
     )
 
 
+@validate_call
 def solar_project_multiple_reference_years(
     reference_years: dict[int, int],
     project: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
@@ -106,14 +115,16 @@ def solar_project_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
     kwargs = {"project": project}
     return generic_multi_reference_year_mapping(
         "solar_project", reference_years, year_type, directory, **kwargs
     )
 
 
+@validate_call
 def solar_area_single_reference_year(
     start_year: int,
     end_year: int,
@@ -121,7 +132,7 @@ def solar_area_single_reference_year(
     area: str,
     technology: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads solar area trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
@@ -163,8 +174,10 @@ def solar_area_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
+    input_validation.start_year_before_end_year(start_year, end_year)
     kwargs = {"area": area, "technology": technology}
     return generic_single_reference_year(
         "solar_area",
@@ -177,12 +190,13 @@ def solar_area_single_reference_year(
     )
 
 
+@validate_call
 def solar_area_multiple_reference_years(
     reference_years: dict[int, int],
     area: str,
     technology: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads solar area trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
@@ -221,21 +235,23 @@ def solar_area_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
     kwargs = {"area": area, "technology": technology}
     return generic_multi_reference_year_mapping(
         "solar_area", reference_years, year_type, directory, **kwargs
     )
 
 
+@validate_call
 def wind_project_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
     project: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads wind project trace data from an output directory created by isp_trace_parser.wind_trace_parser.
 
@@ -275,8 +291,10 @@ def wind_project_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
+    input_validation.start_year_before_end_year(start_year, end_year)
     kwargs = {"project": project}
     return generic_single_reference_year(
         "wind_project",
@@ -289,11 +307,12 @@ def wind_project_single_reference_year(
     )
 
 
+@validate_call
 def wind_project_multiple_reference_years(
     reference_years: dict[int, int],
     project: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads wind project trace data from an output directory created by isp_trace_parser.wind_trace_parser.
 
@@ -330,14 +349,16 @@ def wind_project_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
     kwargs = {"project": project}
     return generic_multi_reference_year_mapping(
         "wind_project", reference_years, year_type, directory, **kwargs
     )
 
 
+@validate_call
 def wind_area_single_reference_year(
     start_year: int,
     end_year: int,
@@ -345,7 +366,7 @@ def wind_area_single_reference_year(
     area: str,
     resource_quality: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads wind area trace data from an output directory created by isp_trace_parser.wind_trace_parser.
 
@@ -380,15 +401,17 @@ def wind_area_single_reference_year(
         reference_year: int, the reference year of the trace data to retrieve.
         area: str, the ISP code for the area (typically a REZ) to return data for. Codes need to be as given in the IASR
             workbook.
-        resource_quality: str, the resource quality of the trace to retrieve usaual 'WH' or 'WM'.
+        resource_quality: str, the resource quality of the trace to retrieve usual 'WH' or 'WM'.
         directory: str or pathlib.Path, the directory were the trace data is stored. Trace data needs to be in the
             format as produced by isp_trace_parser.restructure_solar_directory.
         year_type: str, 'fy' or 'calendar', if 'fy' then time filtering is by financial year with start_year and
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
+    input_validation.start_year_before_end_year(start_year, end_year)
     kwargs = {"area": area, "resource_quality": resource_quality}
     return generic_single_reference_year(
         "wind_area",
@@ -401,12 +424,13 @@ def wind_area_single_reference_year(
     )
 
 
+@validate_call
 def wind_area_multiple_reference_years(
     reference_years: dict[int, int],
     area: str,
     resource_quality: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads wind area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
@@ -438,21 +462,23 @@ def wind_area_multiple_reference_years(
             each financial or calendar year (value).
         area: str, the ISP code for the area (typically a REZ) to return data for. Codes need to be as given in the IASR
             workbook.
-        resource_quality: str, the resource quality of the trace to retrieve usaual 'WH' or 'WM'.
+        resource_quality: str, the resource quality of the trace to retrieve usual 'WH' or 'WM'.
         directory: str or pathlib.Path, the directory were the trace data is stored. Trace data needs to be in the
             format as produced by isp_trace_parser.restructure_solar_directory.
         year_type: str, 'fy' or 'calendar', if 'fy' then time filtering is by financial year with start_year and
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
     kwargs = {"area": area, "resource_quality": resource_quality}
     return generic_multi_reference_year_mapping(
         "wind_area", reference_years, year_type, directory, **kwargs
     )
 
 
+@validate_call
 def demand_single_reference_year(
     start_year: int,
     end_year: int,
@@ -462,7 +488,7 @@ def demand_single_reference_year(
     poe: str,
     demand_type: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads demand trace data from an output directory created by isp_trace_parser.demand_trace_parser.
 
@@ -508,8 +534,10 @@ def demand_single_reference_year(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
+    input_validation.start_year_before_end_year(start_year, end_year)
     kwargs = {
         "area": subregion,
         "scenario": scenario,
@@ -521,6 +549,7 @@ def demand_single_reference_year(
     )
 
 
+@validate_call
 def demand_multiple_reference_years(
     reference_years: dict[int, int],
     subregion: str,
@@ -528,7 +557,7 @@ def demand_multiple_reference_years(
     poe: str,
     demand_type: str,
     directory: str | Path,
-    year_type: str = "fy",
+    year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Reads wind area trace data from an output directory created by isp_trace_parser.demand_trace_parser.
 
@@ -571,8 +600,9 @@ def demand_multiple_reference_years(
             end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
-    Returns: pd.DataFrame with columns Datetime andValue
+    Returns: pd.DataFrame with columns Datetime and Value
     """
+    directory = input_validation.parsed_directory(directory)
     kwargs = {
         "area": subregion,
         "scenario": scenario,
@@ -802,11 +832,11 @@ def generic_single_reference_year(
     return data.to_pandas()
 
 
-def filepath_writer(data_type: str, directory: str | Path, **kwargs):
+def filepath_writer(data_type: str, directory: Path, **kwargs):
     for k, v in kwargs.items():
         if isinstance(v, str):
             kwargs[k] = kwargs[k].replace(" ", "_").replace("*", "")
-    return Path(directory) / filepath_templates[data_type].format(**kwargs)
+    return directory / filepath_templates[data_type].format(**kwargs)
 
 
 filepath_templates = {
