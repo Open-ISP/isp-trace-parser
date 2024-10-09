@@ -1,6 +1,6 @@
 import functools
 import os
-from concurrent.futures import ProcessPoolExecutor
+from joblib import Parallel, delayed
 from pathlib import Path
 from typing import Optional, Literal
 import yaml
@@ -190,23 +190,17 @@ def parse_wind_traces(
     if use_concurrency:
         max_workers = os.cpu_count() - 2
 
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            results = executor.map(
-                area_partial_func, area_output_names, area_input_names
-            )
-            # Iterate through results to raise any errors that occurred.
-            for result in results:
-                result
+        Parallel(n_jobs=max_workers)(
+            delayed(area_partial_func)(save_name, old_trace_name)
+            for save_name, old_trace_name in zip(area_output_names, area_input_names)
+        )
 
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            executor = ProcessPoolExecutor(max_workers=max_workers)
-            results = executor.map(
-                project_partial_func, project_output_names, project_input_names
+        Parallel(n_jobs=max_workers)(
+            delayed(project_partial_func)(save_name, old_trace_name)
+            for save_name, old_trace_name in zip(
+                project_output_names, project_input_names
             )
-
-            # Iterate through results to raise any errors that occurred.
-            for result in results:
-                result
+        )
 
     else:
         for save_name, old_trace_name in zip(area_output_names, area_input_names):

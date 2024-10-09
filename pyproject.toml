@@ -12,6 +12,7 @@ dependencies = [
     "polars>=1.7.1",
     "pandas>=2.2.2",
     "pydantic>=2.9.2",
+    "joblib>=1.4.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.9"

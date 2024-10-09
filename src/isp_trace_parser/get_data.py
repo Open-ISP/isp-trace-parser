@@ -841,7 +841,7 @@ def filepath_writer(data_type: str, directory: Path, **kwargs):
 
 filepath_templates = {
     "solar_project": (
-        "RefYear{reference_year}/Project/{project}/RefYear{reference_year}_{project}_FFP_HalfYear{year}-"
+        "RefYear{reference_year}/Project/{project}/RefYear{reference_year}_{project}_*_HalfYear{year}-"
         "{half_year}.parquet"
     ),
     "solar_area": (

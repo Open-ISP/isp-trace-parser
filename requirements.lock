@@ -12,6 +12,8 @@
 -e file:.
 annotated-types==0.7.0
     # via pydantic
+joblib==1.4.2
+    # via isp-trace-parser
 numpy==2.1.1
     # via pandas
 pandas==2.2.2

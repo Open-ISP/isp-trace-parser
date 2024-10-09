@@ -55,6 +55,7 @@ isp-workbook-parser==1.2.0
 jedi==0.19.1
     # via ipython
 joblib==1.4.2
+    # via isp-trace-parser
     # via nemosis
 matplotlib-inline==0.1.7
     # via ipython
