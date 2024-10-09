@@ -50,8 +50,10 @@ pip install isp-trace-parser
 ## Accessing raw trace data
 
 Currently, AEMO trace data needs to be downloaded from the [AEMO website](https://aemo.com.au/en/energy-systems/major-publications/integrated-system-plan-isp/2024-integrated-system-plan-isp)
-and unzipped manually before the trace parser can be used. However, it is likely future versions of the trace parser
-will automate this process by using a third party platform to host the trace data.
+and unzipped manually before the trace parser can be used.
+
+> [!Note]
+> However, it is likely future versions of the trace parser will automate this process by using a third party platform to host the trace data.
 
 ## Key terminology
 
@@ -227,6 +229,280 @@ demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference
     demand_type='OPSO_MODELLING',
     directory='example_parsed_data/demand'
 )
+
+```
+
+</details>
+
+### Querying trace data for a sets of generators, areas or subregions
+
+Often modelling or analysis will require a set of traces. For example, all the existing solar generators traces, all
+the wind REZ traces, or all the subregion demand traces. To query a set of traces the names of generators, REZ IDs,
+or subregion IDs can be retrieved from the IASR workbook using the
+[isp-workbook-parser](https://github.com/Open-ISP/isp-workbook-parser). Using isp-workbook-parser the workbook data can
+be exported to CSVs, and then required names, REZ IDs, or subregion IDs extracted, as shown below:
+
+<details>
+<summary>Wind and solar project traces</summary>
+<br>
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from isp_trace_parser import get_data
+
+
+# Define location of parsed data.
+
+parsed_workbook_data = Path(
+    "/path/to/parsed/workbook/data"
+)
+
+parsed_solar_data = Path('path/to/parsed/solar/traces')
+
+# Wind and solar generator names are stored across four IASR workbook tables
+
+existing_generators = pd.read_csv(
+    parsed_workbook_data / Path("existing_generator_summary.csv")
+)
+
+committed_generators = pd.read_csv(
+    parsed_workbook_data / Path("committed_generator_summary.csv")
+)
+
+anticipated_generators = pd.read_csv(
+    parsed_workbook_data / Path("anticipated_projects_summary.csv")
+)
+
+additional_generators = pd.read_csv(
+    parsed_workbook_data / Path("additional_projects_summary.csv")
+)
+
+
+# Before combining the data tables we need to standardise the generator name column
+
+generator_tables = [
+    existing_generators,
+    committed_generators,
+    anticipated_generators,
+    additional_generators
+]
+
+for table in generator_tables:
+    table.rename(
+        columns={table.columns.values[0]: "Generator"},
+        inplace=True
+    )
+
+generator_data = pd.concat(generator_tables)
+
+
+# The names of solar and wind projects/generators can be retrieved by filtering
+
+solar_generators = generator_data[generator_data['Technology type'] == 'Large scale Solar PV']
+
+solar_generator_names = list(solar_generators['Generator'])
+
+print(solar_generator_names)
+# ['Avonlie Solar Farm', 'Beryl Solar Farm', 'Bomen Solar Farm', 'Broken Hill Solar Farm' . . .
+
+wind_generators = generator_data[generator_data['Technology type'] == 'Wind']
+
+wind_generator_names = list(wind_generators['Generator'])
+
+print(wind_generator_names)
+# ['Bango 973 Wind Farm', 'Bango 999 Wind Farm', 'Boco Rock Wind Farm', 'Bodangora Wind Farm' . . .
+
+
+# These names can be used to retrieve trace data
+
+solar_generator_traces = {}
+
+for generator_name in solar_generator_names:
+    trace_for_generator = get_data.solar_project_single_reference_year(
+        start_year=2025,
+        end_year=2030,
+        reference_year=2011,
+        project=generator_name,
+        directory=parsed_solar_data
+    )
+    solar_generator_traces[generator_name] = trace_for_generator
+```
+
+</details>
+
+
+<details>
+<summary>Wind area traces</summary>
+<br>
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from isp_trace_parser import get_data
+
+
+# Define location of parsed data.
+
+parsed_workbook_data = Path(
+    "/path/to/parsed/workbook/data"
+)
+
+parsed_wind_data = Path('path/to/parsed/wind/traces')
+
+# ISP REZ IDs and wind resource types can be retrieved from the parsed workbook data
+
+build_limits = pd.read_csv(
+    parsed_workbook_data / Path("initial_build_limits.csv")
+)
+
+# If a unit has a non-nan offshore floating build limit then it will have the wind
+# resource qualities WFL and WFX (wind offshore floating and wind offshore fixed).
+
+offshore_rezs = build_limits[~build_limits["Wind generation total limits (MW)_Offshore -floating"].isna()]
+
+print(list(offshore_rezs['REZ ID']))
+# ['N10', 'N11', 'V7', 'V8', 'S10', 'T4']
+
+# If a unit has a nonzero high build limit then it will be an on shore REZ and have the wind
+# resource qualities WH and WM (wind high and wind medium).
+
+onshore_rezs = build_limits[build_limits["Wind generation total limits (MW)_High"] > 0.1]
+
+print(list(onshore_rezs['REZ ID']))
+# ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
+
+# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data
+
+wind_offshore_rez_traces = {}
+
+for rez in list(offshore_rezs['REZ ID']):
+    trace_for_rez = get_data.wind_area_single_reference_year(
+        start_year=2025,
+        end_year=2026,
+        reference_year=2011,
+        area=rez,
+        resource_quality='WFL',
+        directory=parsed_wind_data
+    )
+    wind_offshore_rez_traces[rez] = trace_for_rez
+
+wind_onshore_rez_traces = {}
+
+for rez in list(onshore_rezs['REZ ID']):
+    trace_for_rez = get_data.wind_area_single_reference_year(
+        start_year=2025,
+        end_year=2026,
+        reference_year=2011,
+        area=rez,
+        resource_quality='WH',
+        directory=parsed_wind_data
+    )
+    wind_onshore_rez_traces[rez] = trace_for_rez
+```
+
+</details>
+
+
+<details>
+<summary>Solar area traces</summary>
+<br>
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from isp_trace_parser import get_data
+
+
+# Define location of parsed data.
+
+parsed_workbook_data = Path(
+    "/path/to/parsed/workbook/data"
+)
+
+parsed_solar_data = Path('path/to/parsed/wind/traces')
+
+# ISP REZ IDs and types can be retrieved from the parsed workbook data
+
+build_limits = pd.read_csv(
+    parsed_workbook_data / Path("initial_build_limits.csv")
+)
+
+# If a unit has a nonzero high build limit then it will be an onshore REZ and have the
+# solar traces for SAT (single axis tracking) and CST (concentrating solar thermal).
+
+onshore_solar_rezs = build_limits[build_limits["Solar PV plus Solar thermal Limits (MW)_Solar"] > 0.1]
+
+print(list(onshore_solar_rezs['REZ ID']))
+# ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
+
+# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data
+
+single_axis_tracking_traces = {}
+
+for rez in list(onshore_solar_rezs['REZ ID']):
+    trace_for_rez = get_data.solar_area_single_reference_year(
+        start_year=2025,
+        end_year=2026,
+        reference_year=2011,
+        area=rez,
+        technology='SAT',
+        directory=parsed_solar_data
+    )
+    single_axis_tracking_traces[rez] = trace_for_rez
+```
+
+</details>
+
+
+<details>
+<summary>Demand subregion traces</summary>
+<br>
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from isp_trace_parser import get_data
+
+
+# Define location of parsed data.
+
+parsed_workbook_data = Path(
+    "/path/to/parsed/workbook/data"
+)
+
+parsed_demand_data  = Path('path/to/parsed/demand/traces')
+
+# ISP Subregion ID can be retrieved from renewable energy zones table
+
+rez_definitions = pd.read_csv(
+    parsed_workbook_data / Path("renewable_energy_zones.csv")
+)
+
+subregions = list(set(rez_definitions["ISP Sub-region"]))
+print(subregions)
+# ['CSA', 'SESA', 'CQ', 'NQ', 'NNSW', 'CNSW', 'SNSW', 'SNW', 'TAS', 'VIC', 'SQ']
+
+# This set of subregions can then can be used to retrieve demand trace data
+
+demand_traces = {}
+
+for subregion in subregions:
+    trace = get_data.demand_single_reference_year(
+        start_year=2025,
+        end_year=2026,
+        reference_year=2011,
+        subregion=subregion,
+        demand_type='OPSO_MODELLING',
+        poe='POE50',
+        scenario='Step Change',
+        directory=parsed_demand_data
+    )
+    demand_traces[subregion] = trace
 
 ```
 
