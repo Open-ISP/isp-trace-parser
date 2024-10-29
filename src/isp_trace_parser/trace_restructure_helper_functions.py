@@ -92,8 +92,10 @@ def process_and_save_files(
 
 
 def get_metadata_that_matches_trace_names(
-    trace_names: list[str], all_input_file_metadata: dict[Path, dict[str, str]]
+    trace_names: list[str] | str, all_input_file_metadata: dict[Path, dict[str, str]]
 ) -> dict[Path, dict[str, str]]:
+    if isinstance(trace_names, str):
+        trace_names = [trace_names]
     return {
         f: metadata
         for f, metadata in all_input_file_metadata.items()
