@@ -212,7 +212,7 @@ def parse_wind_traces(
 
 def restructure_wind_area_files(
     output_area_name: str,
-    input_trace_names: list,
+    input_trace_names: list[str] | str,
     all_input_file_metadata: dict,
     output_directory: str | Path,
     filters: dict[str, list[str]] | None = None,
