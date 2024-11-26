@@ -1,18 +1,17 @@
-from pathlib import Path
-import yaml
 import itertools
 import multiprocessing as mp
-
-import pytest
-
-from isp_trace_parser import parse_solar_traces, parse_demand_traces, parse_wind_traces
+from pathlib import Path
 
 import end_to_end_test_data_config as config
+import pytest
+import yaml
 from create_end_to_end_test_data import (
-    create_solar_csvs,
     create_demand_csvs,
+    create_solar_csvs,
     create_wind_csvs,
 )
+
+from isp_trace_parser import parse_demand_traces, parse_solar_traces, parse_wind_traces
 
 mp.set_start_method("spawn", force=True)
 

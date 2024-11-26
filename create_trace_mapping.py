@@ -1,16 +1,14 @@
 import yaml
-
 from nemosis import static_table
 
 from generator_to_trace_draft_mapper import (
+    draft_solar_generator_to_trace_mapping,
+    draft_solar_rez_mapping,
+    draft_wind_generator_to_trace_mapping,
+    draft_wind_rez_mapping,
     get_all_generators,
     gets_rezs,
-    draft_wind_rez_mapping,
-    draft_solar_generator_to_trace_mapping,
-    draft_wind_generator_to_trace_mapping,
-    draft_solar_rez_mapping,
 )
-
 
 workbook = "D:/isp_2024_data/2024-isp-inputs-and-assumptions-workbook.xlsx"
 all_generators = get_all_generators(workbook)

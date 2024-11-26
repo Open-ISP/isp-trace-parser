@@ -1,22 +1,22 @@
 import functools
 import os
-from joblib import Parallel, delayed
 from pathlib import Path
-from typing import Optional, Literal
-import yaml
+from typing import Literal, Optional
 
+import yaml
+from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
+from isp_trace_parser import input_validation
 from isp_trace_parser.metadata_extractors import extract_demand_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
-    get_all_filepaths,
-    check_filter_by_metadata,
-    read_trace_csv,
-    trace_formatter,
     add_half_year_as_column,
+    check_filter_by_metadata,
+    get_all_filepaths,
+    read_trace_csv,
     save_half_year_chunk_of_trace,
+    trace_formatter,
 )
-from isp_trace_parser import input_validation
 
 
 class DemandMetadataFilter(BaseModel):
