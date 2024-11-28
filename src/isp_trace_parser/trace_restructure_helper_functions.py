@@ -1,5 +1,5 @@
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 import polars as pl
 from pydantic import BaseModel

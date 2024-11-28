@@ -2,10 +2,9 @@ import itertools
 from pathlib import Path
 from typing import Literal
 
-import polars as pl
 import pandas as pd
+import polars as pl
 from pydantic import validate_call
-
 
 from isp_trace_parser import input_validation
 
