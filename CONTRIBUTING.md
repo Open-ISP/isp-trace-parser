@@ -40,12 +40,12 @@ If you are proposing a feature:
 
 ## Get Started!
 
-Ready to contribute? Here's how to set up `package_name` for local development.
+Ready to contribute? Here's how to set up `isp-trace-parser` for local development.
 
-1. Download a copy of `package_name` locally.
+1. Download a copy of `isp-trace-parser` locally.
 2. Install [`uv`](https://github.com/astral-sh/uv).
-3. Install `isp-workbook-parser` using `uv` by running `uv sync` in the project directory.
-4. Install the `pre-commit` git hook scripts that `isp-workbook-parser` uses by running the following code using `uv`:
+3. Install `isp-trace-parser` using `uv` by running `uv sync` in the project directory.
+4. Install the `pre-commit` git hook scripts that `isp-trace-parser` uses by running the following code using `uv`:
 
       ```console
       $ uv run pre-commit install
@@ -79,5 +79,5 @@ Before you submit a pull request, check that it meets these guidelines:
 
 ## Code of Conduct
 
-Please note that the `package_name` project is released with a
+Please note that the `isp-trace-parser` project is released with a
 [Code of Conduct](CONDUCT.md). By contributing to this project you agree to abide by its terms.
