@@ -16,12 +16,31 @@ logging.basicConfig(level=logging.INFO)
 OBJECT_STORE = "https://data.openisp.au"
 
 def get_trace_index():
+    """
+    Fetches and parses an index file from the object store (a YAML file containng the keys of objects in the object store 
+    
+    Returns a A dictionary containing the "traces" section of the index.
+    """
+
     url = urljoin(OBJECT_STORE, "archive/archive-index.yml")
     response = requests.get(url)
     return yaml.safe_load(response.text)["traces"]
 
 @dataclass
 class ArchiveTrace:
+    """
+    Represents an archived trace file with a specific type and version.
+
+    Attributes:
+        trace_type (str): The type of trace (e.g., "demand", "solar", "wind").
+        version (str): The version of the trace data.
+        zipfilename (str): The name of the zip file containing the trace data.
+    
+    Properties:
+        key (str): The storage key for the archive trace in the format 
+                   'archive/traces/{trace_type}/{version}/{zipfilename}'.
+        restructure_function (Callable): A function to process the trace data based on its type.
+    """
     trace_type: str
     version: str
     zipfilename: str
