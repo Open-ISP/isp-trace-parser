@@ -24,11 +24,11 @@ def get_trace_index():
 class ArchiveTrace:
     trace_type: str
     version: str
-    zipfile: str
+    zipfilename: str
 
     @property
     def key(self):
-        return f"archive/traces/{self.trace_type}/{self.version}/{self.zipfile}"
+        return f"archive/traces/{self.trace_type}/{self.version}/{self.zipfilename}"
     
     @property
     def restructure_function(self):
@@ -50,7 +50,7 @@ def get_archive(
     """
 
     url = urljoin(OBJECT_STORE,archive_trace.key)
-    logger.info(f"Downloading {archive_trace.version} {archive_trace.zipfile}")
+    logger.info(f"Downloading {archive_trace.version} {archive_trace.zipfilename}")
 
     with requests.get(url, stream=True) as response:
         with open(filepath, "wb") as file:
@@ -83,7 +83,7 @@ def unzip_and_restructure(
 
 def get_unzip_and_restructure(
     archive_trace: ArchiveTrace,
-    parsed_directory: str
+    output_directory: str
 ):
     """
     Function to download  zipfile to tempfile, extract to temp directory and restructure
@@ -91,23 +91,42 @@ def get_unzip_and_restructure(
 
     with tempfile.NamedTemporaryFile() as temp_file:
         get_archive(archive_trace=archive_trace, filepath=temp_file.name)
-        logger.info(f"Processing {archive_trace.version} {archive_trace.zipfile}")
-        unzip_and_restructure(temp_file.name, parsed_directory, archive_trace.restructure_function)
+        logger.info(f"Processing {archive_trace.version} {archive_trace.zipfilename}")
+        unzip_and_restructure(temp_file.name, output_directory, archive_trace.restructure_function)
 
-def get_all(parsed_trace_data_dir: str,
+def get_all(archive_directory: str,
             version: str = "isp_2024"):
     
     store_keys = get_trace_index()
-    _dir = Path(parsed_trace_data_dir)
+    _dir = Path(archive_directory)
 
     archive_traces = [
-    ArchiveTrace(trace_type=trace_type, version=version, zipfile=zipfile)
-    for trace_type, versions in store_keys.items()
-    for version, zipfiles in versions.items()
-    for zipfile in zipfiles
+    ArchiveTrace(trace_type=trace_type, version=version, zipfilename=zipfilename)
+    for trace_type in ["solar", "wind", "demand"]
+    for zipfilename in store_keys[trace_type][version]
     ]
 
-    for archive_trace in archive_traces[48:]:
+    for archive_trace in archive_traces:
         trace_dir = _dir / archive_trace.trace_type
         Path.mkdir(trace_dir, exist_ok=True)
-        get_unzip_and_restructure(archive_trace, parsed_directory=trace_dir)
+        filepath = trace_dir / archive_trace.zipfilename
+        if not filepath.exists():
+            get_archive(archive_trace,  filepath=filepath)
+
+def process_all(archive_directory: str,
+                restructured_directory: str,
+                version: str = "isp_2024"):
+    
+    input_dir = Path(archive_directory)
+    output_dir =Path(restructured_directory)
+
+    for trace_type in ["solar", "wind", "demand"]:
+        input_trace_dir = input_dir / trace_type
+        output_trace_dir = output_dir / trace_type 
+        Path.mkdir(output_trace_dir, exist_ok=True)
+
+        for zipfilepath in input_trace_dir.glob("*.zip"):
+            archive_trace =ArchiveTrace(trace_type=trace_type, version=version, zipfilename=zipfilepath.name)
+            logger.info(f"Processing {archive_trace.version} {archive_trace.zipfilename}")
+            unzip_and_restructure(zipfilepath, output_trace_dir, archive_trace.restructure_function)
+            
