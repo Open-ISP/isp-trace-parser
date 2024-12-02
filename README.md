@@ -50,11 +50,20 @@ pip install isp-trace-parser
 
 ## Accessing raw trace data
 
-Currently, AEMO trace data needs to be downloaded from the [AEMO website](https://aemo.com.au/en/energy-systems/major-publications/integrated-system-plan-isp/2024-integrated-system-plan-isp)
-and unzipped manually before the trace parser can be used.
+The AEMO trace data can also be downloaded from the [AEMO website](https://aemo.com.au/en/energy-systems/major-publications/integrated-system-plan-isp/2024-integrated-system-plan-isp) and unzipped manually before the trace parser can be used.
 
-> [!Note]
-> However, it is likely future versions of the trace parser will automate this process by using a third party platform to host the trace data.
+There is also an archive of the zipfiles maintained (at [data.openisp.au](https:data.openisp.au])). This packaged can be used to automatically download and restructure this archived data.
+
+### Downloading and restructuring the archived zipfiles
+```python
+from isp_trace_parser import archive
+
+archive.get_zipfiles("/path/to/archive_dir", version="isp_2024")
+# note: this might take 30mins to 1hr, depending on bandwidth.
+
+archive.process_zipfiles("/path/to/archive_dir", "/path/to/parsed/traces/", version="isp_2024")
+# note: this might to 30mins to 1hr, depending on compute resources available.
+```
 
 ## Key terminology
 
