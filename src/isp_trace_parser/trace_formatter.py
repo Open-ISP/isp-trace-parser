@@ -1,8 +1,7 @@
 from datetime import timedelta
 
-
 import polars as pl
-from pydantic import validate_call, config
+from pydantic import config, validate_call
 
 
 @validate_call(config=config.ConfigDict(arbitrary_types_allowed=True))

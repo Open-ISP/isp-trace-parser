@@ -1,17 +1,18 @@
-import pytest
 from pathlib import Path
+
+import pytest
 from pydantic import ValidationError
 
 from isp_trace_parser import (
+    DemandMetadataFilter,
     SolarMetadataFilter,
     WindMetadataFilter,
-    DemandMetadataFilter,
+    construct_reference_year_mapping,
+    input_validation,
+    parse_demand_traces,
     parse_solar_traces,
     parse_wind_traces,
-    parse_demand_traces,
-    construct_reference_year_mapping,
 )
-from isp_trace_parser import input_validation
 
 
 # Tests for Pydantic classes

@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from fuzzywuzzy import process, fuzz
+from fuzzywuzzy import fuzz, process
 from isp_workbook_parser import Parser, TableConfig
 
 from isp_trace_parser.metadata_extractors import (

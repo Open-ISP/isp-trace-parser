@@ -1,26 +1,26 @@
 import functools
 import os
-from joblib import Parallel, delayed
 from pathlib import Path
-from typing import Optional, Literal
-import yaml
+from typing import Literal, Optional
 
+import yaml
+from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
+from isp_trace_parser import input_validation
 from isp_trace_parser.metadata_extractors import extract_solar_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
-    get_all_filepaths,
-    get_metadata_that_matches_trace_names,
-    get_unique_reference_years_in_metadata,
-    get_metadata_that_matches_reference_year,
-    get_metadata_for_writing_save_name,
-    overwrite_metadata_trace_name_with_output_name,
     check_filter_by_metadata,
-    process_and_save_files,
-    get_unique_project_and_area_names_in_input_files,
+    get_all_filepaths,
     get_just_filepaths,
+    get_metadata_for_writing_save_name,
+    get_metadata_that_matches_reference_year,
+    get_metadata_that_matches_trace_names,
+    get_unique_project_and_area_names_in_input_files,
+    get_unique_reference_years_in_metadata,
+    overwrite_metadata_trace_name_with_output_name,
+    process_and_save_files,
 )
-from isp_trace_parser import input_validation
 
 
 class SolarMetadataFilter(BaseModel):

@@ -1,11 +1,9 @@
-from pathlib import Path
 import itertools
-
-import pandas as pd
-import numpy as np
-
+from pathlib import Path
 
 import end_to_end_test_data_config as config
+import numpy as np
+import pandas as pd
 
 
 def generate_random_data(start_year, end_year):
