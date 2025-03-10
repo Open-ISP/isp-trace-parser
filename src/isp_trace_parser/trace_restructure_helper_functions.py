@@ -96,11 +96,12 @@ def get_metadata_that_matches_trace_names(
 ) -> dict[Path, dict[str, str]]:
     if isinstance(trace_names, str):
         trace_names = [trace_names]
-    return {
-        f: metadata
+    matching_meta_data = {
+        f: metadata.copy()
         for f, metadata in all_input_file_metadata.items()
         if metadata["name"] in trace_names
     }
+    return matching_meta_data
 
 
 def get_unique_reference_years_in_metadata(

@@ -31,6 +31,16 @@ def generate_random_data(start_year, end_year):
 data = generate_random_data(start_year=config.start, end_year=config.end)
 
 
+def simple_flatten(nested_list):
+    flattened = []
+    for item in nested_list:
+        if isinstance(item, list):
+            flattened.extend(item)  # Add all items from the nested list
+        else:
+            flattened.append(item)
+    return flattened
+
+
 def create_solar_csvs(directory):
     combos = itertools.product(config.reference_years, config.solar_projects)
     for y, project in combos:
@@ -44,7 +54,9 @@ def create_solar_csvs(directory):
 
 
 def create_wind_csvs(directory):
-    combos = itertools.product(config.reference_years, config.wind_projects)
+    combos = itertools.product(
+        config.reference_years, simple_flatten(config.wind_projects.values())
+    )
     for y, project in combos:
         data = generate_random_data(start_year=config.start, end_year=config.end)
         data.to_csv(directory / Path(f"{project}_RefYear{y}.csv"), index=False)
