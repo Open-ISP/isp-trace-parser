@@ -361,7 +361,7 @@ wheels = [
 
 [[package]]
 name = "isp-trace-parser"
-version = "1.0.1"
+version = "1.0.2"
 source = { editable = "." }
 dependencies = [
     { name = "joblib" },

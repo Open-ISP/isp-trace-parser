@@ -69,28 +69,15 @@ def test_wind_directory_restructure(tmp_path, use_concurrency):
     new_dir.mkdir()
     create_wind_csvs(old_dir)
     parse_wind_traces(old_dir, new_dir, use_concurrency=use_concurrency)
-    project_mapping_yaml = Path(__file__).parent.parent / Path(
-        "src/isp_trace_name_mapping_configs/wind_project_mapping.yaml"
-    )
-    with open(project_mapping_yaml) as f:
-        project_name_mapping = yaml.safe_load(f)
-
-    reverse_project_name_mapping = {}
-    for name, mapping_data in project_name_mapping.items():
-        if isinstance(mapping_data["CSVFile"], list):
-            for csv_file in mapping_data["CSVFile"]:
-                reverse_project_name_mapping[csv_file] = name
-        else:
-            reverse_project_name_mapping[mapping_data["CSVFile"]] = name
 
     combos = itertools.product(
         config.reference_years,
         range(config.start, config.end),
         config.half_years,
-        config.wind_projects,
+        config.wind_projects.keys(),
     )
     for ry, y, half_year, project in combos:
-        project = reverse_project_name_mapping[project].replace(" ", "_")
+        project = project.replace(" ", "_")
         parquet_file = Path(
             f"RefYear{ry}/Project/{project}/RefYear{ry}_{project}_HalfYear{y}-"
             f"{half_year}.parquet"
