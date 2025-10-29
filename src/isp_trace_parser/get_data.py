@@ -1,7 +1,7 @@
 import itertools
 import datetime
 from pathlib import Path
-from typing import Literal
+from typing import Literal, List
 
 import pandas as pd
 import polars as pl
@@ -26,59 +26,97 @@ def _year_range_to_dt_range(
     elif year_type == "calendar":
         return datetime.datetime(start_year, 1,1), datetime.datetime(end_year+1, 1,1) 
 
+def _query_parquet_single_reference_year(
+    start_year: int,
+    end_year: int,
+    reference_year: int,
+    directory: str | Path,
+    filters: dict[str, any] = {},
+    select_columns: list[str] = ["Datetime", "Value"],
+    year_type: Literal["fy", "calendar"] = "fy"
+) -> pd.DataFrame:
+    """
+    Generic function to query parquet files with flexible column filters.
+
+    Args:
+        start_year: Start of time window
+        end_year: End of time window (inclusive)
+        reference_year: Reference year for the trace data
+        directory: Directory containing parquet files
+        filters: Dictionary of column_name: value or column_name: list_of_values.
+                Single values use equality (==), lists use membership (.is_in())
+        select_columns: Columns to return in the result. Defaults to ["Datetime", "Value"]
+        year_type: 'fy' or 'calendar'
+
+    Returns:
+        pd.DataFrame with selected columns, sorted by Datetime
+    """
+    start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
+    df_lazy = pl.scan_parquet(directory)
+
+    # Build filter expression - start with date/time filters
+    filter_expr = (
+        (pl.col("RefYear") == reference_year) &
+        (pl.col("Datetime") > start_dt) &
+        (pl.col("Datetime") <= end_dt)
+    )
+
+    # Add column filters
+    for col, value in filters.items():
+        if isinstance(value, list):
+            filter_expr &= pl.col(col).is_in(value)
+        else:
+            filter_expr &= pl.col(col) == value
+
+    df = (df_lazy.filter(filter_expr)
+                 .select(*select_columns)
+                 .sort("Datetime")
+                 .collect())
+
+    return df.to_pandas()
+
+
 @validate_call
 def generic_project_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
-    project: str,
+    project: str | List,
     directory: str | Path,
-    year_type: Literal["fy", "calendar"] = "fy"):
+    year_type: Literal["fy", "calendar"] = "fy",
+    select_columns: list[str] = ["Datetime", "Value"]):
 
-    start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
+    return _query_parquet_single_reference_year(
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        directory=directory,
+        filters={"Project": project},
+        year_type=year_type,
+        select_columns=select_columns
+    )
 
-    df_lazy = pl.scan_parquet(directory)
-
-    df = (df_lazy.filter((pl.col("RefYear") == reference_year) & 
-                        (pl.col("Datetime")>start_dt) & 
-                        (pl.col("Datetime")<=end_dt) & 
-                        (pl.col("Project")==project)) 
-                .select("Datetime", "Value")
-                .sort("Datetime")
-                .collect()
-            )
-
-    ## I don't know if this is necessary?
-    return df.to_pandas()
 
 @validate_call
 def generic_zone_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
-    zone: str,
+    zone: str | List,
     tech: str,
     directory: str | Path,
-    year_type: Literal["fy", "calendar"] = "fy"):
+    year_type: Literal["fy", "calendar"] = "fy",
+    select_columns: list[str] = ["Datetime", "Value"]):
 
-    start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
-
-    df_lazy = pl.scan_parquet(directory)
-
-    df = (df_lazy.filter((pl.col("RefYear") == reference_year) & 
-                        (pl.col("Datetime")>start_dt) & 
-                        (pl.col("Datetime")<=end_dt) & 
-                        (pl.col("Zone")==zone) &
-                        (pl.col("Tech")==tech))  
-                .select("Datetime", "Value")
-                .sort("Datetime")
-                .collect()
-            )
-
-    ## I don't know if this is necessary?
-    return df.to_pandas()
-
-
+    return _query_parquet_single_reference_year(
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        directory=directory,
+        filters={"Zone": zone, "Tech": tech},
+        year_type=year_type,
+        select_columns=select_columns
+    )
 
 @validate_call
 def generic_demand_single_reference_year(
@@ -88,29 +126,30 @@ def generic_demand_single_reference_year(
     scenario: str,
     subregion: str,
     category: str,
-    poe: str, 
+    poe: str,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy"):
 
-    start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
+    return _query_parquet_single_reference_year(
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        directory=directory,
+        filters={
+            "Scenario": scenario,
+            "Subregion": subregion,
+            "Category": category,
+            "POE": poe
+        },
+        year_type=year_type
+    )
 
-    df_lazy = pl.scan_parquet(directory)
 
-    df = (df_lazy.filter((pl.col("RefYear") == reference_year) &
-                        (pl.col("Datetime")>start_dt) & 
-                        (pl.col("Datetime")<=end_dt) & 
-                        (pl.col("Scenario") == scenario) &
-                        (pl.col("Subregion")==subregion) & 
-                        (pl.col("Category") == category) &
-                        (pl.col("POE")==poe) 
-                        )
-                .select("Datetime", "Value")
-                .sort("Datetime")
-                .collect()
-            )
+"""
+This section is just passthrough functions from original API 
+(...and has been fully tested)
+"""
 
-    ## I don't know if this is necessary?
-    return df.to_pandas()
 
 @validate_call
 def solar_project_single_reference_year(*args, **kwargs):
