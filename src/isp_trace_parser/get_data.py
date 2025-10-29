@@ -57,6 +57,7 @@ def generic_zone_single_reference_year(
     end_year: int,
     reference_year: int,
     zone: str,
+    tech: str,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy"):
 
@@ -67,7 +68,8 @@ def generic_zone_single_reference_year(
     df = (df_lazy.filter((pl.col("RefYear") == reference_year) & 
                         (pl.col("Datetime")>start_dt) & 
                         (pl.col("Datetime")<=end_dt) & 
-                        (pl.col("Zone")==zone)) 
+                        (pl.col("Zone")==zone) &
+                        (pl.col("Tech")==tech))  
                 .select("Datetime", "Value")
                 .sort("Datetime")
                 .collect()
@@ -77,6 +79,38 @@ def generic_zone_single_reference_year(
     return df.to_pandas()
 
 
+
+@validate_call
+def generic_demand_single_reference_year(
+    start_year: int,
+    end_year: int,
+    reference_year: int,
+    scenario: str,
+    subregion: str,
+    category: str,
+    poe: str, 
+    directory: str | Path,
+    year_type: Literal["fy", "calendar"] = "fy"):
+
+    start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
+
+    df_lazy = pl.scan_parquet(directory)
+
+    df = (df_lazy.filter((pl.col("RefYear") == reference_year) &
+                        (pl.col("Datetime")>start_dt) & 
+                        (pl.col("Datetime")<=end_dt) & 
+                        (pl.col("Scenario") == scenario) &
+                        (pl.col("Subregion")==subregion) & 
+                        (pl.col("Category") == category) &
+                        (pl.col("POE")==poe) 
+                        )
+                .select("Datetime", "Value")
+                .sort("Datetime")
+                .collect()
+            )
+
+    ## I don't know if this is necessary?
+    return df.to_pandas()
 
 @validate_call
 def solar_project_single_reference_year(*args, **kwargs):
