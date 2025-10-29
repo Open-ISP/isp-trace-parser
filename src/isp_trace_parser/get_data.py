@@ -75,6 +75,24 @@ def _query_parquet_single_reference_year(
 
     return df.to_pandas()
 
+def _query_parquet_multiple_reference_year(
+    reference_year_mapping: dict[int,int],
+    **kwargs:  any
+) ->pd.DataFrame:
+    
+    data = []
+    for year, reference_year in reference_year_mapping.items():
+        data.append(
+            _query_parquet_single_reference_year(             
+                start_year=year,
+                end_year=year,
+                reference_year=reference_year,
+                **kwargs
+            )
+        )
+    data = pd.concat(data)
+    return data  
+
 
 @validate_call
 def generic_project_single_reference_year(
