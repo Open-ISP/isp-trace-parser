@@ -1,4 +1,5 @@
 import itertools
+import datetime
 from pathlib import Path
 from typing import Literal
 
@@ -9,67 +10,87 @@ from pydantic import validate_call
 from isp_trace_parser import input_validation
 
 
+def _year_range_to_dt_range(
+            start_year: int,
+            end_year: int,
+            year_type:Literal["fy", "calendar"] = "fy"):
+    """
+    Converting years to datetimes (for more efficient filters / selects)
+    """
+
+    ##Need to make a call on end dates 
+    
+    if year_type == "fy":
+        return datetime.datetime(start_year-1, 7,1), datetime.datetime(end_year, 7,1) 
+
+    elif year_type == "calendar":
+        return datetime.datetime(start_year, 1,1), datetime.datetime(end_year+1, 1,1) 
+
 @validate_call
-def solar_project_single_reference_year(
+def generic_project_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
     project: str,
     directory: str | Path,
-    year_type: Literal["fy", "calendar"] = "fy",
-) -> pd.DataFrame:
-    """Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
+    year_type: Literal["fy", "calendar"] = "fy"):
 
-    Examples:
+    start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
 
-    >>> solar_project_single_reference_year(
-    ... start_year=2022,
-    ... end_year=2024,
-    ... reference_year=2011,
-    ... project='Adelaide Desalination Plant Solar Farm',
-    ... directory='example_parsed_data/solar') # doctest: +SKIP
-                     Datetime  Value
-    0     2021-07-01 00:30:00    0.0
-    1     2021-07-01 01:00:00    0.0
-    2     2021-07-01 01:30:00    0.0
-    3     2021-07-01 02:00:00    0.0
-    4     2021-07-01 02:30:00    0.0
-    ...                   ...   ...
-    52603 2024-06-30 22:00:00    0.0
-    52604 2024-06-30 22:30:00    0.0
-    52605 2024-06-30 23:00:00    0.0
-    52606 2024-06-30 23:30:00    0.0
-    52607 2024-07-01 00:00:00    0.0
-    <BLANKLINE>
-    [52608 rows x 2 columns]
+    df_lazy = pl.scan_parquet(directory)
 
-    Args:
-        start_year: int, start of time window to return trace data for.
-        end_year: int, end of time window (inclusive) to return trace data for.
-        reference_year: int, the reference year of the trace data to retrieve.
-        project: str, the name of solar project (generator) to return data for. Names should as given in the IASR
-            workbook.
-        directory: str or pathlib.Path, the directory were the trace data is stored. Trace data needs to be in the
-            format as produced by isp_trace_parser.restructure_solar_directory.
-        year_type: str, 'fy' or 'calendar', if 'fy' then time filtering is by financial year with start_year and
-            end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
-            FY2015/2016). If 'calendar', then filtering is by calendar year.
+    df = (df_lazy.filter((pl.col("RefYear") == reference_year) & 
+                        (pl.col("Datetime")>start_dt) & 
+                        (pl.col("Datetime")<=end_dt) & 
+                        (pl.col("Project")==project)) 
+                .select("Datetime", "Value")
+                .sort("Datetime")
+                .collect()
+            )
 
-    Returns: pd.DataFrame with columns Datetime and Value
+    ## I don't know if this is necessary?
+    return df.to_pandas()
+
+@validate_call
+def generic_zone_single_reference_year(
+    start_year: int,
+    end_year: int,
+    reference_year: int,
+    zone: str,
+    directory: str | Path,
+    year_type: Literal["fy", "calendar"] = "fy"):
+
+    start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
+
+    df_lazy = pl.scan_parquet(directory)
+
+    df = (df_lazy.filter((pl.col("RefYear") == reference_year) & 
+                        (pl.col("Datetime")>start_dt) & 
+                        (pl.col("Datetime")<=end_dt) & 
+                        (pl.col("Zone")==zone)) 
+                .select("Datetime", "Value")
+                .sort("Datetime")
+                .collect()
+            )
+
+    ## I don't know if this is necessary?
+    return df.to_pandas()
+
+
+
+@validate_call
+def solar_project_single_reference_year(*args, **kwargs):
     """
-    directory = input_validation.parsed_directory(directory)
-    input_validation.start_year_before_end_year(start_year, end_year)
+    Pass-through function to keep backwards capability with previos API
+    """
+    return generic_project_single_reference_year(*args, **kwargs)
 
-    kwargs = {"project": project}
-    return generic_single_reference_year(
-        "solar_project",
-        start_year,
-        end_year,
-        reference_year,
-        year_type,
-        directory,
-        **kwargs,
-    )
+@validate_call
+def wind_project_single_reference_year(*args, **kwargs):
+    """
+    Pass-through function to keep backwards capability with previos API
+    """
+    return generic_project_single_reference_year(*args, **kwargs)
 
 
 @validate_call
