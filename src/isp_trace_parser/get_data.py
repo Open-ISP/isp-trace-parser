@@ -8,21 +8,25 @@ from pydantic import validate_call
 
 
 def _year_range_to_dt_range(
-            start_year: int,
-            end_year: int,
-            year_type:Literal["fy", "calendar"] = "fy"):
+    start_year: int, end_year: int, year_type: Literal["fy", "calendar"] = "fy"
+):
     """
     Converting years to datetimes (for more efficient filters / selects)
     """
 
-    ##Need to make a call on end dates 
-    
+    ##Need to make a call on end dates
+
     if year_type == "fy":
-        return datetime.datetime(start_year-1, 7,1), datetime.datetime(end_year, 7,1) 
+        return datetime.datetime(start_year - 1, 7, 1), datetime.datetime(
+            end_year, 7, 1
+        )
 
     elif year_type == "calendar":
-        return datetime.datetime(start_year, 1,1), datetime.datetime(end_year+1, 1,1) 
-    
+        return datetime.datetime(start_year, 1, 1), datetime.datetime(
+            end_year + 1, 1, 1
+        )
+
+
 def _format_string_filters(filters: dict) -> None:
     """Format string filters by replacing spaces with underscores.
 
@@ -35,6 +39,7 @@ def _format_string_filters(filters: dict) -> None:
             else:
                 filters[key] = filters[key].replace(" ", "_")
 
+
 def _query_parquet_single_reference_year(
     start_year: int,
     end_year: int,
@@ -42,8 +47,8 @@ def _query_parquet_single_reference_year(
     directory: str | Path,
     filters: dict[str, any] = {},
     select_columns: list[str] = ["Datetime", "Value"],
-    year_type: Literal["fy", "calendar"] = "fy"
-    ) -> pd.DataFrame:
+    year_type: Literal["fy", "calendar"] = "fy",
+) -> pd.DataFrame:
     """
     Generic function to query parquet files with flexible column filters.
 
@@ -66,42 +71,34 @@ def _query_parquet_single_reference_year(
     df_lazy = pl.scan_parquet(directory)
 
     filter_expr = (
-        (pl.col("RefYear") == reference_year) &
-        (pl.col("Datetime") > start_dt) &
-        (pl.col("Datetime") <= end_dt)
+        (pl.col("RefYear") == reference_year)
+        & (pl.col("Datetime") > start_dt)
+        & (pl.col("Datetime") <= end_dt)
     )
 
     for col, value in filters.items():
         if isinstance(value, list):
-
             filter_expr &= pl.col(col).is_in(value)
         else:
             filter_expr &= pl.col(col) == value
 
-    df = (df_lazy.filter(filter_expr)
-                 .select(*select_columns)
-                 .sort("Datetime")
-                 .collect())
+    df = df_lazy.filter(filter_expr).select(*select_columns).sort("Datetime").collect()
 
     return df.to_pandas()
 
-def _query_parquet_multiple_reference_years(
-    reference_year_mapping: dict[int,int],
-    **kwargs:  any
-) ->pd.DataFrame:
 
+def _query_parquet_multiple_reference_years(
+    reference_year_mapping: dict[int, int], **kwargs: any
+) -> pd.DataFrame:
     data = []
     for year, reference_year in reference_year_mapping.items():
         data.append(
-            _query_parquet_single_reference_year(             
-                start_year=year,
-                end_year=year,
-                reference_year=reference_year,
-                **kwargs
+            _query_parquet_single_reference_year(
+                start_year=year, end_year=year, reference_year=reference_year, **kwargs
             )
         )
     data = pd.concat(data)
-    return data  
+    return data
 
 
 @validate_call
@@ -112,8 +109,8 @@ def get_project_single_reference_year(
     project: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"]):
-
+    select_columns: list[str] = ["Datetime", "Value"],
+):
     return _query_parquet_single_reference_year(
         start_year=start_year,
         end_year=end_year,
@@ -121,7 +118,7 @@ def get_project_single_reference_year(
         directory=directory,
         filters={"Project": project},
         year_type=year_type,
-        select_columns=select_columns
+        select_columns=select_columns,
     )
 
 
@@ -134,8 +131,8 @@ def get_zone_single_reference_year(
     tech: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"]):
-
+    select_columns: list[str] = ["Datetime", "Value"],
+):
     return _query_parquet_single_reference_year(
         start_year=start_year,
         end_year=end_year,
@@ -143,8 +140,9 @@ def get_zone_single_reference_year(
         directory=directory,
         filters={"Zone": zone, "Tech": tech},
         year_type=year_type,
-        select_columns=select_columns
+        select_columns=select_columns,
     )
+
 
 @validate_call
 def get_demand_single_reference_year(
@@ -157,8 +155,8 @@ def get_demand_single_reference_year(
     poe: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"]):
-
+    select_columns: list[str] = ["Datetime", "Value"],
+):
     return _query_parquet_single_reference_year(
         start_year=start_year,
         end_year=end_year,
@@ -168,56 +166,58 @@ def get_demand_single_reference_year(
             "Scenario": scenario,
             "Subregion": subregion,
             "Category": category,
-            "POE": poe
+            "POE": poe,
         },
         year_type=year_type,
-        select_columns=select_columns
+        select_columns=select_columns,
     )
+
 
 @validate_call
 def get_project_multiple_reference_years(
-    reference_year_mapping: dict[int,int],
+    reference_year_mapping: dict[int, int],
     project: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"]):
-
+    select_columns: list[str] = ["Datetime", "Value"],
+):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
         filters={"Project": project},
         year_type=year_type,
-        select_columns=select_columns
+        select_columns=select_columns,
     )
+
 
 @validate_call
 def get_zone_multiple_reference_years(
-    reference_year_mapping: dict[int,int],
+    reference_year_mapping: dict[int, int],
     zone: str | List,
     tech: str,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"]):
-
+    select_columns: list[str] = ["Datetime", "Value"],
+):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
         filters={"Zone": zone, "Tech": tech},
         year_type=year_type,
-        select_columns=select_columns
+        select_columns=select_columns,
     )
 
 
 @validate_call
 def get_demand_multiple_reference_years(
-    reference_year_mapping: dict[int,int],
+    reference_year_mapping: dict[int, int],
     scenario: str,
     subregion: str,
     category: str,
     poe: str,
     directory: str | Path,
-    year_type: Literal["fy", "calendar"] = "fy"):
-
+    year_type: Literal["fy", "calendar"] = "fy",
+):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
@@ -225,10 +225,11 @@ def get_demand_multiple_reference_years(
             "Scenario": scenario,
             "Subregion": subregion,
             "Category": category,
-            "POE": poe
+            "POE": poe,
         },
-        year_type=year_type
+        year_type=year_type,
     )
+
 
 """
 This section is just passthrough functions from original API. This includes:
@@ -245,6 +246,7 @@ def solar_project_single_reference_year(*args, **kwargs):
     Pass-through function to keep backwards capability with previos API
     """
     return get_project_single_reference_year(*args, **kwargs)
+
 
 @validate_call
 def wind_project_single_reference_year(*args, **kwargs):
@@ -354,6 +356,7 @@ def solar_area_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
+
     """
     Pass-through function to keep backwards capability with previos API
 
@@ -409,7 +412,6 @@ def solar_area_single_reference_year(
     tech=technology,
     directory= directory,
     year_type=year_type)
-
 
 @validate_call
 def solar_area_multiple_reference_years(
@@ -539,7 +541,6 @@ def wind_area_single_reference_year(
 ) -> pd.DataFrame:
     """
     Pass-through function to keep backwards capability with previos API
-
     Reads wind area trace data from an output directory created by isp_trace_parser.wind_trace_parser.
 
     Examples:
