@@ -105,7 +105,7 @@ def _query_parquet_multiple_reference_years(
 
 
 @validate_call
-def generic_project_single_reference_year(
+def get_project_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
@@ -126,7 +126,7 @@ def generic_project_single_reference_year(
 
 
 @validate_call
-def generic_zone_single_reference_year(
+def get_zone_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
@@ -147,7 +147,7 @@ def generic_zone_single_reference_year(
     )
 
 @validate_call
-def generic_demand_single_reference_year(
+def get_demand_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
@@ -175,7 +175,7 @@ def generic_demand_single_reference_year(
     )
 
 @validate_call
-def generic_project_multiple_reference_years(
+def get_project_multiple_reference_years(
     reference_year_mapping: dict[int,int],
     project: str | List,
     directory: str | Path,
@@ -191,7 +191,7 @@ def generic_project_multiple_reference_years(
     )
 
 @validate_call
-def generic_zone_multiple_reference_years(
+def get_zone_multiple_reference_years(
     reference_year_mapping: dict[int,int],
     zone: str | List,
     tech: str,
@@ -209,7 +209,7 @@ def generic_zone_multiple_reference_years(
 
 
 @validate_call
-def generic_demand_multiple_reference_years(
+def get_demand_multiple_reference_years(
     reference_year_mapping: dict[int,int],
     scenario: str,
     subregion: str,
@@ -244,7 +244,7 @@ def solar_project_single_reference_year(*args, **kwargs):
     """
     Pass-through function to keep backwards capability with previos API
     """
-    return generic_project_single_reference_year(*args, **kwargs)
+    return get_project_single_reference_year(*args, **kwargs)
 
 @validate_call
 def wind_project_single_reference_year(*args, **kwargs):
@@ -289,7 +289,7 @@ def wind_project_single_reference_year(*args, **kwargs):
 
     Returns: pd.DataFrame with columns Datetime and Value
     """
-    return generic_project_single_reference_year(*args, **kwargs)
+    return get_project_single_reference_year(*args, **kwargs)
 
 
 @validate_call
@@ -303,6 +303,7 @@ def solar_project_multiple_reference_years(
     Pass-through function to keep backwards capability with previos API
     
     Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
+
 
     Examples:
 
@@ -339,7 +340,7 @@ def solar_project_multiple_reference_years(
 
     Returns: pd.DataFrame with columns Datetime and Value
     """    
-    return generic_project_multiple_reference_years(reference_year_mapping=reference_years,
+    return get_project_multiple_reference_years(reference_year_mapping=reference_years,
         project=project,
         directory=directory,
         year_type=year_type)
@@ -399,9 +400,8 @@ def solar_area_single_reference_year(
     Returns: pd.DataFrame with columns Datetime and Value
 
     """
-   
     
-    return generic_zone_single_reference_year(
+    return get_zone_single_reference_year(
     start_year= start_year,
     end_year= end_year,
     reference_year= reference_year,
@@ -464,7 +464,7 @@ def solar_area_multiple_reference_years(
     Returns: pd.DataFrame with columns Datetime and Value
     """
 
-    return generic_zone_multiple_reference_years(reference_year_mapping=reference_years,
+    return get_zone_multiple_reference_years(reference_year_mapping=reference_years,
     zone=area,
     tech=technology,
     directory = directory,
@@ -478,6 +478,7 @@ def wind_project_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
+
     """
     Pass-through function to keep backwards capability with previos API
     
@@ -518,7 +519,8 @@ def wind_project_multiple_reference_years(
 
     Returns: pd.DataFrame with columns Datetime and Value
     """
-    return generic_project_multiple_reference_years(
+
+    return get_project_multiple_reference_years(
     reference_year_mapping=reference_years,
     project=project,
     directory= directory,
@@ -582,7 +584,7 @@ def wind_area_single_reference_year(
     """
 
 
-    return generic_zone_single_reference_year(start_year=start_year,
+    return get_zone_single_reference_year(start_year=start_year,
     end_year=end_year,
     reference_year=reference_year,
     zone=area,
@@ -646,7 +648,7 @@ def demand_multiple_reference_years(
     Returns: pd.DataFrame with columns Datetime and Value
     """
     
-    return generic_demand_multiple_reference_years(
+    return get_demand_multiple_reference_years(
     reference_year_mapping= reference_years,
     scenario=scenario,
     subregion=subregion,
@@ -705,7 +707,7 @@ def wind_area_multiple_reference_years(
     Returns: pd.DataFrame with columns Datetime and Value
     """
 
-    return generic_zone_multiple_reference_years(
+    return get_zone_multiple_reference_years(
     reference_year_mapping=reference_years,
     zone=area,
     tech=resource_quality,
@@ -774,7 +776,7 @@ def demand_single_reference_year(
     Returns: pd.DataFrame with columns Datetime and Value
     """
 
-    return generic_demand_single_reference_year(
+    return get_demand_single_reference_year(
     start_year= start_year,
     end_year=end_year,
     reference_year=reference_year,
