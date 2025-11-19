@@ -23,13 +23,17 @@ def _year_range_to_dt_range(
     elif year_type == "calendar":
         return datetime.datetime(start_year, 1,1), datetime.datetime(end_year+1, 1,1) 
     
-def _format_project_names(filters: dict) -> None:
-    """Format project names by replacing spaces with underscores."""
-    if "Project" in filters:
-        if isinstance(filters["Project"], list):
-            filters["Project"] = [i.replace(" ", "_") for i in filters["Project"]]
-        else:
-            filters["Project"] = filters["Project"].replace(" ", "_")
+def _format_string_filters(filters: dict) -> None:
+    """Format string filters by replacing spaces with underscores.
+
+    Currently handles: Project, Scenario
+    """
+    for key in ["Project", "Scenario"]:
+        if key in filters:
+            if isinstance(filters[key], list):
+                filters[key] = [i.replace(" ", "_") for i in filters[key]]
+            else:
+                filters[key] = filters[key].replace(" ", "_")
 
 def _query_parquet_single_reference_year(
     start_year: int,
@@ -56,7 +60,7 @@ def _query_parquet_single_reference_year(
     Returns:
         pd.DataFrame with selected columns, sorted by Datetime
     """
-    _format_project_names(filters)
+    _format_string_filters(filters)
     start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
 
     df_lazy = pl.scan_parquet(directory)
@@ -127,7 +131,7 @@ def generic_zone_single_reference_year(
     end_year: int,
     reference_year: int,
     zone: str | List,
-    tech: str,
+    tech: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = ["Datetime", "Value"]):
@@ -147,12 +151,13 @@ def generic_demand_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
-    scenario: str,
-    subregion: str,
-    category: str,
-    poe: str,
+    scenario: str | List,
+    subregion: str | List,
+    category: str | List,
+    poe: str | List,
     directory: str | Path,
-    year_type: Literal["fy", "calendar"] = "fy"):
+    year_type: Literal["fy", "calendar"] = "fy",
+    select_columns: list[str] = ["Datetime", "Value"]):
 
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -160,12 +165,13 @@ def generic_demand_single_reference_year(
         reference_year=reference_year,
         directory=directory,
         filters={
-            "Scenario": scenario.replace(" ", "_"),
+            "Scenario": scenario,
             "Subregion": subregion,
             "Category": category,
             "POE": poe
         },
-        year_type=year_type
+        year_type=year_type,
+        select_columns=select_columns
     )
 
 @validate_call
@@ -216,7 +222,7 @@ def generic_demand_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
         filters={
-            "Scenario": scenario.replace(" ", "_"),
+            "Scenario": scenario,
             "Subregion": subregion,
             "Category": category,
             "POE": poe
