@@ -45,11 +45,11 @@ def download_from_manifest(
     >>> download_from_manifest("workbooks/6.0", "data", strip_levels=3)
     # Downloads to: data/6.0.xlsx
 
-    >>> download_from_manifest("trace_data/example_2024", "data/traces", strip_levels=2)
+    >>> download_from_manifest("/example_isp_2024", "data/traces", strip_levels=2)
     # Downloads to: data/traces/project/RefYear=2018/data_0.parquet
     """
     # Construct manifest path
-    manifest_path = Path(__file__).parent / "manifests" / f"{manifest_name}.txt"
+    manifest_path = files("isp_trace_parser.manifests") / f"{manifest_name}.txt"
 
     if not manifest_path.exists():
         raise FileNotFoundError(f"Manifest file not found: {manifest_path}")
@@ -128,9 +128,9 @@ def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
             f.write(chunk)
             pbar.update(len(chunk))
 
-def fetch_trace_data(
+def fetch_processed_trace_data(
     dataset_type: Literal["full", "example"],
-    dataset_year: int,
+    dataset_src: str,
     save_directory: Path | str,
 ) -> None:
     """Download ISP trace data.
@@ -172,14 +172,14 @@ def fetch_trace_data(
             f"dataset_type must be 'full' or 'example', got: {dataset_type}"
         )
 
-    if dataset_year != 2024:
+    if dataset_src != "isp_2024":
         raise ValueError(
-            f"Only dataset_year=2024 is currently supported, got: {dataset_year}"
+            f"Only isp_2024 is currently supported, got: {dataset_src}"
         )
 
     # Construct manifest name and download
-    manifest_name = f"trace_data/{dataset_type}_{dataset_year}"
+    manifest_name = f"processed/{dataset_type}_{dataset_src}"
 
-    print(f"Downloading {dataset_type} trace data for {dataset_year}")
+    print(f"Downloading {dataset_type} trace data for {dataset_src}")
     download_from_manifest(manifest_name, save_directory, strip_levels=2)
     print(f"Trace data saved to: {save_directory}")
