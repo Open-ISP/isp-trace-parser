@@ -9,7 +9,7 @@ import requests
 from tqdm import tqdm
 
 
-def download_from_manifest(
+def _download_from_manifest(
     manifest_name: str,
     save_directory: Path | str,
     strip_levels: int = 0,
@@ -42,11 +42,11 @@ def download_from_manifest(
 
     Example
     --------
-    >>> download_from_manifest("/example_isp_2024", "data/traces", strip_levels=2)
+    >>> _download_from_manifest("/example_isp_2024", "data/traces", strip_levels=2)
     # Downloads to: data/traces/project/RefYear=2018/data_0.parquet
     """
     # Construct manifest path
-    manifest_path = files("isp_trace_parser.manifests") / f"{manifest_name}.txt"
+    manifest_path = files("isp_trace_parser.remote.manifests") / f"{manifest_name}.txt"
 
     if not manifest_path.exists():
         raise FileNotFoundError(f"Manifest file not found: {manifest_path}")
@@ -190,5 +190,5 @@ def fetch_trace_data(
     manifest_name = f"{data_format}/{dataset_type}_{dataset_src}"
 
     print(f"Downloading {dataset_type} {data_format} trace data for {dataset_src}")
-    download_from_manifest(manifest_name, save_directory, strip_levels=2)
+    _download_from_manifest(manifest_name, save_directory, strip_levels=2)
     print(f"Trace data saved to: {save_directory}")
