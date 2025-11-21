@@ -24,7 +24,7 @@ def download_from_manifest(
     ----------
     manifest_name : str
         Name of manifest file relative to manifests directory
-        (e.g., "workbooks/6.0" or "trace_data/example_2024")
+        (e.g., "trace_data/example_2024")
     save_directory : Path | str
         Root directory where files should be saved
     strip_levels : int, optional
@@ -40,11 +40,8 @@ def download_from_manifest(
     OSError
         If there are filesystem errors (permissions, disk space, etc.)
 
-    Examples
+    Example
     --------
-    >>> download_from_manifest("workbooks/6.0", "data", strip_levels=3)
-    # Downloads to: data/6.0.xlsx
-
     >>> download_from_manifest("/example_isp_2024", "data/traces", strip_levels=2)
     # Downloads to: data/traces/project/RefYear=2018/data_0.parquet
     """
@@ -128,30 +125,34 @@ def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
             f.write(chunk)
             pbar.update(len(chunk))
 
-def fetch_processed_trace_data(
+def fetch_trace_data(
     dataset_type: Literal["full", "example"],
     dataset_src: str,
     save_directory: Path | str,
+    data_format: Literal["processed", "archive"] = "processed",
 ) -> None:
     """Download ISP trace data.
 
-    Downloads the ISP trace data for the specified type and year from the
+    Downloads the ISP trace data for the specified type and format from the
     manifest to the specified directory.
 
     Parameters
     ----------
     dataset_type : {"full", "example"}
         Type of dataset to download
-    dataset_year : int
-        Year of dataset (currently only 2024 is supported)
+    dataset_src : str
+        Source of dataset (currently only isp_2024 is supported)
     save_directory : Path | str
         Directory where trace data should be saved. Files will be organized
         in subdirectories preserving the structure from the manifest.
+    data_format : {"processed", "archive"}
+        Format of data to download. "processed" downloads parquet files,
+        "archive" downloads original zip files.
 
     Raises
     ------
     ValueError
-        If dataset_type or dataset_year are invalid
+        If dataset_type, dataset_src, or data_format are invalid
     FileNotFoundError
         If the manifest file does not exist
     requests.HTTPError
@@ -161,10 +162,13 @@ def fetch_processed_trace_data(
 
     Examples
     --------
-    >>> fetch_trace_data("example", 2024, "data/traces")
+    >>> fetch_trace_data("example", "isp_2024", "data/traces", "processed")
     # Downloads to: data/traces/isp_2024/project/RefYear=2018/data_0.parquet
     #               data/traces/isp_2024/zone/RefYear=2018/data_0.parquet
     #               data/traces/isp_2024/demand/Scenario=Step_Change/RefYear=2018/data_0.parquet
+
+    >>> fetch_trace_data("full", "isp_2024", "data/archive", "archive")
+    # Downloads original zip files to: data/archive/...
     """
     # Validate inputs
     if dataset_type not in ["full", "example"]:
@@ -177,9 +181,14 @@ def fetch_processed_trace_data(
             f"Only isp_2024 is currently supported, got: {dataset_src}"
         )
 
-    # Construct manifest name and download
-    manifest_name = f"processed/{dataset_type}_{dataset_src}"
+    if data_format not in ["processed", "archive"]:
+        raise ValueError(
+            f"data_format must be 'processed' or 'archive', got: {data_format}"
+        )
 
-    print(f"Downloading {dataset_type} trace data for {dataset_src}")
+    # Construct manifest name and download
+    manifest_name = f"{data_format}/{dataset_type}_{dataset_src}"
+
+    print(f"Downloading {dataset_type} {data_format} trace data for {dataset_src}")
     download_from_manifest(manifest_name, save_directory, strip_levels=2)
     print(f"Trace data saved to: {save_directory}")
