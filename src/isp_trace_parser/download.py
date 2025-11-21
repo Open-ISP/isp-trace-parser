@@ -1,5 +1,6 @@
 """Download data files from manifests."""
 
+from importlib.resources import files
 from pathlib import Path
 from typing import Literal
 from urllib.parse import urlparse
@@ -126,88 +127,6 @@ def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
             pbar.update(len(chunk))
-
-
-def fetch_workbook(
-    workbook_version: str,
-    save_path: Path | str,
-) -> None:
-    """Download ISP workbook file.
-
-    Downloads the ISP workbook for the specified version from the manifest
-    to the specified file path.
-
-    Parameters
-    ----------
-    workbook_version : str
-        Version string (e.g., "6.0")
-    save_path : Path | str
-        Full path where the workbook file should be saved
-        (e.g., "data/workbooks/6.0.xlsx")
-
-    Raises
-    ------
-    FileNotFoundError
-        If the manifest file does not exist
-    requests.HTTPError
-        If the download fails
-    OSError
-        If there are filesystem errors
-
-    Examples
-    --------
-    >>> fetch_workbook("6.0", "data/workbooks/isp_6.0.xlsx")
-    # Downloads ISP 6.0 workbook to data/workbooks/isp_6.0.xlsx
-    """
-    # Construct manifest path
-    manifest_path = (
-        Path(__file__).parent / "manifests" / "workbooks" / f"{workbook_version}.txt"
-    )
-
-    if not manifest_path.exists():
-        raise FileNotFoundError(f"Manifest file not found: {manifest_path}")
-
-    # Read URL from manifest (should be single URL)
-    with open(manifest_path) as f:
-        urls = [line.strip() for line in f if line.strip()]
-
-    if not urls:
-        raise ValueError(f"No URLs found in manifest: {manifest_path}")
-
-    if len(urls) > 1:
-        raise ValueError(f"Expected single URL in workbook manifest, found {len(urls)}")
-
-    url = urls[0]
-    save_path = Path(save_path)
-
-    # Create parent directories
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Download file
-    print(f"Downloading workbook {workbook_version} from {url}")
-    response = requests.get(url, stream=True)
-    response.raise_for_status()
-
-    # Get file size if available
-    total_size = int(response.headers.get("content-length", 0))
-
-    # Write file with progress bar
-    with (
-        open(save_path, "wb") as f,
-        tqdm(
-            total=total_size,
-            unit="B",
-            unit_scale=True,
-            unit_divisor=1024,
-            desc=f"Downloading {save_path.name}",
-        ) as pbar,
-    ):
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
-            pbar.update(len(chunk))
-
-    print(f"Workbook saved to: {save_path}")
-
 
 def fetch_trace_data(
     dataset_type: Literal["full", "example"],
