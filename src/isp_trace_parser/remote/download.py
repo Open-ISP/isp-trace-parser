@@ -1,5 +1,6 @@
 """Download data files from manifests."""
 
+import time
 from importlib.resources import files
 from pathlib import Path
 from typing import Literal
@@ -62,7 +63,22 @@ def _download_from_manifest(
 
     # Download each file with progress bar
     for url in tqdm(urls, desc="Downloading files", unit="file"):
-        _download_file(url, save_directory, strip_levels)
+        _download_with_retry(url, save_directory, strip_levels)
+
+
+def _download_with_retry(
+    url: str, save_directory: Path, strip_levels: int, max_retries: int = 3
+) -> None:
+    """Retry wrapper for _download_file with exponential backoff."""
+    for attempt in range(max_retries):
+        try:
+            _download_file(url, save_directory, strip_levels)
+            return
+        except requests.exceptions.RequestException:
+            if attempt < max_retries - 1:
+                time.sleep(2**attempt)
+            else:
+                raise
 
 
 def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
