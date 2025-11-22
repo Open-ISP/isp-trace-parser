@@ -5,6 +5,7 @@ from typing import Literal, Optional
 
 import polars as pl
 import yaml
+from duckdb import DuckDBPyConnection
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
@@ -166,7 +167,7 @@ def parse_demand_traces(
 def restructure_demand_file(
     input_filepath: Path,
     demand_scenario_mapping: dict[str, str],
-    output_directory: str | Path,
+    db_connection: DuckDBPyConnection,
     filters: dict[str, list[str]] = None,
 ) -> None:
     """
@@ -243,6 +244,29 @@ def get_save_scenario_for_demand_trace(
         The mapped scenario name as a string.
     """
     return demand_scenario_mapping[file_metadata["scenario"]]
+
+def write_to_db(
+        trace: pl.DataFrame,
+        conn: DuckDBPyConnection,
+        ):
+
+        conn.register("df", trace)
+        conn.execute("INSERT INTO demand_traces BY NAME SELECT * FROM df")
+
+
+def create_db(conn: DuckDBPyConnection):
+    conn.execute("""
+        CREATE TABLE demand_traces (
+            datetime TIMESTAMP,
+            subregions VARCHAR,
+            reference_year INTEGER,
+            scenario VARCHAR,
+            poe VARCHAR,
+            demand_type VARCHAR,
+            value DOUBLE,
+        UNIQUE (datetime, subregions, reference_year, scenario, poe, demand_type)
+        )
+    """)
 
 
 def extract_metadata_for_all_demand_files(
