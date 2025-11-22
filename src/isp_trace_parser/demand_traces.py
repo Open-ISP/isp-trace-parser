@@ -11,11 +11,9 @@ from pydantic import BaseModel, validate_call
 from isp_trace_parser import input_validation
 from isp_trace_parser.metadata_extractors import extract_demand_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
-    add_half_year_as_column,
     check_filter_by_metadata,
     get_all_filepaths,
     read_trace_csv,
-    save_half_year_chunk_of_trace,
     trace_formatter,
 )
 
@@ -242,26 +240,6 @@ def get_save_scenario_for_demand_trace(
         The mapped scenario name as a string.
     """
     return demand_scenario_mapping[file_metadata["scenario"]]
-
-
-def write_new_demand_filepath(metadata: dict[str, str]) -> str:
-    """
-    Generates the output filepath for a demand trace file.
-
-    Args:
-        metadata: Dictionary containing metadata for the demand trace file.
-
-    Returns:
-        A string representing the filepath.
-    """
-    m = metadata
-    subregion = m["subregion"].replace(" ", "_")
-    scenario = m["scenario"].replace(" ", "_")
-
-    return (
-        f"{scenario}/RefYear{m['reference_year']}/{subregion}/{m['poe']}/{m['demand_type']}/"
-        f"{scenario}_RefYear{m['reference_year']}_{subregion}_{m['poe']}_{m['demand_type']}_HalfYear{m['hy']}.parquet"
-    )
 
 
 def extract_metadata_for_all_demand_files(
