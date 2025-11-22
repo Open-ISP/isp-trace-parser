@@ -200,11 +200,11 @@ def restructure_demand_file(
         # This will process the input file and save it with the new scenario name in the specified output directory
     """
     file_metadata = extract_demand_trace_metadata(input_filepath.name)
-    print (file_metadata)
+    
     file_metadata["scenario"] = get_save_scenario_for_demand_trace(
         file_metadata, demand_scenario_mapping
     )
-    print (file_metadata)
+
     parse_file = check_filter_by_metadata(file_metadata, filters)
     if parse_file:
         trace = read_trace_csv(input_filepath)
@@ -220,11 +220,11 @@ def _frame_with_metadata(
     """
 
     return trace.with_columns(
-                pl.lit(file_metadata["subregion"]).alias("subregion"),
-                pl.lit(file_metadata["reference_year"]).alias("reference_year"),
-                pl.lit(file_metadata["scenario"]).alias("scenario"),
-                pl.lit(file_metadata["poe"]).alias("poe"),
-                pl.lit(file_metadata["demand_type"]).alias("demand_type"),
+                subregions = pl.lit(file_metadata["subregion"]),
+                reference_year = pl.lit(file_metadata["reference_year"]),
+                scenario = pl.lit(file_metadata["scenario"]),
+                poe = pl.lit(file_metadata["poe"]),
+                demand_type = pl.lit(file_metadata["demand_type"]),
                 )
 
 
