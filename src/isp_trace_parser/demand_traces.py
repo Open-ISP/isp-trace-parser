@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import Literal, Optional
 
+import polars as pl
 import yaml
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
@@ -199,22 +200,32 @@ def restructure_demand_file(
         # This will process the input file and save it with the new scenario name in the specified output directory
     """
     file_metadata = extract_demand_trace_metadata(input_filepath.name)
+    print (file_metadata)
     file_metadata["scenario"] = get_save_scenario_for_demand_trace(
         file_metadata, demand_scenario_mapping
     )
+    print (file_metadata)
     parse_file = check_filter_by_metadata(file_metadata, filters)
     if parse_file:
         trace = read_trace_csv(input_filepath)
         trace = trace_formatter(trace)
-        trace = add_half_year_as_column(trace)
-        for half_year, chunk in trace.group_by("HY"):
-            save_half_year_chunk_of_trace(
-                chunk,
-                file_metadata,
-                half_year,
-                output_directory,
-                write_new_demand_filepath,
-            )
+        trace = _frame_with_metadata(trace, file_metadata)
+        return trace
+
+def _frame_with_metadata(
+        trace: pl.DataFrame, 
+        file_metadata: dict):
+    """
+    
+    """
+
+    return trace.with_columns(
+                pl.lit(file_metadata["subregion"]).alias("subregion"),
+                pl.lit(file_metadata["reference_year"]).alias("reference_year"),
+                pl.lit(file_metadata["scenario"]).alias("scenario"),
+                pl.lit(file_metadata["poe"]).alias("poe"),
+                pl.lit(file_metadata["demand_type"]).alias("demand_type"),
+                )
 
 
 def get_save_scenario_for_demand_trace(
