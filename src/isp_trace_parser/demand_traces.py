@@ -211,10 +211,13 @@ def restructure_demand_file(
         return trace
 
 def _frame_with_metadata(
-        trace: pl.DataFrame, 
+        trace: pl.DataFrame,
         file_metadata: dict):
-    """
-    
+    """Adds metadata fields as columns to a trace DataFrame.
+
+    Args:
+        trace: The trace data polar dataframe to add data to.
+        file_metadata: Dict containing metadate (subregion, reference_year, scenario, poe, and demand_type)
     """
 
     return trace.with_columns(
