@@ -75,8 +75,8 @@ def parse_demand_traces(
 
     The trace parser reformats the data, modifies the file naming convention to match the IASR workbook, and stores
     the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
-    changed to a two column format with a column "Datetime" specifying the end of the half hour period the measurement
-    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "Value" specifying the measurement value. The data is saved
+    changed to a two column format with a column "datetime" specifying the end of the half hour period the measurement
+    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "value" specifying the measurement value. The data is saved
     in parquet format in half-yearly chunks to improved read speeds. The files are saved in with following
     directory structure and naming convention:
 
@@ -167,7 +167,7 @@ def parse_demand_traces(
 def restructure_demand_file(
     input_filepath: Path,
     demand_scenario_mapping: dict[str, str],
-    db_connection: DuckDBPyConnection,
+    conn: DuckDBPyConnection,
     filters: dict[str, list[str]] = None,
 ) -> None:
     """
@@ -209,7 +209,7 @@ def restructure_demand_file(
         trace = read_trace_csv(input_filepath)
         trace = trace_formatter(trace)
         trace = _frame_with_metadata(trace, file_metadata)
-        return trace
+        insert_trace_to_db(trace, conn)
 
 def _frame_with_metadata(
         trace: pl.DataFrame,
@@ -245,16 +245,27 @@ def get_save_scenario_for_demand_trace(
     """
     return demand_scenario_mapping[file_metadata["scenario"]]
 
-def write_to_db(
+def insert_trace_to_db(
         trace: pl.DataFrame,
         conn: DuckDBPyConnection,
-        ):
+) -> None:
+    """Inserts a trace DataFrame into the demand_traces table.
 
-        conn.register("df", trace)
-        conn.execute("INSERT INTO demand_traces BY NAME SELECT * FROM df")
+    Args:
+        trace: DataFrame with trace data and metadata columns.
+        conn: DuckDB connection with demand_traces table.
+    """
+    conn.register("df", trace)
+    conn.execute("INSERT INTO demand_traces BY NAME SELECT * FROM df")
+    conn.unregister("df")
 
 
-def create_db(conn: DuckDBPyConnection):
+def create_demand_traces_table(conn: DuckDBPyConnection) -> None:
+    """Creates the demand_traces table with a unique constraint on metadata columns.
+
+    Args:
+        conn: DuckDB connection to create the table in.
+    """
     conn.execute("""
         CREATE TABLE demand_traces (
             datetime TIMESTAMP,
@@ -264,7 +275,7 @@ def create_db(conn: DuckDBPyConnection):
             poe VARCHAR,
             demand_type VARCHAR,
             value DOUBLE,
-        UNIQUE (datetime, subregions, reference_year, scenario, poe, demand_type)
+            UNIQUE (datetime, subregions, reference_year, scenario, poe, demand_type)
         )
     """)
 
