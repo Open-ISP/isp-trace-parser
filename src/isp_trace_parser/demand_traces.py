@@ -19,7 +19,7 @@ from isp_trace_parser.trace_restructure_helper_functions import (
 
 
 class DemandMetadataFilter(BaseModel):
-    """A Pydantic class for defining a metadata based filter that specifies which wind trace files to parser.
+    """A Pydantic class for defining a metadata based filter that specifies which demand trace files to parse.
 
     All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
     included then only traces with metadata matching the values in the corresponding list will be parsed.
@@ -127,7 +127,7 @@ def parse_demand_traces(
 
     Args:
         input_directory: str or pathlib.Path, path to data to parse.
-        parsed_directory: str or pathlib.Path, path to directory where parsed tarces will be saved.
+        parsed_directory: str or pathlib.Path, path to directory where parsed traces will be saved.
         use_concurrency: boolean, default True, specifies whether to use parallel processing
         filters: dict{str: list[str]}, dict that specifies which traces to parse, if a component
             of the metadata is missing from the dict no filtering on that component occurs. See example.
@@ -212,21 +212,20 @@ def restructure_demand_file(
 
 def _frame_with_metadata(
         trace: pl.DataFrame,
-        file_metadata: dict):
+        file_metadata: dict) -> pl.DataFrame:
     """Adds metadata fields as columns to a trace DataFrame.
 
     Args:
         trace: The trace data polar dataframe to add data to.
-        file_metadata: Dict containing metadate (subregion, reference_year, scenario, poe, and demand_type)
+        file_metadata: Dict containing metadata (subregion, reference_year, scenario, poe, and demand_type)
     """
-
     return trace.with_columns(
-                subregion = pl.lit(file_metadata["subregion"]),
-                reference_year = pl.lit(file_metadata["reference_year"]),
-                scenario = pl.lit(file_metadata["scenario"]),
-                poe = pl.lit(file_metadata["poe"]),
-                demand_type = pl.lit(file_metadata["demand_type"]),
-                )
+        subregion=pl.lit(file_metadata["subregion"]),
+        reference_year=pl.lit(file_metadata["reference_year"]),
+        scenario=pl.lit(file_metadata["scenario"]),
+        poe=pl.lit(file_metadata["poe"]),
+        demand_type=pl.lit(file_metadata["demand_type"]),
+    )
 
 def get_save_scenario_for_demand_trace(
     file_metadata: dict[str, str], demand_scenario_mapping: dict[str, str]
