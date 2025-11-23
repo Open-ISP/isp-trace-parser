@@ -167,7 +167,7 @@ def parse_demand_traces(
 def restructure_demand_file(
     input_filepath: Path,
     demand_scenario_mapping: dict[str, str],
-    conn: DuckDBPyConnection,
+    output_directory: Path,
     filters: dict[str, list[str]] = None,
 ) -> None:
     """
@@ -209,7 +209,7 @@ def restructure_demand_file(
         trace = read_trace_csv(input_filepath)
         trace = trace_formatter(trace)
         trace = _frame_with_metadata(trace, file_metadata)
-        insert_trace_to_db(trace, conn)
+        trace.write_parquet(output_directory / f"{input_filepath.stem}.parquet")
 
 def _frame_with_metadata(
         trace: pl.DataFrame,
