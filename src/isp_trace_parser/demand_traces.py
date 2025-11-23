@@ -221,7 +221,7 @@ def _frame_with_metadata(
     """
 
     return trace.with_columns(
-                subregions = pl.lit(file_metadata["subregion"]),
+                subregion = pl.lit(file_metadata["subregion"]),
                 reference_year = pl.lit(file_metadata["reference_year"]),
                 scenario = pl.lit(file_metadata["scenario"]),
                 poe = pl.lit(file_metadata["poe"]),
