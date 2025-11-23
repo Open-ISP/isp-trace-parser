@@ -156,7 +156,7 @@ def parse_demand_traces(
     if use_concurrency:
         max_workers = os.cpu_count() - 2
 
-        Parallel(n_jobs=max_workers)(delayed(partial_func)(file) for file in files)
+        Parallel(n_jobs=max_workers, backend="loky")(delayed(partial_func)(file) for file in files)
 
     else:
         for file in files:
