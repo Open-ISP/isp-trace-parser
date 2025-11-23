@@ -5,7 +5,6 @@ from typing import Literal, Optional
 
 import polars as pl
 import yaml
-from duckdb import DuckDBPyConnection
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
@@ -228,57 +227,6 @@ def _frame_with_metadata(
                 poe = pl.lit(file_metadata["poe"]),
                 demand_type = pl.lit(file_metadata["demand_type"]),
                 )
-
-
-def get_save_scenario_for_demand_trace(
-    file_metadata: dict[str, str], demand_scenario_mapping: dict[str, str]
-) -> str:
-    """
-    Maps the raw scenario name to the IASR workbook scenario name.
-
-    Args:
-        file_metadata: Dictionary containing metadata for the demand trace file.
-        demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
-
-    Returns:
-        The mapped scenario name as a string.
-    """
-    return demand_scenario_mapping[file_metadata["scenario"]]
-
-def insert_trace_to_db(
-        trace: pl.DataFrame,
-        conn: DuckDBPyConnection,
-) -> None:
-    """Inserts a trace DataFrame into the demand_traces table.
-
-    Args:
-        trace: DataFrame with trace data and metadata columns.
-        conn: DuckDB connection with demand_traces table.
-    """
-    conn.register("df", trace)
-    conn.execute("INSERT INTO demand_traces BY NAME SELECT * FROM df")
-    conn.unregister("df")
-
-
-def create_demand_traces_table(conn: DuckDBPyConnection) -> None:
-    """Creates the demand_traces table with a unique constraint on metadata columns.
-
-    Args:
-        conn: DuckDB connection to create the table in.
-    """
-    conn.execute("""
-        CREATE TABLE demand_traces (
-            datetime TIMESTAMP,
-            subregions VARCHAR,
-            reference_year INTEGER,
-            scenario VARCHAR,
-            poe VARCHAR,
-            demand_type VARCHAR,
-            value DOUBLE,
-            UNIQUE (datetime, subregions, reference_year, scenario, poe, demand_type)
-        )
-    """)
-
 
 def extract_metadata_for_all_demand_files(
     filenames: list[Path],
