@@ -21,7 +21,7 @@ from isp_trace_parser.trace_restructure_helper_functions import (
 class DemandMetadataFilter(BaseModel):
     """A Pydantic class for defining a metadata based filter that specifies which demand trace files to parse.
 
-    All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
+    All attributes of the filter are optional, any attribute not included will not be filtered on. If an attribute is
     included then only traces with metadata matching the values in the corresponding list will be parsed.
 
     Examples:
@@ -166,17 +166,11 @@ def restructure_demand_file(
     filters: dict[str, list[str]] = None,
 ) -> None:
     """
-    Restructures a single demand trace file and saves it in a parquet format,
+    Restructures a single demand trace file and saves it in a parquet format.
 
     This function processes a demand trace file, restructures and saves it in a new format, with the original
     input filename stem and a .parquet extension. It handles the mapping of scenario names and applies filters
     if provided.
-
-
-
-    For the CSV example above, the parsed filepath would be:
-
-        "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
 
     Args:
         input_filepath: Path object representing the input demand trace file.
@@ -198,7 +192,7 @@ def restructure_demand_file(
         ...     output_directory='/path/to/output'
         ... )  # doctest: +SKIP
 
-        # This will process the input file and save it with the new scenario name in the specified output directory
+        # This will process the input file and save it in parquet format in the specified output directory
     """
     file_metadata = extract_demand_trace_metadata(input_filepath.name)
 
