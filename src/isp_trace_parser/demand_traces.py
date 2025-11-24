@@ -72,21 +72,17 @@ def parse_demand_traces(
     contains metadata in the following format "<subregionID>_RefYear_<reference year>_<scenario>_<poe>_<data type>.csv".
     For example, "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv".
 
-    The trace parser reformats the data, modifies the file naming convention to match the IASR workbook, and stores
-    the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
-    changed to a two column format with a column "datetime" specifying the end of the half hour period the measurement
-    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "value" specifying the measurement value. The data is saved
-    in parquet format in half-yearly chunks to improved read speeds. The files are saved in with following
-    directory structure and naming convention:
+    The trace parser reformats the data and stores the data files in parquet format with metadata columns,
+    which match the IASR workbook conventions.
+    The data format is changed to include a column "datetime" specifying the end of the half hour period
+    the measurement is for in the format %Y-%m-%d %H:%M:%S, a column "value" specifying the measurement
+    value, and metadata columns (subregion, reference_year, scenario, poe, demand_type). The scenario
+    column contains the mapped scenario name from the IASR workbook. Files are saved with the original
+    input filename stem and a .parquet extension.
 
-         "<scenario>/RefYear<reference year>/<subregion ID>/<poe>/<data type>/"
-         "<scenario>_RefYear<reference year>_<subregion ID>_<poe>_<data type>_HalfYear<year>-<half of year>.parquet"
+    For the CSV example above, the parsed filepath would be:
 
-    With the scenario name mapped from the name used in the raw AEMO trace data to the name used in the IASR workbook.
-    For one half-yearly chunk of the CSV example above, the parsed filepath would be:
-
-        "Green_Energy_Exports/RefYear2011/CNSW/POE10/OPSO_MODELLING/"
-        "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING_HalfYear2020-1.parquet"
+        "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
 
     By default, all trace data in the input directory is parsed. However, a filters dictionary can be provided to
     filter the traces to pass based on metadata. If a metadata type is present in the filters then only traces a
@@ -170,10 +166,17 @@ def restructure_demand_file(
     filters: dict[str, list[str]] = None,
 ) -> None:
     """
-    Restructures a single demand trace file and saves it in a new format.
+    Restructures a single demand trace file and saves it in a parquet format,
 
-    This function processes a demand trace file, restructures and saves it in a new format. It handles the mapping of
-    scenario names and applies filters if provided.
+    This function processes a demand trace file, restructures and saves it in a new format, with the original
+    input filename stem and a .parquet extension. It handles the mapping of scenario names and applies filters
+    if provided.
+
+
+
+    For the CSV example above, the parsed filepath would be:
+
+        "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
 
     Args:
         input_filepath: Path object representing the input demand trace file.
@@ -198,7 +201,7 @@ def restructure_demand_file(
         # This will process the input file and save it with the new scenario name in the specified output directory
     """
     file_metadata = extract_demand_trace_metadata(input_filepath.name)
-    
+
     file_metadata["scenario"] = get_save_scenario_for_demand_trace(
         file_metadata, demand_scenario_mapping
     )
@@ -210,9 +213,8 @@ def restructure_demand_file(
         trace = _frame_with_metadata(trace, file_metadata)
         trace.write_parquet(output_directory / f"{input_filepath.stem}.parquet")
 
-def _frame_with_metadata(
-        trace: pl.DataFrame,
-        file_metadata: dict) -> pl.DataFrame:
+
+def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
     """Adds metadata fields as columns to a trace DataFrame.
 
     Args:
@@ -226,6 +228,7 @@ def _frame_with_metadata(
         poe=pl.lit(file_metadata["poe"]),
         demand_type=pl.lit(file_metadata["demand_type"]),
     )
+
 
 def get_save_scenario_for_demand_trace(
     file_metadata: dict[str, str], demand_scenario_mapping: dict[str, str]
@@ -241,6 +244,7 @@ def get_save_scenario_for_demand_trace(
         The mapped scenario name as a string.
     """
     return demand_scenario_mapping[file_metadata["scenario"]]
+
 
 def extract_metadata_for_all_demand_files(
     filenames: list[Path],
