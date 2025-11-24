@@ -84,8 +84,8 @@ def parse_demand_traces(
 
         "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
 
-    By default, all trace data in the input directory is parsed. However, a filters dictionary can be provided to
-    filter the traces to pass based on metadata. If a metadata type is present in the filters then only traces a
+    By default, all trace data in the input directory is parsed. However, a DemandMetadataFilter can be provided
+    to filter the traces based on metadata. If a metadata type is present in the filter then only traces with a
     metadata value present in the corresponding filter list will be passed, see examples below.
 
     Examples:
@@ -125,8 +125,8 @@ def parse_demand_traces(
         input_directory: str or pathlib.Path, path to data to parse.
         parsed_directory: str or pathlib.Path, path to directory where parsed traces will be saved.
         use_concurrency: boolean, default True, specifies whether to use parallel processing
-        filters: dict{str: list[str]}, dict that specifies which traces to parse, if a component
-            of the metadata is missing from the dict no filtering on that component occurs. See example.
+        filters: DemandMetadataFilter or None, specifies which traces to parse. If a metadata
+            attribute is not set, no filtering on that attribute occurs. See example.
 
     Returns: None
     """
@@ -212,7 +212,7 @@ def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFra
     """Adds metadata fields as columns to a trace DataFrame.
 
     Args:
-        trace: The trace data polar dataframe to add data to.
+        trace: The trace data Polars Dataframe to add data to.
         file_metadata: Dict containing metadata (subregion, reference_year, scenario, poe, and demand_type)
     """
     return trace.with_columns(
