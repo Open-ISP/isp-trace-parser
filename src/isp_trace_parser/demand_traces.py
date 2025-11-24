@@ -163,7 +163,7 @@ def restructure_demand_file(
     input_filepath: Path,
     demand_scenario_mapping: dict[str, str],
     output_directory: Path,
-    filters: dict[str, list[str]] = None,
+    filters: DemandMetadataFilter | None = None,
 ) -> None:
     """
     Restructures a single demand trace file and saves it in a parquet format.
@@ -176,7 +176,7 @@ def restructure_demand_file(
         input_filepath: Path object representing the input demand trace file.
         demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
         output_directory: Directory where restructured files will be saved.
-        filters: Filters to apply to the metadata. Keys are metadata fields, values are lists of allowed values.
+        filters: DemandMetadataFilter or None, specifies which traces to parse based on metadata.
 
     Returns:
         None: Files are saved to disk, but the function doesn't return any value.
