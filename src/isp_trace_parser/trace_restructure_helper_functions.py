@@ -37,24 +37,6 @@ def calculate_average_trace(traces: list[pl.DataFrame]) -> pl.DataFrame:
     return average_trace
 
 
-def add_half_year_as_column(trace: pl.DataFrame) -> pl.DataFrame:
-    def calculate_half_year(dt):
-        dt -= timedelta(seconds=1)
-        if dt.month < 7:
-            half_year = f"{dt.year}-1"
-        else:
-            half_year = f"{dt.year}-2"
-        return half_year
-
-    trace = trace.sort("datetime")
-
-    trace = trace.with_columns(
-        (pl.col("datetime").map_elements(calculate_half_year, pl.String).alias("HY"))
-    )
-
-    return trace
-
-
 def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
     """
     Adds metadata fields as columns to a resource trace DataFrame.
