@@ -31,8 +31,8 @@ def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:
 
 def calculate_average_trace(traces: list[pl.DataFrame]) -> pl.DataFrame:
     combined_traces = pl.concat(traces)
-    average_trace = combined_traces.group_by("Datetime").agg(
-        [pl.col("Value").mean().alias("Value")]
+    average_trace = combined_traces.group_by("datetime").agg(
+        [pl.col("value").mean().alias("value")]
     )
     return average_trace
 
@@ -46,10 +46,10 @@ def add_half_year_as_column(trace: pl.DataFrame) -> pl.DataFrame:
             half_year = f"{dt.year}-2"
         return half_year
 
-    trace = trace.sort("Datetime")
+    trace = trace.sort("datetime")
 
     trace = trace.with_columns(
-        (pl.col("Datetime").map_elements(calculate_half_year, pl.String).alias("HY"))
+        (pl.col("datetime").map_elements(calculate_half_year, pl.String).alias("HY"))
     )
 
     return trace

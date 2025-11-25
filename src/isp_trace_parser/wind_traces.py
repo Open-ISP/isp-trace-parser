@@ -74,8 +74,8 @@ def parse_wind_traces(
 
     The trace parser reformats the data, modifies the file naming convention, and stores
     the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
-    changed to a two column format with a column "Datetime" specifying the end of the half hour period the measurement
-    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "Value" specifying the measurement value. The data is saved
+    changed to a two column format with a column "datetime" specifying the end of the half hour period the measurement
+    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "value" specifying the measurement value. The data is saved
     in parquet format in half-yearly chunks to improved read speeds. The files are saved with the following
     directory structure and naming convention:
 
