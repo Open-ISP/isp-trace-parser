@@ -157,23 +157,23 @@ def parse_wind_traces(
         / Path("isp_trace_name_mapping_configs/wind_zone_mapping.yaml"),
         "r",
     ) as f:
-        area_name_mappings = yaml.safe_load(f)
+        zone_name_mappings = yaml.safe_load(f)
 
-    project_and_area_input_names = get_unique_project_and_zone_names_in_input_files(
+    project_and_zone_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata
     )
 
-    area_name_mappings = filter_mapping_by_names_in_input_files(
-        area_name_mappings, project_and_area_input_names
+    zone_name_mappings = filter_mapping_by_names_in_input_files(
+        zone_name_mappings, project_and_zone_input_names
     )
-    area_output_names, area_input_names = zip(*area_name_mappings.items())
+    zone_output_names, zone_input_names = zip(*zone_name_mappings.items())
 
     project_name_mappings = filter_mapping_by_names_in_input_files(
-        project_name_mappings, project_and_area_input_names
+        project_name_mappings, project_and_zone_input_names
     )
     project_output_names, project_input_names = zip(*project_name_mappings.items())
 
-    area_partial_func = functools.partial(
+    zone_partial_func = functools.partial(
         restructure_wind_zone_files,
         all_input_file_metadata=file_metadata,
         output_directory=parsed_directory,
@@ -191,8 +191,8 @@ def parse_wind_traces(
         max_workers = os.cpu_count() - 2
 
         Parallel(n_jobs=max_workers)(
-            delayed(area_partial_func)(save_name, old_trace_name)
-            for save_name, old_trace_name in zip(area_output_names, area_input_names)
+            delayed(zone_partial_func)(save_name, old_trace_name)
+            for save_name, old_trace_name in zip(zone_output_names, zone_input_names)
         )
 
         Parallel(n_jobs=max_workers)(
@@ -203,15 +203,15 @@ def parse_wind_traces(
         )
 
     else:
-        for save_name, old_trace_name in zip(area_output_names, area_input_names):
-            area_partial_func(save_name, old_trace_name)
+        for save_name, old_trace_name in zip(zone_output_names, zone_input_names):
+            zone_partial_func(save_name, old_trace_name)
 
         for save_name, old_trace_name in zip(project_output_names, project_input_names):
             project_partial_func(save_name, old_trace_name)
 
 
 def restructure_wind_zone_files(
-    output_area_name: str,
+    output_zone_name: str,
     input_trace_names: list[str] | str,
     all_input_file_metadata: dict,
     output_directory: str | Path,
@@ -263,7 +263,7 @@ def restructure_wind_zone_files(
             )
             metadata = get_metadata_for_writing_save_name(files_for_resource_quality)
             metadata = overwrite_metadata_trace_name_with_output_name(
-                metadata, output_area_name
+                metadata, output_zone_name
             )
             parse_file = check_filter_by_metadata(metadata, filters)
             if parse_file:

@@ -152,17 +152,17 @@ def parse_solar_traces(
         / Path("isp_trace_name_mapping_configs/solar_zone_mapping.yaml"),
         "r",
     ) as f:
-        area_name_mapping = yaml.safe_load(f)
-    name_mappings = {**project_name_mapping, **area_name_mapping}
+        zone_name_mapping = yaml.safe_load(f)
+    name_mappings = {**project_name_mapping, **zone_name_mapping}
 
-    project_and_area_input_names = get_unique_project_and_zone_names_in_input_files(
+    project_and_zone_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata
     )
     name_mappings = {
-        k: v for k, v in name_mappings.items() if v in project_and_area_input_names
+        k: v for k, v in name_mappings.items() if v in project_and_zone_input_names
     }
 
-    project_and_area_output_names, project_and_area_input_names = zip(
+    project_and_zone_output_names, project_and_zone_input_names = zip(
         *name_mappings.items()
     )
 
@@ -178,18 +178,18 @@ def parse_solar_traces(
         Parallel(n_jobs=max_workers)(
             delayed(partial_func)(save_name, old_trace_name)
             for save_name, old_trace_name in zip(
-                project_and_area_output_names, project_and_area_input_names
+                project_and_zone_output_names, project_and_zone_input_names
             )
         )
     else:
         for save_name, old_trace_name in zip(
-            project_and_area_output_names, project_and_area_input_names
+            project_and_zone_output_names, project_and_zone_input_names
         ):
             partial_func(save_name, old_trace_name)
 
 
 def restructure_solar_files(
-    output_project_or_area_name: str,
+    output_project_or_zone_name: str,
     input_trace_names: list[str],
     all_input_file_metadata: dict[Path, dict[str, str]],
     output_directory: str | Path,
@@ -240,7 +240,7 @@ def restructure_solar_files(
             files_for_tech = get_metadata_that_matches_tech(tech, files_for_year)
             metadata = get_metadata_for_writing_save_name(files_for_tech)
             metadata = overwrite_metadata_trace_name_with_output_name(
-                metadata, output_project_or_area_name
+                metadata, output_project_or_zone_name
             )
             parse_file = check_filter_by_metadata(metadata, filters)
             if parse_file:
