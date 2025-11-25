@@ -149,7 +149,7 @@ def parse_solar_traces(
         project_name_mapping = yaml.safe_load(f)
     with open(
         Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/solar_area_mapping.yaml"),
+        / Path("isp_trace_name_mapping_configs/solar_zone_mapping.yaml"),
         "r",
     ) as f:
         area_name_mapping = yaml.safe_load(f)

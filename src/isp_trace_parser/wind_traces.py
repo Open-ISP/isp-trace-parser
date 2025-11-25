@@ -154,7 +154,7 @@ def parse_wind_traces(
 
     with open(
         Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/wind_area_mapping.yaml"),
+        / Path("isp_trace_name_mapping_configs/wind_zone_mapping.yaml"),
         "r",
     ) as f:
         area_name_mappings = yaml.safe_load(f)
