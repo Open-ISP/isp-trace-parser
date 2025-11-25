@@ -55,6 +55,21 @@ def add_half_year_as_column(trace: pl.DataFrame) -> pl.DataFrame:
     return trace
 
 
+def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
+    """
+    Adds metadata fields as columns to a resource trace DataFrame.
+
+    Name column dynamically named based on "file_type" (ie. project or zone)
+
+    """
+
+    return trace.with_columns(
+        pl.lit(file_metadata["name"]).alias(file_metadata["file_type"]),
+        pl.lit(file_metadata["reference_year"]).alias("reference_year"),
+        pl.lit(file_metadata["technology"]).alias("resource_type"),
+    )
+
+
 def save_trace(
     trace: pl.DataFrame,
     file_metadata: dict[str, str],
@@ -79,6 +94,8 @@ def process_and_save_files(
         trace = calculate_average_trace(traces)
     else:
         trace = traces[0]
+
+    trace = _frame_with_metadata(trace, file_metadata)
 
     save_trace(trace, file_metadata, output_directory, write_output_filepath)
 
