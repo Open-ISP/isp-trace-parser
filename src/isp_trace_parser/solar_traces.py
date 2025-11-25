@@ -266,15 +266,9 @@ def write_output_solar_filepath(metadata: dict[str, str]) -> str:
     name = m["name"].replace(" ", "_")
 
     if m["file_type"] == "project":
-        return (
-            f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/"
-            f"RefYear{m['reference_year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
-        )
+        return f"RefYear{m['reference_year']}_{name}_{m['technology']}.parquet"
     else:
-        return (
-            f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/{m['technology']}/"
-            f"RefYear{m['reference_year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
-        )
+        return f"RefYear{m['reference_year']}_{name}_{m['technology']}.parquet"
 
 
 def extract_metadata_for_all_solar_files(

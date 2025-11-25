@@ -55,19 +55,16 @@ def add_half_year_as_column(trace: pl.DataFrame) -> pl.DataFrame:
     return trace
 
 
-def save_half_year_chunk_of_trace(
-    chunk: pl.DataFrame,
+def save_trace(
+    trace: pl.DataFrame,
     file_metadata: dict[str, str],
-    half_year: tuple[str],
     output_directory: Path,
     write_output_filepath: callable,
 ) -> None:
-    file_metadata["hy"] = half_year[0]
-    data = chunk.drop("HY")
     path_in_output_directory = write_output_filepath(file_metadata)
     save_filepath = output_directory / path_in_output_directory
     save_filepath.parent.mkdir(parents=True, exist_ok=True)
-    data.write_parquet(save_filepath)
+    trace.write_parquet(save_filepath)
 
 
 def process_and_save_files(
@@ -83,12 +80,7 @@ def process_and_save_files(
     else:
         trace = traces[0]
 
-    trace = add_half_year_as_column(trace)
-
-    for half_year, chunk in trace.group_by("HY"):
-        save_half_year_chunk_of_trace(
-            chunk, file_metadata, half_year, output_directory, write_output_filepath
-        )
+    save_trace(trace, file_metadata, output_directory, write_output_filepath)
 
 
 def get_metadata_that_matches_trace_names(
