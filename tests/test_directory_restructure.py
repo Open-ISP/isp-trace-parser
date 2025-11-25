@@ -50,12 +50,12 @@ def test_solar_directory_restructure(tmp_path, use_concurrency):
         config.reference_years,
         range(config.start, config.end),
         config.half_years,
-        config.areas,
-        config.area_techs,
+        config.zones,
+        config.zone_techs,
     )
-    for ry, y, half_year, area, tech in combos:
+    for ry, y, half_year, zone, tech in combos:
         parquet_file = Path(
-            f"RefYear{ry}/Area/{area}/{tech}/RefYear{ry}_{area}_{tech}_HalfYear{y}-"
+            f"RefYear{ry}/Zone/{zone}/{tech}/RefYear{ry}_{zone}_{tech}_HalfYear{y}-"
             f"{half_year}.parquet"
         )
         assert (new_dir / parquet_file).is_file()
@@ -88,12 +88,12 @@ def test_wind_directory_restructure(tmp_path, use_concurrency):
         config.reference_years,
         range(config.start, config.end),
         config.half_years,
-        config.areas,
-        config.area_wind_resources,
+        config.zones,
+        config.zone_wind_resources,
     )
-    for ry, y, half_year, area, resource in combos:
+    for ry, y, half_year, zone, resource in combos:
         parquet_file = Path(
-            f"RefYear{ry}/Area/{area}/{resource}/RefYear{ry}_{area}_{resource}_HalfYear{y}-"
+            f"RefYear{ry}/Zone/{zone}/{resource}/RefYear{ry}_{zone}_{resource}_HalfYear{y}-"
             f"{half_year}.parquet"
         )
         assert (new_dir / parquet_file).is_file()

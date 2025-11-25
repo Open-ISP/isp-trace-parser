@@ -21,7 +21,7 @@ def test_solar_trace_metadata_extraction():
     assert metadata["name"] == "N0"
     assert metadata["technology"] == "CST"
     assert metadata["reference_year"] == 2023
-    assert metadata["file_type"] == "area"
+    assert metadata["file_type"] == "zone"
 
 
 def test_wind_trace_metadata_extraction():
@@ -42,7 +42,7 @@ def test_wind_trace_metadata_extraction():
     assert metadata["name"] == "N8"
     assert metadata["resource_quality"] == "WH"
     assert metadata["reference_year"] == 2023
-    assert metadata["file_type"] == "area"
+    assert metadata["file_type"] == "zone"
 
 
 def test_demand_trace_metadata_extraction():

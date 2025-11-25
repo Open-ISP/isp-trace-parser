@@ -18,13 +18,13 @@ def test_write_solar_save_names():
         "name": "a",
         "reference_year": "1",
         "technology": "x",
-        "file_type": "area",
+        "file_type": "zone",
         "hy": "2",
     }
 
     save_filepath = isp_trace_parser.solar_traces.write_output_solar_filepath(meta_data)
 
-    assert str(save_filepath) == "RefYear1/Area/a/x/RefYear1_a_x_HalfYear2.parquet"
+    assert str(save_filepath) == "RefYear1/Zone/a/x/RefYear1_a_x_HalfYear2.parquet"
 
 
 def test_write_wind_save_names():
@@ -40,15 +40,15 @@ def test_write_wind_save_names():
         "name": "a",
         "reference_year": "1",
         "resource_quality": "x",
-        "file_type": "area",
+        "file_type": "zone",
         "hy": "2",
     }
 
-    save_filepath = isp_trace_parser.wind_traces.write_output_wind_area_filepath(
+    save_filepath = isp_trace_parser.wind_traces.write_output_wind_zone_filepath(
         meta_data
     )
 
-    assert str(save_filepath) == "RefYear1/Area/a/x/RefYear1_a_x_HalfYear2.parquet"
+    assert str(save_filepath) == "RefYear1/Zone/a/x/RefYear1_a_x_HalfYear2.parquet"
 
 
 def test_write_demand_save_names():
