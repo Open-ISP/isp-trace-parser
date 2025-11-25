@@ -52,7 +52,7 @@ class WindMetadataFilter(BaseModel):
     """
 
     name: Optional[list[str]] = None
-    file_type: Optional[list[Literal["area", "project"]]] = None
+    file_type: Optional[list[Literal["zone", "project"]]] = None
     resource_quality: Optional[list[Literal["WH", "WM", "WL", "WX"]]] = None
     reference_year: Optional[list[int]] = None
 

@@ -16,7 +16,7 @@ def extract_solar_trace_metadata(filename):
     match2 = pattern2.match(filename)
     if match2:
         match_data = match2.groupdict()
-        match_data["file_type"] = "area"
+        match_data["file_type"] = "zone"
         match_data["reference_year"] = int(match_data["reference_year"])
         return match_data
 
@@ -44,7 +44,7 @@ def extract_wind_trace_metadata(filename):
     match2 = pattern2.match(filename)
     if match2:
         match_data = match2.groupdict()
-        match_data["file_type"] = "area"
+        match_data["file_type"] = "zone"
         match_data["reference_year"] = int(match_data["reference_year"])
         return match_data
 

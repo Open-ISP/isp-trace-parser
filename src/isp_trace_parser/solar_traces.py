@@ -52,7 +52,7 @@ class SolarMetadataFilter(BaseModel):
     """
 
     name: Optional[list[str]] = None
-    file_type: Optional[list[Literal["area", "project"]]] = None
+    file_type: Optional[list[Literal["zone", "project"]]] = None
     technology: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
     reference_year: Optional[list[int]] = None
 
