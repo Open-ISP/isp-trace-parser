@@ -142,7 +142,7 @@ def check_filter_by_metadata(
     return True
 
 
-def get_unique_project_and_area_names_in_input_files(
+def get_unique_project_and_zone_names_in_input_files(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
     names = []

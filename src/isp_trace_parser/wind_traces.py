@@ -16,7 +16,7 @@ from isp_trace_parser.trace_restructure_helper_functions import (
     get_metadata_for_writing_save_name,
     get_metadata_that_matches_reference_year,
     get_metadata_that_matches_trace_names,
-    get_unique_project_and_area_names_in_input_files,
+    get_unique_project_and_zone_names_in_input_files,
     get_unique_reference_years_in_metadata,
     overwrite_metadata_trace_name_with_output_name,
     process_and_save_files,
@@ -159,7 +159,7 @@ def parse_wind_traces(
     ) as f:
         area_name_mappings = yaml.safe_load(f)
 
-    project_and_area_input_names = get_unique_project_and_area_names_in_input_files(
+    project_and_area_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata
     )
 
@@ -174,7 +174,7 @@ def parse_wind_traces(
     project_output_names, project_input_names = zip(*project_name_mappings.items())
 
     area_partial_func = functools.partial(
-        restructure_wind_area_files,
+        restructure_wind_zone_files,
         all_input_file_metadata=file_metadata,
         output_directory=parsed_directory,
         filters=filters,
@@ -210,7 +210,7 @@ def parse_wind_traces(
             project_partial_func(save_name, old_trace_name)
 
 
-def restructure_wind_area_files(
+def restructure_wind_zone_files(
     output_area_name: str,
     input_trace_names: list[str] | str,
     all_input_file_metadata: dict,
@@ -218,7 +218,7 @@ def restructure_wind_area_files(
     filters: dict[str, list[str]] | None = None,
 ) -> None:
     """
-    Restructures wind area trace files and saves them in a new format.
+    Restructures wind zone trace files and saves them in a new format.
 
     Examples:
 
@@ -270,7 +270,7 @@ def restructure_wind_area_files(
                 process_and_save_files(
                     files_for_resource_quality,
                     metadata,
-                    write_output_wind_area_filepath,
+                    write_output_wind_zone_filepath,
                     output_directory,
                 )
 
@@ -321,9 +321,9 @@ def write_output_wind_project_filepath(metadata: dict) -> str:
     )
 
 
-def write_output_wind_area_filepath(metadata: dict) -> str:
+def write_output_wind_zone_filepath(metadata: dict) -> str:
     """
-    Generates the output filepath for a wind area trace file.
+    Generates the output filepath for a wind zone trace file.
 
     Returns a string representing the filepath.
     """

@@ -16,7 +16,7 @@ from isp_trace_parser.trace_restructure_helper_functions import (
     get_metadata_for_writing_save_name,
     get_metadata_that_matches_reference_year,
     get_metadata_that_matches_trace_names,
-    get_unique_project_and_area_names_in_input_files,
+    get_unique_project_and_zone_names_in_input_files,
     get_unique_reference_years_in_metadata,
     overwrite_metadata_trace_name_with_output_name,
     process_and_save_files,
@@ -155,7 +155,7 @@ def parse_solar_traces(
         area_name_mapping = yaml.safe_load(f)
     name_mappings = {**project_name_mapping, **area_name_mapping}
 
-    project_and_area_input_names = get_unique_project_and_area_names_in_input_files(
+    project_and_area_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata
     )
     name_mappings = {
