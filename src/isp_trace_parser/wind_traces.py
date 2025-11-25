@@ -31,22 +31,22 @@ class WindMetadataFilter(BaseModel):
 
     Examples:
 
-    Filter for only projects or areas that are in a list of names.
+    Filter for only projects or zones that are in a list of names.
 
     >>> metadata_filters = WindMetadataFilter(
     ... name=['A', 'B', 'x'],
     ... )
 
-    Filter for areas with a high wind resource.
+    Filter for zones with a high wind resource.
 
     >>> metadata_filters = WindMetadataFilter(
     ... resource_quality=['WH'],
-    ... file_type=['area'],
+    ... file_type=['zone'],
     ... )
 
     Attributes:
-        name: list of names for projects and/or IDs for areas.
-        file_type: list of 'project' and/or 'area' (area typically refers to REZs)
+        name: list of names for projects and/or IDs for zones.
+        file_type: list of 'project' and/or 'zone' (zone typically refers to REZs)
         resource_quality: list of resource_quality types, only including 'WH', 'WM', 'WL, or 'WX'.
         reference_year: list of ints specifying reference_years
     """
@@ -68,9 +68,9 @@ def parse_wind_traces(
 
     AEMO wind trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the wind generation values for each half hour of the day. The file name of the CSV
-    contains metadata in the following format "<project or area name>_RefYear<reference year>.csv" for projects, or
-    "<area id>_<resource quality>_<area name>_RefYear<reference year>.csv" for areas.
-    For example, "SNOWSTH1_RefYear2011.csv" for a project or "N8_WH_Cooma-Monaro_RefYear2023.csv" for an area.
+    contains metadata in the following format "<project or zone name>_RefYear<reference year>.csv" for projects, or
+    "<zone id>_<resource quality>_<zone name>_RefYear<reference year>.csv" for zones.
+    For example, "SNOWSTH1_RefYear2011.csv" for a project or "N8_WH_Cooma-Monaro_RefYear2023.csv" for a zone.
 
     The trace parser reformats the data, modifies the file naming convention, and stores
     the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
@@ -83,11 +83,11 @@ def parse_wind_traces(
          "RefYear<reference year>/Project/<project name>/"
          "RefYear<reference year>_<project name>_HalfYear<year>-<half of year>.parquet"
 
-    For areas:
-         "RefYear<reference year>/Area/<area name>/<resource type>/"
-         "RefYear<reference year>_<area id>_<resource quality>_HalfYear<year>-<half of year>.parquet"
+    For zones:
+         "RefYear<reference year>/Zone/<zone name>/<resource type>/"
+         "RefYear<reference year>_<zone id>_<resource quality>_HalfYear<year>-<half of year>.parquet"
 
-    With the project and area names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
+    With the project and zone names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
     For one half-yearly chunk of the CSV example above, the parsed filepath for a project would be:
 
         "RefYear2011/Project/Snowtown_South_Wind_Farm/"
@@ -116,7 +116,7 @@ def parse_wind_traces(
     expand which traces are parsed.
 
     >>> metadata_filters = WindMetadataFilter(
-    ... file_type=['area'],
+    ... file_type=['zone'],
     ... reference_year=[2011, 2012],
     ... )
 
@@ -223,14 +223,14 @@ def restructure_wind_zone_files(
     Examples:
 
         >>> all_metadata = {
-        ...     'file1.csv': {'name': 'Area1', 'year': '2020', 'resource_quality': 'WH'},
-        ...     'file2.csv': {'name': 'Area1', 'year': '2021', 'resource_quality': 'WM'},
-        ...     'file3.csv': {'name': 'Area2', 'year': '2020', 'resource_qulaity': 'WH'}
+        ...     'file1.csv': {'name': 'Zone1', 'year': '2020', 'resource_quality': 'WH'},
+        ...     'file2.csv': {'name': 'Zone1', 'year': '2021', 'resource_quality': 'WM'},
+        ...     'file3.csv': {'name': 'Zone2', 'year': '2020', 'resource_qulaity': 'WH'}
         ... } # doctest: +SKIP
 
-        >>> restructure_wind_area_files(
-        ...     output_area_name='NewArea1',
-        ...     input_trace_names=['Area1'],
+        >>> restructure_wind_zone_files(
+        ...     output_zone_name='NewZone1',
+        ...     input_trace_names=['Zone1'],
         ...     all_input_file_metadata=all_metadata,
         ...     output_directory='output/wind'
         ... ) # doctest: +SKIP
@@ -238,7 +238,7 @@ def restructure_wind_zone_files(
         # This will process only 'file1.csv' and save it in the new structure
 
     Args:
-        output_area_name (str): The name of the area in the output files.
+        output_zone_name (str): The name of the zone in the output files.
         input_trace_names (list): List of input trace names to process.
         all_input_file_metadata (dict): Metadata for all input files.
         output_directory (str | Path): Directory where restructured files will be saved.

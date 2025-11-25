@@ -31,7 +31,7 @@ class SolarMetadataFilter(BaseModel):
 
     Examples:
 
-    Filter for only projects or areas that are in a list of names.
+    Filter for only projects or zones that are in a list of names.
 
     >>> metadata_filters = SolarMetadataFilter(
     ... name=['A', 'B', 'x'],
@@ -45,8 +45,8 @@ class SolarMetadataFilter(BaseModel):
     ... )
 
     Attributes:
-        name: list of names for projects and/or IDs for areas.
-        file_type: list of 'project' and/or 'area' (area typically refers to REZs)
+        name: list of names for projects and/or IDs for zones.
+        file_type: list of 'project' and/or 'zone' (zone typically refers to REZs)
         technology: list of technology types of traces, only including 'SAT', 'FFP', or 'CST'.
         reference_year: list of ints specifying reference_years
     """
@@ -68,8 +68,8 @@ def parse_solar_traces(
 
     AEMO solar trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the solar generation values for each half hour of the day. The file name of the CSV
-    contains metadata in the following format "<project or area name>_<technology>_RefYear<reference year>.csv".
-    For example, "Adelaide_Desal_FFP_RefYear2011.csv" for a project or "REZ_N0_NSW_Non-REZ_CST_RefYear2023.csv" for an area.
+    contains metadata in the following format "<project or zone name>_<technology>_RefYear<reference year>.csv".
+    For example, "Adelaide_Desal_FFP_RefYear2011.csv" for a project or "REZ_N0_NSW_Non-REZ_CST_RefYear2023.csv" for a zone.
 
     The trace parser reformats the data, modifies the file naming convention, and stores
     the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
@@ -82,11 +82,11 @@ def parse_solar_traces(
          "RefYear<reference year>/Project/<project name>/"
          "RefYear<reference year>_<project name>_<technology>_HalfYear<year>-<half of year>.parquet"
 
-    For areas:
-         "RefYear<reference year>/Area/<area name>/<technology>/"
-         "RefYear<reference year>_<area name>_<technology>_HalfYear<year>-<half of year>.parquet"
+    For zones:
+         "RefYear<reference year>/Zone/<zone name>/<technology>/"
+         "RefYear<reference year>_<zone name>_<technology>_HalfYear<year>-<half of year>.parquet"
 
-    With the project and area names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
+    With the project and zone names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
     For one half-yearly chunk of the CSV example above, the parsed filepath for a project would be:
 
         "RefYear2011/Project/Adelaide_Desalination_Plant_Solar_Farm/"
@@ -199,10 +199,10 @@ def restructure_solar_files(
     Restructures solar trace files and saves them in a new format.
 
     This function processes solar trace files, restructures them based on the provided metadata,
-    and saves them in a new format. It handles both project and area solar trace files.
+    and saves them in a new format. It handles both project and zone solar trace files.
 
     Args:
-        output_project_or_area_name: The name of the project or area in the output files.
+        output_project_or_zone_name: The name of the project or zone in the output files.
         input_trace_names: List of input trace names to process.
         all_input_file_metadata: Metadata for all input files.
         output_directory: Directory where restructured files will be saved.
@@ -214,11 +214,11 @@ def restructure_solar_files(
     Example:
         >>> input_metadata = {
         ...     Path('file1.csv'): {'name': 'Project1', 'year': '2020', 'technology': 'FFP', 'file_type': 'project'},
-        ...     Path('file2.csv'): {'name': 'Area1', 'year': '2020', 'technology': 'SAT', 'file_type': 'area'}
+        ...     Path('file2.csv'): {'name': 'Zone1', 'year': '2020', 'technology': 'SAT', 'file_type': 'zone'}
         ... }  # doctest: +SKIP
 
         >>> restructure_solar_files(
-        ...     output_project_or_area_name='NewProject1',
+        ...     output_project_or_zone_name='NewProject1',
         ...     input_trace_names=['Project1'],
         ...     all_input_file_metadata=input_metadata,
         ...     output_directory='/path/to/output'
