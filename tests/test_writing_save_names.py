@@ -7,24 +7,22 @@ def test_write_solar_save_names():
         "reference_year": "1",
         "technology": "x",
         "file_type": "project",
-        "hy": "2",
     }
 
     save_filepath = isp_trace_parser.solar_traces.write_output_solar_filepath(meta_data)
 
-    assert str(save_filepath) == "RefYear1/Project/a/RefYear1_a_x_HalfYear2.parquet"
+    assert str(save_filepath) == "RefYear1_a_x.parquet"
 
     meta_data = {
         "name": "a",
         "reference_year": "1",
         "technology": "x",
         "file_type": "zone",
-        "hy": "2",
     }
 
     save_filepath = isp_trace_parser.solar_traces.write_output_solar_filepath(meta_data)
 
-    assert str(save_filepath) == "RefYear1/Zone/a/x/RefYear1_a_x_HalfYear2.parquet"
+    assert str(save_filepath) == "RefYear1_a_x.parquet"
 
 
 def test_write_wind_save_names():
