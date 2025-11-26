@@ -270,7 +270,7 @@ def restructure_wind_zone_files(
                 process_and_save_files(
                     files_for_resource_type,
                     metadata,
-                    write_output_wind_zone_filepath,
+                    write_output_wind_zone_filename,
                     output_directory,
                 )
 
@@ -302,27 +302,27 @@ def restructure_wind_project_files(
             process_and_save_files(
                 files_for_year,
                 metadata,
-                write_output_wind_project_filepath,
+                write_output_wind_project_filename,
                 output_directory,
             )
 
 
-def write_output_wind_project_filepath(metadata: dict) -> str:
+def write_output_wind_project_filename(metadata: dict) -> str:
     """
-    Generates the output filepath for a wind project trace file.
+    Generates the output filename for a wind project trace file.
 
-    Returns a string representing the filepath.
+    Returns a string representing the filename.
     """
     m = metadata
     name = m["name"].replace(" ", "_")
     return f"RefYear{m['reference_year']}_{name}.parquet"
 
 
-def write_output_wind_zone_filepath(metadata: dict) -> str:
+def write_output_wind_zone_filename(metadata: dict) -> str:
     """
-    Generates the output filepath for a wind zone trace file.
+    Generates the output filename for a wind zone trace file.
 
-    Returns a string representing the filepath.
+    Returns a string representing the filename.
     """
     m = metadata
     name = m["name"].replace(" ", "_")

@@ -9,7 +9,7 @@ def test_write_solar_save_names():
         "file_type": "project",
     }
 
-    save_filepath = isp_trace_parser.solar_traces.write_output_solar_filepath(meta_data)
+    save_filepath = isp_trace_parser.solar_traces.write_output_solar_filename(meta_data)
 
     assert str(save_filepath) == "RefYear1_a_x.parquet"
 
@@ -20,7 +20,7 @@ def test_write_solar_save_names():
         "file_type": "zone",
     }
 
-    save_filepath = isp_trace_parser.solar_traces.write_output_solar_filepath(meta_data)
+    save_filepath = isp_trace_parser.solar_traces.write_output_solar_filename(meta_data)
 
     assert str(save_filepath) == "RefYear1_a_x.parquet"
 
@@ -33,7 +33,7 @@ def test_write_wind_save_names():
         "resource_type": "wind",
     }
 
-    save_filepath = isp_trace_parser.wind_traces.write_output_wind_project_filepath(
+    save_filepath = isp_trace_parser.wind_traces.write_output_wind_project_filename(
         meta_data
     )
 
@@ -46,7 +46,7 @@ def test_write_wind_save_names():
         "file_type": "zone",
     }
 
-    save_filepath = isp_trace_parser.wind_traces.write_output_wind_zone_filepath(
+    save_filepath = isp_trace_parser.wind_traces.write_output_wind_zone_filename(
         meta_data
     )
 
@@ -60,12 +60,8 @@ def test_write_demand_save_names():
         "subregion": "x",
         "poe": "poe10",
         "demand_type": "y",
-        "hy": "2",
     }
 
-    save_filepath = isp_trace_parser.demand_traces.write_new_demand_filepath(meta_data)
+    save_filepath = isp_trace_parser.demand_traces.write_new_demand_filename(meta_data)
 
-    assert (
-        str(save_filepath)
-        == "a/RefYear1/x/poe10/y/a_RefYear1_x_poe10_y_HalfYear2.parquet"
-    )
+    assert str(save_filepath) == "a_RefYear1_x_poe10_y.parquet"

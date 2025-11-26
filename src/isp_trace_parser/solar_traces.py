@@ -249,20 +249,20 @@ def restructure_solar_files(
                 process_and_save_files(
                     get_just_filepaths(files_for_resource_type),
                     metadata,
-                    write_output_solar_filepath,
+                    write_output_solar_filename,
                     output_directory,
                 )
 
 
-def write_output_solar_filepath(metadata: dict[str, str]) -> str:
+def write_output_solar_filename(metadata: dict[str, str]) -> str:
     """
-    Generates the output filepath for a solar trace file.
+    Generates the output filename for a solar trace file.
 
     Args:
         metadata: Dictionary containing metadata for the solar trace file.
 
     Returns:
-        A string representing the filepath.
+        A string representing the filename.
     """
     m = metadata
     name = m["name"].replace(" ", "_")
