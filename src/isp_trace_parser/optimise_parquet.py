@@ -24,11 +24,20 @@ def partition_traces(
 
     con = duckdb.connect()
 
-    query = f"SELECT * FROM read_parquet('{input_directory}') " "ORDER BY datetime,zone"
+    query = f"SELECT * FROM read_parquet('{input_directory}')"
+
+    if config.sort_by:
+        query += f" ORDER BY {', '.join(config.sort_by)}"
+
+    partition_clause = (
+        f"PARTITION_BY ({', '.join(config.partition_cols)})"
+        if config.partition_cols
+        else ""
+    )
 
     con.execute(f"""COPY ({query})
                 TO '{output_directory}'
-                (FORMAT PARQUET, PARTITION_BY ('reference_year'))
+                (FORMAT PARQUET{', ' + partition_clause if partition_clause else ''})
                 """)
 
     con.close()
