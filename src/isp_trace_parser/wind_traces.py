@@ -315,10 +315,7 @@ def write_output_wind_project_filepath(metadata: dict) -> str:
     """
     m = metadata
     name = m["name"].replace(" ", "_")
-    return (
-        f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/"
-        f"RefYear{m['reference_year']}_{name}_HalfYear{m['hy']}.parquet"
-    )
+    return f"RefYear{m['reference_year']}_{name}.parquet"
 
 
 def write_output_wind_zone_filepath(metadata: dict) -> str:
@@ -329,10 +326,7 @@ def write_output_wind_zone_filepath(metadata: dict) -> str:
     """
     m = metadata
     name = m["name"].replace(" ", "_")
-    return (
-        f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/{m['resource_quality']}/"
-        f"RefYear{m['reference_year']}_{name}_{m['resource_quality']}_HalfYear{m['hy']}.parquet"
-    )
+    return f"RefYear{m['reference_year']}_{name}_{m['resource_quality']}.parquet"
 
 
 def restructure_wind_project_mapping(project_name_mapping: dict) -> dict:
