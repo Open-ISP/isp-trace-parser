@@ -6,15 +6,15 @@ from pydantic import BaseModel, validate_call
 
 
 class OptimisationConfig(BaseModel):
-    partition_cols: Optional[list[str]] = None
-    sort_by: Optional[list[str]] = None
+    partition_cols: list[str] = ["reference_year"]
+    sort_by: Optional[list[str]] = ["datetime"]
     delete_source: bool = True
 
 
 def partition_traces(
     input_directory: str | Path,
     output_directory: str | Path,
-    config: OptimisationConfig | None = None,
+    config: OptimisationConfig = None,
 ):
     if config is None:
         config = OptimisationConfig()
@@ -29,15 +29,11 @@ def partition_traces(
     if config.sort_by:
         query += f" ORDER BY {', '.join(config.sort_by)}"
 
-    partition_clause = (
-        f"PARTITION_BY ({', '.join(config.partition_cols)})"
-        if config.partition_cols
-        else ""
-    )
+    partition_clause = f"PARTITION_BY ({', '.join(config.partition_cols)})"
 
     con.execute(f"""COPY ({query})
                 TO '{output_directory}'
-                (FORMAT PARQUET{', ' + partition_clause if partition_clause else ''})
+                (FORMAT PARQUET, {partition_clause})
                 """)
 
     con.close()
