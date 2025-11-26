@@ -256,19 +256,19 @@ def restructure_wind_zone_files(
         files_for_year = get_metadata_that_matches_reference_year(
             year, metadata_for_trace_files
         )
-        resource_qualities = get_unique_resource_quality_in_metadata(files_for_year)
-        for resource_quality in resource_qualities:
-            files_for_resource_quality = get_metadata_that_matches_resource_quality(
-                resource_quality, files_for_year
+        resource_types = get_unique_resource_types_in_metadata(files_for_year)
+        for resource_type in resource_types:
+            files_for_resource_type = get_metadata_that_matches_resource_type(
+                resource_type, files_for_year
             )
-            metadata = get_metadata_for_writing_save_name(files_for_resource_quality)
+            metadata = get_metadata_for_writing_save_name(files_for_resource_type)
             metadata = overwrite_metadata_trace_name_with_output_name(
                 metadata, output_zone_name
             )
             parse_file = check_filter_by_metadata(metadata, filters)
             if parse_file:
                 process_and_save_files(
-                    files_for_resource_quality,
+                    files_for_resource_type,
                     metadata,
                     write_output_wind_zone_filepath,
                     output_directory,
@@ -326,7 +326,7 @@ def write_output_wind_zone_filepath(metadata: dict) -> str:
     """
     m = metadata
     name = m["name"].replace(" ", "_")
-    return f"RefYear{m['reference_year']}_{name}_{m['resource_quality']}.parquet"
+    return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
 
 
 def restructure_wind_project_mapping(project_name_mapping: dict) -> dict:
@@ -351,22 +351,19 @@ def extract_metadata_for_all_wind_files(filepaths: list) -> dict:
     return dict(zip(filepaths, file_metadata))
 
 
-def get_unique_resource_quality_in_metadata(
+def get_unique_resource_types_in_metadata(
     metadata_for_trace_files: dict[str:str],
 ) -> list:
     return list(
-        set(
-            metadata["resource_quality"]
-            for metadata in metadata_for_trace_files.values()
-        )
+        set(metadata["resource_type"] for metadata in metadata_for_trace_files.values())
     )
 
 
-def get_metadata_that_matches_resource_quality(
-    resource_quality: str, metadata_for_trace_files: dict[str:str]
+def get_metadata_that_matches_resource_type(
+    resource_type: str, metadata_for_trace_files: dict[str:str]
 ) -> dict[str:str]:
     return {
         f: metadata
         for f, metadata in metadata_for_trace_files.items()
-        if metadata["resource_quality"] == resource_quality
+        if metadata["resource_type"] == resource_type
     }

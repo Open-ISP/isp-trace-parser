@@ -235,17 +235,19 @@ def restructure_solar_files(
         files_for_year = get_metadata_that_matches_reference_year(
             year, metadata_for_trace_files
         )
-        techs = get_unique_techs_in_metadata(files_for_year)
-        for tech in techs:
-            files_for_tech = get_metadata_that_matches_tech(tech, files_for_year)
-            metadata = get_metadata_for_writing_save_name(files_for_tech)
+        resource_types = get_unique_resource_types_in_metadata(files_for_year)
+        for resource_type in resource_types:
+            files_for_resource_type = get_metadata_that_matches_resource_type(
+                resource_type, files_for_year
+            )
+            metadata = get_metadata_for_writing_save_name(files_for_resource_type)
             metadata = overwrite_metadata_trace_name_with_output_name(
                 metadata, output_project_or_zone_name
             )
             parse_file = check_filter_by_metadata(metadata, filters)
             if parse_file:
                 process_and_save_files(
-                    get_just_filepaths(files_for_tech),
+                    get_just_filepaths(files_for_resource_type),
                     metadata,
                     write_output_solar_filepath,
                     output_directory,
@@ -266,9 +268,9 @@ def write_output_solar_filepath(metadata: dict[str, str]) -> str:
     name = m["name"].replace(" ", "_")
 
     if m["file_type"] == "project":
-        return f"RefYear{m['reference_year']}_{name}_{m['technology']}.parquet"
+        return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
     else:
-        return f"RefYear{m['reference_year']}_{name}_{m['technology']}.parquet"
+        return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
 
 
 def extract_metadata_for_all_solar_files(
@@ -287,38 +289,38 @@ def extract_metadata_for_all_solar_files(
     return dict(zip(filepaths, file_metadata))
 
 
-def get_unique_techs_in_metadata(
+def get_unique_resource_types_in_metadata(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
     """
-    Gets unique technologies from the metadata of trace files.
+    Gets unique resource types from the metadata of trace files.
 
     Args:
         metadata_for_trace_files: Dictionary containing metadata for trace files.
 
     Returns:
-        A list of unique technologies.
+        A list of unique resource types.
     """
     return list(
-        set(metadata["technology"] for metadata in metadata_for_trace_files.values())
+        set(metadata["resource_type"] for metadata in metadata_for_trace_files.values())
     )
 
 
-def get_metadata_that_matches_tech(
-    tech: str, metadata_for_trace_files: dict[Path, dict[str, str]]
+def get_metadata_that_matches_resource_type(
+    resource_type: str, metadata_for_trace_files: dict[Path, dict[str, str]]
 ) -> dict[Path, dict[str, str]]:
     """
-    Filters metadata to only include files matching a specific technology.
+    Filters metadata to only include files matching a specific resource type.
 
     Args:
-        tech: The technology to filter by.
+        resource_type: The resource type to filter by.
         metadata_for_trace_files: Dictionary containing metadata for trace files.
 
     Returns:
-        A dictionary of metadata for files matching the specified technology.
+        A dictionary of metadata for files matching the specified resource type.
     """
     return {
         f: metadata
         for f, metadata in metadata_for_trace_files.items()
-        if metadata["technology"] == tech
+        if metadata["resource_type"] == resource_type
     }

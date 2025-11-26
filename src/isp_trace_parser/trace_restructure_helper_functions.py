@@ -48,7 +48,7 @@ def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFra
     return trace.with_columns(
         pl.lit(file_metadata["name"]).alias(file_metadata["file_type"]),
         pl.lit(file_metadata["reference_year"]).alias("reference_year"),
-        pl.lit(file_metadata["technology"]).alias("resource_type"),
+        pl.lit(file_metadata["resource_type"]).alias("resource_type"),
     )
 
 
