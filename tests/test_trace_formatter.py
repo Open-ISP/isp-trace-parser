@@ -16,19 +16,19 @@ def test_trace_formatter():
 
     formatted_data = formatted_data.with_columns(
         [
-            pl.col("Datetime")
+            pl.col("datetime")
             .dt.offset_by("-1s")
             .dt.year()
             .cast(pl.Int64)
             .alias("Year"),
-            pl.col("Datetime")
+            pl.col("datetime")
             .dt.offset_by("-1s")
             .dt.month()
             .cast(pl.Int64)
             .alias("Month"),
-            pl.col("Datetime").dt.offset_by("-1s").dt.day().cast(pl.Int64).alias("Day"),
-            (pl.col("Datetime").dt.hour()).cast(pl.Int64).alias("hm"),
-            pl.col("Datetime").dt.minute().cast(pl.Int64).alias("mm"),
+            pl.col("datetime").dt.offset_by("-1s").dt.day().cast(pl.Int64).alias("Day"),
+            (pl.col("datetime").dt.hour()).cast(pl.Int64).alias("hm"),
+            pl.col("datetime").dt.minute().cast(pl.Int64).alias("mm"),
         ]
     )
     formatted_data = formatted_data.with_columns(
@@ -54,7 +54,7 @@ def test_trace_formatter():
     formatted_data = formatted_data.sort(by=["Year", "Month", "Day", "Period"])
 
     formatted_data = formatted_data.pivot(
-        index=["Year", "Month", "Day"], on="Period", values="Value"
+        index=["Year", "Month", "Day"], on="Period", values="value"
     )
 
     assert_frame_equal(original_trace_data, formatted_data)
