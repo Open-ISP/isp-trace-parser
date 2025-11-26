@@ -47,7 +47,7 @@ def partition_traces(
     con.close()
 
 
-def partition_traces_partial(
+def partition_resource_traces(
     input_directory: str | Path,
     output_directory: str | Path,
     config: OptimisationConfig = None,
@@ -78,7 +78,7 @@ def partition_traces_partial(
     con.close()
 
 
-def partition_traces_partial2(
+def partition_demand_traces(
     input_directory: str | Path,
     output_directory: str | Path,
     config: OptimisationConfig = None,
