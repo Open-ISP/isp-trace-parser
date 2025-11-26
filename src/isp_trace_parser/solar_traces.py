@@ -40,20 +40,20 @@ class SolarMetadataFilter(BaseModel):
     Filter for projects that use single axis tracking.
 
     >>> metadata_filters = SolarMetadataFilter(
-    ... technology=['SAT'],
+    ... resource_type=['SAT'],
     ... file_type=['project'],
     ... )
 
     Attributes:
         name: list of names for projects and/or IDs for zones.
         file_type: list of 'project' and/or 'zone' (zone typically refers to REZs)
-        technology: list of technology types of traces, only including 'SAT', 'FFP', or 'CST'.
+        resource_type: list of resource types of traces, only including 'SAT', 'FFP', or 'CST'.
         reference_year: list of ints specifying reference_years
     """
 
     name: Optional[list[str]] = None
     file_type: Optional[list[Literal["zone", "project"]]] = None
-    technology: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
+    resource_type: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
     reference_year: Optional[list[int]] = None
 
 

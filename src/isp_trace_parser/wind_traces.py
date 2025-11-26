@@ -40,20 +40,20 @@ class WindMetadataFilter(BaseModel):
     Filter for zones with a high wind resource.
 
     >>> metadata_filters = WindMetadataFilter(
-    ... resource_quality=['WH'],
+    ... resource_type=['WH'],
     ... file_type=['zone'],
     ... )
 
     Attributes:
         name: list of names for projects and/or IDs for zones.
         file_type: list of 'project' and/or 'zone' (zone typically refers to REZs)
-        resource_quality: list of resource_quality types, only including 'WH', 'WM', 'WL, or 'WX'.
+        resource_type: list of resource types, only including 'WH', 'WM', 'WL', 'WX', or 'wind'.
         reference_year: list of ints specifying reference_years
     """
 
     name: Optional[list[str]] = None
     file_type: Optional[list[Literal["zone", "project"]]] = None
-    resource_quality: Optional[list[Literal["WH", "WM", "WL", "WX"]]] = None
+    resource_type: Optional[list[Literal["WH", "WM", "WL", "WX", "wind"]]] = None
     reference_year: Optional[list[int]] = None
 
 
