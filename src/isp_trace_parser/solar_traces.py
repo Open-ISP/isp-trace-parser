@@ -68,7 +68,7 @@ def parse_solar_traces(
 
     AEMO solar trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the solar generation values for each half hour of the day. The file name of the CSV
-    contains metadata in the following format "<project or zone name>_<technology>_RefYear<reference year>.csv".
+    contains metadata in the following format "<project or zone name>_<resource_type>_RefYear<reference year>.csv".
     For example, "Adelaide_Desal_FFP_RefYear2011.csv" for a project or "REZ_N0_NSW_Non-REZ_CST_RefYear2023.csv" for a zone.
 
     The trace parser reformats the data, modifies the file naming convention, and stores
@@ -80,11 +80,11 @@ def parse_solar_traces(
 
     For projects:
          "RefYear<reference year>/Project/<project name>/"
-         "RefYear<reference year>_<project name>_<technology>_HalfYear<year>-<half of year>.parquet"
+         "RefYear<reference year>_<project name>_<resource_type>_HalfYear<year>-<half of year>.parquet"
 
     For zones:
-         "RefYear<reference year>/Zone/<zone name>/<technology>/"
-         "RefYear<reference year>_<zone name>_<technology>_HalfYear<year>-<half of year>.parquet"
+         "RefYear<reference year>/Zone/<zone name>/<resource_type>/"
+         "RefYear<reference year>_<zone name>_<resource_type>_HalfYear<year>-<half of year>.parquet"
 
     With the project and zone names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
     For one half-yearly chunk of the CSV example above, the parsed filepath for a project would be:
@@ -115,7 +115,7 @@ def parse_solar_traces(
     expand which traces are parsed.
 
     >>> metadata_filters = SolarMetadataFilter(
-    ... technology=['FFP', 'SAT'],
+    ... resource_type=['FFP', 'SAT'],
     ... file_type=['project'],
     ... )
 
@@ -213,8 +213,8 @@ def restructure_solar_files(
 
     Example:
         >>> input_metadata = {
-        ...     Path('file1.csv'): {'name': 'Project1', 'year': '2020', 'technology': 'FFP', 'file_type': 'project'},
-        ...     Path('file2.csv'): {'name': 'Zone1', 'year': '2020', 'technology': 'SAT', 'file_type': 'zone'}
+        ...     Path('file1.csv'): {'name': 'Project1', 'year': '2020', 'resource_type': 'FFP', 'file_type': 'project'},
+        ...     Path('file2.csv'): {'name': 'Zone1', 'year': '2020', 'resource_type': 'SAT', 'file_type': 'zone'}
         ... }  # doctest: +SKIP
 
         >>> restructure_solar_files(

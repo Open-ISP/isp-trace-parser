@@ -69,7 +69,7 @@ def parse_wind_traces(
     AEMO wind trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the wind generation values for each half hour of the day. The file name of the CSV
     contains metadata in the following format "<project or zone name>_RefYear<reference year>.csv" for projects, or
-    "<zone id>_<resource quality>_<zone name>_RefYear<reference year>.csv" for zones.
+    "<zone id>_<resource_type>_<zone name>_RefYear<reference year>.csv" for zones.
     For example, "SNOWSTH1_RefYear2011.csv" for a project or "N8_WH_Cooma-Monaro_RefYear2023.csv" for a zone.
 
     The trace parser reformats the data, modifies the file naming convention, and stores
@@ -84,8 +84,8 @@ def parse_wind_traces(
          "RefYear<reference year>_<project name>_HalfYear<year>-<half of year>.parquet"
 
     For zones:
-         "RefYear<reference year>/Zone/<zone name>/<resource type>/"
-         "RefYear<reference year>_<zone id>_<resource quality>_HalfYear<year>-<half of year>.parquet"
+         "RefYear<reference year>/Zone/<zone name>/<resource_type>/"
+         "RefYear<reference year>_<zone id>_<resource_type>_HalfYear<year>-<half of year>.parquet"
 
     With the project and zone names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
     For one half-yearly chunk of the CSV example above, the parsed filepath for a project would be:
@@ -223,9 +223,9 @@ def restructure_wind_zone_files(
     Examples:
 
         >>> all_metadata = {
-        ...     'file1.csv': {'name': 'Zone1', 'year': '2020', 'resource_quality': 'WH'},
-        ...     'file2.csv': {'name': 'Zone1', 'year': '2021', 'resource_quality': 'WM'},
-        ...     'file3.csv': {'name': 'Zone2', 'year': '2020', 'resource_qulaity': 'WH'}
+        ...     'file1.csv': {'name': 'Zone1', 'year': '2020', 'resource_type': 'WH'},
+        ...     'file2.csv': {'name': 'Zone1', 'year': '2021', 'resource_type': 'WM'},
+        ...     'file3.csv': {'name': 'Zone2', 'year': '2020', 'resource_type': 'WH'}
         ... } # doctest: +SKIP
 
         >>> restructure_wind_zone_files(
