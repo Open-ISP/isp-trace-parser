@@ -1,3 +1,4 @@
+from itertools import product
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -63,6 +64,48 @@ def partition_traces_partial(
         print(year)
 
         query = f"SELECT * FROM read_parquet('{input_directory}') WHERE reference_year={year}"
+
+        if config.sort_by:
+            query += f" ORDER BY {', '.join(config.sort_by)}"
+
+        partition_clause = f"PARTITION_BY ({', '.join(config.partition_cols)})"
+
+        con.execute(f"""COPY ({query})
+                    TO '{output_directory}'
+                    (FORMAT PARQUET, {partition_clause},  OVERWRITE_OR_IGNORE TRUE)
+                    """)
+
+    con.close()
+
+
+def partition_traces_partial2(
+    input_directory: str | Path,
+    output_directory: str | Path,
+    config: OptimisationConfig = None,
+):
+    if config is None:
+        config = OptimisationConfig(partition_cols=["scenario", "reference_year"])
+
+    output_path = Path(output_directory)
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    con = duckdb.connect()
+
+    scenarios = con.execute(f"""
+        SELECT DISTINCT scenario
+        FROM read_parquet('{input_directory}')
+        """).fetchall()
+
+    reference_years = con.execute(f"""
+        SELECT DISTINCT reference_year
+        FROM read_parquet('{input_directory}')
+        """).fetchall()
+
+    partitions = [(*s, *y) for s, y in product(scenarios, reference_years)]
+
+    for scenario, reference_year in partitions:
+        print(scenario, reference_year)
+        query = f"SELECT * FROM read_parquet('{input_directory}') WHERE reference_year={reference_year} AND scenario='{scenario}'"
 
         if config.sort_by:
             query += f" ORDER BY {', '.join(config.sort_by)}"
