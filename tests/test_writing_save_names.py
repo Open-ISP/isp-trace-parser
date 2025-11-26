@@ -5,7 +5,7 @@ def test_write_solar_save_names():
     meta_data = {
         "name": "a",
         "reference_year": "1",
-        "technology": "x",
+        "resource_type": "x",
         "file_type": "project",
     }
 
@@ -16,7 +16,7 @@ def test_write_solar_save_names():
     meta_data = {
         "name": "a",
         "reference_year": "1",
-        "technology": "x",
+        "resource_type": "x",
         "file_type": "zone",
     }
 
@@ -26,27 +26,31 @@ def test_write_solar_save_names():
 
 
 def test_write_wind_save_names():
-    meta_data = {"name": "a", "reference_year": "1", "file_type": "project", "hy": "2"}
+    meta_data = {
+        "name": "a",
+        "reference_year": "1",
+        "file_type": "project",
+        "resource_type": "wind",
+    }
 
     save_filepath = isp_trace_parser.wind_traces.write_output_wind_project_filepath(
         meta_data
     )
 
-    assert str(save_filepath) == "RefYear1/Project/a/RefYear1_a_HalfYear2.parquet"
+    assert str(save_filepath) == "RefYear1_a.parquet"
 
     meta_data = {
         "name": "a",
         "reference_year": "1",
-        "resource_quality": "x",
+        "resource_type": "x",
         "file_type": "zone",
-        "hy": "2",
     }
 
     save_filepath = isp_trace_parser.wind_traces.write_output_wind_zone_filepath(
         meta_data
     )
 
-    assert str(save_filepath) == "RefYear1/Zone/a/x/RefYear1_a_x_HalfYear2.parquet"
+    assert str(save_filepath) == "RefYear1_a_x.parquet"
 
 
 def test_write_demand_save_names():

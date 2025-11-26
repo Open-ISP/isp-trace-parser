@@ -21,12 +21,12 @@ from isp_trace_parser import (
     [
         {"name": ["A", "B"]},
         {"file_type": ["zone", "project"]},
-        {"technology": ["SAT", "FFP", "CST"]},
+        {"resource_type": ["SAT", "FFP", "CST"]},
         {"reference_year": [2011, 2012]},
         {
             "name": ["A"],
             "file_type": ["zone"],
-            "technology": ["SAT"],
+            "resource_type": ["SAT"],
             "reference_year": [2011],
         },
     ],
@@ -39,7 +39,7 @@ def test_solar_metadata_filter_valid(valid_input):
     "invalid_input,expected_error",
     [
         ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
-        ({"technology": ["invalid"]}, "Input should be 'SAT', 'FFP' or 'CST'"),
+        ({"resource_type": ["invalid"]}, "Input should be 'SAT', 'FFP' or 'CST'"),
         ({"reference_year": ["invalid"]}, "Input should be a valid integer"),
         ({"name": 123}, "Input should be a valid list"),
     ],
@@ -54,12 +54,12 @@ def test_solar_metadata_filter_invalid(invalid_input, expected_error):
     [
         {"name": ["A", "B"]},
         {"file_type": ["zone", "project"]},
-        {"resource_quality": ["WH", "WM", "WL", "WX"]},
+        {"resource_type": ["WH", "WM", "WL", "WX", "wind"]},
         {"reference_year": [2011, 2012]},
         {
             "name": ["A"],
             "file_type": ["zone"],
-            "resource_quality": ["WH"],
+            "resource_type": ["WH"],
             "reference_year": [2011],
         },
     ],
@@ -72,7 +72,10 @@ def test_wind_metadata_filter_valid(valid_input):
     "invalid_input,expected_error",
     [
         ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
-        ({"resource_quality": ["invalid"]}, "Input should be 'WH', 'WM', 'WL' or 'WX'"),
+        (
+            {"resource_type": ["invalid"]},
+            "Input should be 'WH', 'WM', 'WL', 'WX' or 'wind'",
+        ),
         ({"reference_year": ["invalid"]}, "Input should be a valid integer"),
         ({"name": 123}, "Input should be a valid list"),
     ],
