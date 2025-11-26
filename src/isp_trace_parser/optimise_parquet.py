@@ -60,10 +60,17 @@ def partition_resource_traces(
 
     con = duckdb.connect()
 
-    for year in range(2011, 2024):
-        print(year)
+    reference_years = con.execute(f"""
+        SELECT DISTINCT reference_year
+        FROM read_parquet('{input_directory}')
+        """).fetchall()
 
-        query = f"SELECT * FROM read_parquet('{input_directory}') WHERE reference_year={year}"
+    partitions = reference_years
+
+    for reference_year in reference_years:
+        print(reference_year)
+
+        query = f"SELECT * FROM read_parquet('{input_directory}') WHERE reference_year={reference_year}"
 
         if config.sort_by:
             query += f" ORDER BY {', '.join(config.sort_by)}"
