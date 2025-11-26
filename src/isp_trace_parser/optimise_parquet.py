@@ -11,6 +11,13 @@ class OptimisationConfig(BaseModel):
     delete_source: bool = True
 
 
+def _delete_source_files(input_directory: str | Path) -> None:
+    input_path = Path(input_directory)
+    files = list(input_path.rglob("*.parquet"))
+    for file in files:
+        file.unlink()
+
+
 def partition_traces(
     input_directory: str | Path,
     output_directory: str | Path,
@@ -37,3 +44,6 @@ def partition_traces(
                 """)
 
     con.close()
+
+    if config.delete_source:
+        _delete_source_files(input_directory)
