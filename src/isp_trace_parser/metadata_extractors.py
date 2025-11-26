@@ -53,7 +53,7 @@ def extract_wind_trace_metadata(filename):
     if match1:
         match_data = match1.groupdict()
         match_data["file_type"] = "project"
-        match_data["resource_type"] = "wind"
+        match_data["resource_type"] = "WIND"
         match_data["reference_year"] = int(match_data["reference_year"])
         return match_data
 
