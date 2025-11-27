@@ -7,11 +7,11 @@ from pydantic import config, validate_call
 @validate_call(config=config.ConfigDict(arbitrary_types_allowed=True))
 def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
     """
-    Takes trace data in the AEMO format and converts it to a format with 'Datetime' and 'Data' columns.
+    Takes trace data in the AEMO format and converts it to a format with 'datetime' and 'value' columns.
 
     AEMO provides ISP trace data with separate columns for 'Year', 'Month', and 'Day', and individual data columns
     labeled '01', '02', ..., '48', representing half-hour intervals. This function converts that data format into
-    one where a single 'Datetime' column specifies the end of each half-hour period, and another 'Data' column contains
+    one where a single 'datetime' column specifies the end of each half-hour period, and another 'value' column contains
     the corresponding values.
 
     Example:
@@ -30,7 +30,7 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
     >>> trace_formatter(aemo_format_data)
     shape: (6, 2)
     ┌─────────────────────┬───────┐
-    │ Datetime            ┆ Value │
+    │ datetime            ┆ value │
     │ ---                 ┆ ---   │
     │ datetime[μs]        ┆ f64   │
     ╞═════════════════════╪═══════╡
@@ -50,8 +50,8 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
 
     Returns:
         A `polars.DataFrame` with:
-        - 'Datetime': A column specifying the end time of each half-hour period.
-        - 'Data': A column containing the data for each half-hour period.
+        - 'datetime': A column specifying the end time of each half-hour period.
+        - 'value': A column containing the data for each half-hour period.
     """
 
     # Need both padded 1-9 and not padded because AEMO data files can have both.
@@ -62,7 +62,7 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         index=["Year", "Month", "Day"],
         on=value_vars,
         variable_name="time_label",
-        value_name="Value",
+        value_name="value",
     )
 
     def get_hour(time_label):
@@ -88,16 +88,16 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
                 + " 00:00:00"
             )
             .str.strptime(pl.Datetime)
-            .alias("Datetime"),
+            .alias("datetime"),
         ]
     )
 
     trace_data = (
         trace_data.with_columns(
-            [(pl.col("Datetime") + pl.col("Hour") + pl.col("Minute")).alias("Datetime")]
+            [(pl.col("datetime") + pl.col("Hour") + pl.col("Minute")).alias("datetime")]
         )
-        .select(["Datetime", "Value"])
-        .sort("Datetime")
+        .select(["datetime", "value"])
+        .sort("datetime")
     )
 
     return trace_data

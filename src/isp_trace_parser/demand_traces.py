@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import Literal, Optional
 
+import polars as pl
 import yaml
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
@@ -10,19 +11,17 @@ from pydantic import BaseModel, validate_call
 from isp_trace_parser import input_validation
 from isp_trace_parser.metadata_extractors import extract_demand_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
-    add_half_year_as_column,
     check_filter_by_metadata,
     get_all_filepaths,
     read_trace_csv,
-    save_half_year_chunk_of_trace,
     trace_formatter,
 )
 
 
 class DemandMetadataFilter(BaseModel):
-    """A Pydantic class for defining a metadata based filter that specifies which wind trace files to parser.
+    """A Pydantic class for defining a metadata based filter that specifies which demand trace files to parse.
 
-    All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
+    All attributes of the filter are optional, any attribute not included will not be filtered on. If an attribute is
     included then only traces with metadata matching the values in the corresponding list will be parsed.
 
     Examples:
@@ -73,24 +72,20 @@ def parse_demand_traces(
     contains metadata in the following format "<subregionID>_RefYear_<reference year>_<scenario>_<poe>_<data type>.csv".
     For example, "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv".
 
-    The trace parser reformats the data, modifies the file naming convention to match the IASR workbook, and stores
-    the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
-    changed to a two column format with a column "Datetime" specifying the end of the half hour period the measurement
-    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "Value" specifying the measurement value. The data is saved
-    in parquet format in half-yearly chunks to improved read speeds. The files are saved in with following
-    directory structure and naming convention:
+    The trace parser reformats the data and stores the data files in parquet format with metadata columns,
+    which match the IASR workbook conventions.
+    The data format is changed to include a column "datetime" specifying the end of the half hour period
+    the measurement is for in the format %Y-%m-%d %H:%M:%S, a column "value" specifying the measurement
+    value, and metadata columns (subregion, reference_year, scenario, poe, demand_type). The scenario
+    column contains the mapped scenario name from the IASR workbook. Files are saved with a new naming
+    convention: "<mapped_scenario>_RefYear<reference_year>_<subregion>_<poe>_<demand_type>.parquet".
 
-         "<scenario>/RefYear<reference year>/<subregion ID>/<poe>/<data type>/"
-         "<scenario>_RefYear<reference year>_<subregion ID>_<poe>_<data type>_HalfYear<year>-<half of year>.parquet"
+    For the CSV example above, the parsed filename would be:
 
-    With the scenario name mapped from the name used in the raw AEMO trace data to the name used in the IASR workbook.
-    For one half-yearly chunk of the CSV example above, the parsed filepath would be:
+        "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
 
-        "Green_Energy_Exports/RefYear2011/CNSW/POE10/OPSO_MODELLING/"
-        "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING_HalfYear2020-1.parquet"
-
-    By default, all trace data in the input directory is parsed. However, a filters dictionary can be provided to
-    filter the traces to pass based on metadata. If a metadata type is present in the filters then only traces a
+    By default, all trace data in the input directory is parsed. However, a DemandMetadataFilter can be provided
+    to filter the traces based on metadata. If a metadata type is present in the filter then only traces with a
     metadata value present in the corresponding filter list will be passed, see examples below.
 
     Examples:
@@ -101,7 +96,7 @@ def parse_demand_traces(
     ... input_directory='example_input_data/demand',
     ... parsed_directory='example_parsed_data/demand',
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
     Parse only a subset of the input traces.
 
@@ -123,15 +118,15 @@ def parse_demand_traces(
     ... parsed_directory='example_parsed_data/demand',
     ... filters=metadata_filters,
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
 
     Args:
         input_directory: str or pathlib.Path, path to data to parse.
-        parsed_directory: str or pathlib.Path, path to directory where parsed tarces will be saved.
+        parsed_directory: str or pathlib.Path, path to directory where parsed traces will be saved.
         use_concurrency: boolean, default True, specifies whether to use parallel processing
-        filters: dict{str: list[str]}, dict that specifies which traces to parse, if a component
-            of the metadata is missing from the dict no filtering on that component occurs. See example.
+        filters: DemandMetadataFilter or None, specifies which traces to parse. If a metadata
+            attribute is not set, no filtering on that attribute occurs. See example.
 
     Returns: None
     """
@@ -167,20 +162,21 @@ def parse_demand_traces(
 def restructure_demand_file(
     input_filepath: Path,
     demand_scenario_mapping: dict[str, str],
-    output_directory: str | Path,
-    filters: dict[str, list[str]] = None,
+    output_directory: Path,
+    filters: DemandMetadataFilter | None = None,
 ) -> None:
     """
-    Restructures a single demand trace file and saves it in a new format.
+    Restructures a single demand trace file and saves it in a parquet format.
 
-    This function processes a demand trace file, restructures and saves it in a new format. It handles the mapping of
-    scenario names and applies filters if provided.
+    This function processes a demand trace file, restructures and saves it in a new format, with the original
+    input filename stem and a .parquet extension. It handles the mapping of scenario names and applies filters
+    if provided.
 
     Args:
         input_filepath: Path object representing the input demand trace file.
         demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
         output_directory: Directory where restructured files will be saved.
-        filters: Filters to apply to the metadata. Keys are metadata fields, values are lists of allowed values.
+        filters: DemandMetadataFilter or None, specifies which traces to parse based on metadata.
 
     Returns:
         None: Files are saved to disk, but the function doesn't return any value.
@@ -196,25 +192,42 @@ def restructure_demand_file(
         ...     output_directory='/path/to/output'
         ... )  # doctest: +SKIP
 
-        # This will process the input file and save it with the new scenario name in the specified output directory
+        # This will process the input file and save it in parquet format in the specified output directory
     """
     file_metadata = extract_demand_trace_metadata(input_filepath.name)
+
     file_metadata["scenario"] = get_save_scenario_for_demand_trace(
         file_metadata, demand_scenario_mapping
     )
+
     parse_file = check_filter_by_metadata(file_metadata, filters)
     if parse_file:
         trace = read_trace_csv(input_filepath)
         trace = trace_formatter(trace)
-        trace = add_half_year_as_column(trace)
-        for half_year, chunk in trace.group_by("HY"):
-            save_half_year_chunk_of_trace(
-                chunk,
-                file_metadata,
-                half_year,
-                output_directory,
-                write_new_demand_filepath,
-            )
+        trace = _frame_with_metadata(trace, file_metadata)
+
+        save_filepath = output_directory / write_new_demand_filename(
+            metadata=file_metadata
+        )
+        save_filepath.parent.mkdir(parents=True, exist_ok=True)
+
+        trace.write_parquet(save_filepath)
+
+
+def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
+    """Adds metadata fields as columns to a trace DataFrame.
+
+    Args:
+        trace: The trace data Polars Dataframe to add data to.
+        file_metadata: Dict containing metadata (subregion, reference_year, scenario, poe, and demand_type)
+    """
+    return trace.with_columns(
+        subregion=pl.lit(file_metadata["subregion"]),
+        reference_year=pl.lit(file_metadata["reference_year"]),
+        scenario=pl.lit(file_metadata["scenario"]),
+        poe=pl.lit(file_metadata["poe"]),
+        demand_type=pl.lit(file_metadata["demand_type"]),
+    )
 
 
 def get_save_scenario_for_demand_trace(
@@ -233,24 +246,21 @@ def get_save_scenario_for_demand_trace(
     return demand_scenario_mapping[file_metadata["scenario"]]
 
 
-def write_new_demand_filepath(metadata: dict[str, str]) -> str:
+def write_new_demand_filename(metadata: dict[str, str]) -> str:
     """
-    Generates the output filepath for a demand trace file.
+    Generates the output filename for a demand trace file.
 
     Args:
         metadata: Dictionary containing metadata for the demand trace file.
 
     Returns:
-        A string representing the filepath.
+        A string representing the filename.
     """
     m = metadata
     subregion = m["subregion"].replace(" ", "_")
     scenario = m["scenario"].replace(" ", "_")
 
-    return (
-        f"{scenario}/RefYear{m['reference_year']}/{subregion}/{m['poe']}/{m['demand_type']}/"
-        f"{scenario}_RefYear{m['reference_year']}_{subregion}_{m['poe']}_{m['demand_type']}_HalfYear{m['hy']}.parquet"
-    )
+    return f"{scenario}_RefYear{m['reference_year']}_{subregion}_{m['poe']}_{m['demand_type']}.parquet"
 
 
 def extract_metadata_for_all_demand_files(

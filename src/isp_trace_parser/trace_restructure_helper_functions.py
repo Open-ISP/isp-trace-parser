@@ -31,43 +31,37 @@ def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:
 
 def calculate_average_trace(traces: list[pl.DataFrame]) -> pl.DataFrame:
     combined_traces = pl.concat(traces)
-    average_trace = combined_traces.group_by("Datetime").agg(
-        [pl.col("Value").mean().alias("Value")]
+    average_trace = combined_traces.group_by("datetime").agg(
+        [pl.col("value").mean().alias("value")]
     )
     return average_trace
 
 
-def add_half_year_as_column(trace: pl.DataFrame) -> pl.DataFrame:
-    def calculate_half_year(dt):
-        dt -= timedelta(seconds=1)
-        if dt.month < 7:
-            half_year = f"{dt.year}-1"
-        else:
-            half_year = f"{dt.year}-2"
-        return half_year
+def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
+    """
+    Adds metadata fields as columns to a resource trace DataFrame.
 
-    trace = trace.sort("Datetime")
+    Name column dynamically named based on "file_type" (ie. project or zone)
 
-    trace = trace.with_columns(
-        (pl.col("Datetime").map_elements(calculate_half_year, pl.String).alias("HY"))
+    """
+
+    return trace.with_columns(
+        pl.lit(file_metadata["name"]).alias(file_metadata["file_type"]),
+        pl.lit(file_metadata["reference_year"]).alias("reference_year"),
+        pl.lit(file_metadata["resource_type"]).alias("resource_type"),
     )
 
-    return trace
 
-
-def save_half_year_chunk_of_trace(
-    chunk: pl.DataFrame,
+def save_trace(
+    trace: pl.DataFrame,
     file_metadata: dict[str, str],
-    half_year: tuple[str],
     output_directory: Path,
     write_output_filepath: callable,
 ) -> None:
-    file_metadata["hy"] = half_year[0]
-    data = chunk.drop("HY")
     path_in_output_directory = write_output_filepath(file_metadata)
     save_filepath = output_directory / path_in_output_directory
     save_filepath.parent.mkdir(parents=True, exist_ok=True)
-    data.write_parquet(save_filepath)
+    trace.write_parquet(save_filepath)
 
 
 def process_and_save_files(
@@ -83,12 +77,9 @@ def process_and_save_files(
     else:
         trace = traces[0]
 
-    trace = add_half_year_as_column(trace)
+    trace = _frame_with_metadata(trace, file_metadata)
 
-    for half_year, chunk in trace.group_by("HY"):
-        save_half_year_chunk_of_trace(
-            chunk, file_metadata, half_year, output_directory, write_output_filepath
-        )
+    save_trace(trace, file_metadata, output_directory, write_output_filepath)
 
 
 def get_metadata_that_matches_trace_names(
@@ -151,7 +142,7 @@ def check_filter_by_metadata(
     return True
 
 
-def get_unique_project_and_area_names_in_input_files(
+def get_unique_project_and_zone_names_in_input_files(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
     names = []

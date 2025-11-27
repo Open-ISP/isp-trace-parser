@@ -16,7 +16,7 @@ from isp_trace_parser.trace_restructure_helper_functions import (
     get_metadata_for_writing_save_name,
     get_metadata_that_matches_reference_year,
     get_metadata_that_matches_trace_names,
-    get_unique_project_and_area_names_in_input_files,
+    get_unique_project_and_zone_names_in_input_files,
     get_unique_reference_years_in_metadata,
     overwrite_metadata_trace_name_with_output_name,
     process_and_save_files,
@@ -24,14 +24,14 @@ from isp_trace_parser.trace_restructure_helper_functions import (
 
 
 class SolarMetadataFilter(BaseModel):
-    """A Pydantic class for defining a metadata based filter that specifies which solar trace files to parser.
+    """A Pydantic class for defining a metadata based filter that specifies which solar trace files to parse.
 
-    All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
+    All attributes of the filter are optional, any attribute not included will not be filtered on. If an attribute is
     included then only traces with metadata matching the values in the corresponding list will be parsed.
 
     Examples:
 
-    Filter for only projects or areas that are in a list of names.
+    Filter for only projects or zones that are in a list of names.
 
     >>> metadata_filters = SolarMetadataFilter(
     ... name=['A', 'B', 'x'],
@@ -40,20 +40,20 @@ class SolarMetadataFilter(BaseModel):
     Filter for projects that use single axis tracking.
 
     >>> metadata_filters = SolarMetadataFilter(
-    ... technology=['SAT'],
+    ... resource_type=['SAT'],
     ... file_type=['project'],
     ... )
 
     Attributes:
-        name: list of names for projects and/or IDs for areas.
-        file_type: list of 'project' and/or 'area' (area typically refers to REZs)
-        technology: list of technology types of traces, only including 'SAT', 'FFP', or 'CST'.
+        name: list of names for projects and/or IDs for zones.
+        file_type: list of 'project' and/or 'zone' (zone typically refers to REZs)
+        resource_type: list of resource types of traces, only including 'SAT', 'FFP', or 'CST'.
         reference_year: list of ints specifying reference_years
     """
 
     name: Optional[list[str]] = None
-    file_type: Optional[list[Literal["area", "project"]]] = None
-    technology: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
+    file_type: Optional[list[Literal["zone", "project"]]] = None
+    resource_type: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
     reference_year: Optional[list[int]] = None
 
 
@@ -68,33 +68,28 @@ def parse_solar_traces(
 
     AEMO solar trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the solar generation values for each half hour of the day. The file name of the CSV
-    contains metadata in the following format "<project or area name>_<technology>_RefYear<reference year>.csv".
-    For example, "Adelaide_Desal_FFP_RefYear2011.csv" for a project or "REZ_N0_NSW_Non-REZ_CST_RefYear2023.csv" for an area.
+    contains metadata in the following format "<project or zone name>_<resource_type>_RefYear<reference year>.csv".
+    For example, "Adelaide_Desal_FFP_RefYear2011.csv" for a project or "REZ_N0_NSW_Non-REZ_CST_RefYear2023.csv" for a zone.
 
     The trace parser reformats the data, modifies the file naming convention, and stores
-    the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
-    changed to a two column format with a column "Datetime" specifying the end of the half hour period the measurement
-    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "Value" specifying the measurement value. The data is saved
-    in parquet format in half-yearly chunks to improved read speeds. The files are saved with the following
-    directory structure and naming convention:
+    the data files in parquet format. The data format is changed to a two column format with a column "datetime"
+    specifying the end of the half hour period the measurement is for in the format %Y-%m-%d %H:%M:%S, and a
+    column "value" specifying the measurement value. The files are saved with the following naming convention:
 
     For projects:
-         "RefYear<reference year>/Project/<project name>/"
-         "RefYear<reference year>_<project name>_<technology>_HalfYear<year>-<half of year>.parquet"
+         "RefYear<reference year>_<project name>_<resource_type>.parquet"
 
-    For areas:
-         "RefYear<reference year>/Area/<area name>/<technology>/"
-         "RefYear<reference year>_<area name>_<technology>_HalfYear<year>-<half of year>.parquet"
+    For zones:
+         "RefYear<reference year>_<zone name>_<resource_type>.parquet"
 
-    With the project and area names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
-    For one half-yearly chunk of the CSV example above, the parsed filepath for a project would be:
+    With the project and zone names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
+    For the CSV example above, the parsed filename for a project would be:
 
-        "RefYear2011/Project/Adelaide_Desalination_Plant_Solar_Farm/"
-        "RefYear2011_Adelaide_Desalination_Plant_Solar_Farm_FFP_HalfYear2030-1.parquet"
+        "RefYear2011_Adelaide_Desalination_Plant_Solar_Farm_FFP.parquet"
 
-    By default, all trace data in the input directory is parsed. However, a filters dictionary can be provided to
-    filter the traces to pass based on metadata. If a metadata type is present in the filters then only traces with a
-    metadata value present in the corresponding filter list will be passed, see examples below.
+    By default, all trace data in the input directory is parsed. However, a SolarMetadataFilter can be provided to
+    filter the traces based on metadata. If a metadata type is present in the filter then only traces with a
+    metadata value present in the corresponding filter list will be parsed, see examples below.
 
     Examples:
 
@@ -104,7 +99,7 @@ def parse_solar_traces(
     ... input_directory='example_input_data/solar',
     ... parsed_directory='example_parsed_data/solar',
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
     Parse only a subset of the input traces.
 
@@ -115,7 +110,7 @@ def parse_solar_traces(
     expand which traces are parsed.
 
     >>> metadata_filters = SolarMetadataFilter(
-    ... technology=['FFP', 'SAT'],
+    ... resource_type=['FFP', 'SAT'],
     ... file_type=['project'],
     ... )
 
@@ -124,15 +119,15 @@ def parse_solar_traces(
     ... parsed_directory='example_parsed_data/solar',
     ... filters=metadata_filters,
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
 
     Args:
         input_directory: str or pathlib.Path, path to data to parse.
         parsed_directory: str or pathlib.Path, path to directory where parsed traces will be saved.
         use_concurrency: boolean, default True, specifies whether to use parallel processing
-        filters: dict{str: list[str]}, dict that specifies which traces to parse, if a component
-            of the metadata is missing from the dict no filtering on that component occurs. See example.
+        filters: SolarMetadataFilter or None, specifies which traces to parse. If a metadata
+            attribute is not set, no filtering on that attribute occurs. See example.
 
     Returns: None
     """
@@ -149,20 +144,20 @@ def parse_solar_traces(
         project_name_mapping = yaml.safe_load(f)
     with open(
         Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/solar_area_mapping.yaml"),
+        / Path("isp_trace_name_mapping_configs/solar_zone_mapping.yaml"),
         "r",
     ) as f:
-        area_name_mapping = yaml.safe_load(f)
-    name_mappings = {**project_name_mapping, **area_name_mapping}
+        zone_name_mapping = yaml.safe_load(f)
+    name_mappings = {**project_name_mapping, **zone_name_mapping}
 
-    project_and_area_input_names = get_unique_project_and_area_names_in_input_files(
+    project_and_zone_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata
     )
     name_mappings = {
-        k: v for k, v in name_mappings.items() if v in project_and_area_input_names
+        k: v for k, v in name_mappings.items() if v in project_and_zone_input_names
     }
 
-    project_and_area_output_names, project_and_area_input_names = zip(
+    project_and_zone_output_names, project_and_zone_input_names = zip(
         *name_mappings.items()
     )
 
@@ -178,18 +173,18 @@ def parse_solar_traces(
         Parallel(n_jobs=max_workers)(
             delayed(partial_func)(save_name, old_trace_name)
             for save_name, old_trace_name in zip(
-                project_and_area_output_names, project_and_area_input_names
+                project_and_zone_output_names, project_and_zone_input_names
             )
         )
     else:
         for save_name, old_trace_name in zip(
-            project_and_area_output_names, project_and_area_input_names
+            project_and_zone_output_names, project_and_zone_input_names
         ):
             partial_func(save_name, old_trace_name)
 
 
 def restructure_solar_files(
-    output_project_or_area_name: str,
+    output_project_or_zone_name: str,
     input_trace_names: list[str],
     all_input_file_metadata: dict[Path, dict[str, str]],
     output_directory: str | Path,
@@ -199,10 +194,10 @@ def restructure_solar_files(
     Restructures solar trace files and saves them in a new format.
 
     This function processes solar trace files, restructures them based on the provided metadata,
-    and saves them in a new format. It handles both project and area solar trace files.
+    and saves them in a new format. It handles both project and zone solar trace files.
 
     Args:
-        output_project_or_area_name: The name of the project or area in the output files.
+        output_project_or_zone_name: The name of the project or zone in the output files.
         input_trace_names: List of input trace names to process.
         all_input_file_metadata: Metadata for all input files.
         output_directory: Directory where restructured files will be saved.
@@ -213,12 +208,12 @@ def restructure_solar_files(
 
     Example:
         >>> input_metadata = {
-        ...     Path('file1.csv'): {'name': 'Project1', 'year': '2020', 'technology': 'FFP', 'file_type': 'project'},
-        ...     Path('file2.csv'): {'name': 'Area1', 'year': '2020', 'technology': 'SAT', 'file_type': 'area'}
+        ...     Path('file1.csv'): {'name': 'Project1', 'year': '2020', 'resource_type': 'FFP', 'file_type': 'project'},
+        ...     Path('file2.csv'): {'name': 'Zone1', 'year': '2020', 'resource_type': 'SAT', 'file_type': 'zone'}
         ... }  # doctest: +SKIP
 
         >>> restructure_solar_files(
-        ...     output_project_or_area_name='NewProject1',
+        ...     output_project_or_zone_name='NewProject1',
         ...     input_trace_names=['Project1'],
         ...     all_input_file_metadata=input_metadata,
         ...     output_directory='/path/to/output'
@@ -235,46 +230,38 @@ def restructure_solar_files(
         files_for_year = get_metadata_that_matches_reference_year(
             year, metadata_for_trace_files
         )
-        techs = get_unique_techs_in_metadata(files_for_year)
-        for tech in techs:
-            files_for_tech = get_metadata_that_matches_tech(tech, files_for_year)
-            metadata = get_metadata_for_writing_save_name(files_for_tech)
+        resource_types = get_unique_resource_types_in_metadata(files_for_year)
+        for resource_type in resource_types:
+            files_for_resource_type = get_metadata_that_matches_resource_type(
+                resource_type, files_for_year
+            )
+            metadata = get_metadata_for_writing_save_name(files_for_resource_type)
             metadata = overwrite_metadata_trace_name_with_output_name(
-                metadata, output_project_or_area_name
+                metadata, output_project_or_zone_name
             )
             parse_file = check_filter_by_metadata(metadata, filters)
             if parse_file:
                 process_and_save_files(
-                    get_just_filepaths(files_for_tech),
+                    get_just_filepaths(files_for_resource_type),
                     metadata,
-                    write_output_solar_filepath,
+                    write_output_solar_filename,
                     output_directory,
                 )
 
 
-def write_output_solar_filepath(metadata: dict[str, str]) -> str:
+def write_output_solar_filename(metadata: dict[str, str]) -> str:
     """
-    Generates the output filepath for a solar trace file.
+    Generates the output filename for a solar trace file.
 
     Args:
         metadata: Dictionary containing metadata for the solar trace file.
 
     Returns:
-        A string representing the filepath.
+        A string representing the filename.
     """
     m = metadata
     name = m["name"].replace(" ", "_")
-
-    if m["file_type"] == "project":
-        return (
-            f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/"
-            f"RefYear{m['reference_year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
-        )
-    else:
-        return (
-            f"RefYear{m['reference_year']}/{m['file_type'].capitalize()}/{name}/{m['technology']}/"
-            f"RefYear{m['reference_year']}_{name}_{m['technology']}_HalfYear{m['hy']}.parquet"
-        )
+    return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
 
 
 def extract_metadata_for_all_solar_files(
@@ -293,38 +280,38 @@ def extract_metadata_for_all_solar_files(
     return dict(zip(filepaths, file_metadata))
 
 
-def get_unique_techs_in_metadata(
+def get_unique_resource_types_in_metadata(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
     """
-    Gets unique technologies from the metadata of trace files.
+    Gets unique resource types from the metadata of trace files.
 
     Args:
         metadata_for_trace_files: Dictionary containing metadata for trace files.
 
     Returns:
-        A list of unique technologies.
+        A list of unique resource types.
     """
     return list(
-        set(metadata["technology"] for metadata in metadata_for_trace_files.values())
+        set(metadata["resource_type"] for metadata in metadata_for_trace_files.values())
     )
 
 
-def get_metadata_that_matches_tech(
-    tech: str, metadata_for_trace_files: dict[Path, dict[str, str]]
+def get_metadata_that_matches_resource_type(
+    resource_type: str, metadata_for_trace_files: dict[Path, dict[str, str]]
 ) -> dict[Path, dict[str, str]]:
     """
-    Filters metadata to only include files matching a specific technology.
+    Filters metadata to only include files matching a specific resource type.
 
     Args:
-        tech: The technology to filter by.
+        resource_type: The resource type to filter by.
         metadata_for_trace_files: Dictionary containing metadata for trace files.
 
     Returns:
-        A dictionary of metadata for files matching the specified technology.
+        A dictionary of metadata for files matching the specified resource type.
     """
     return {
         f: metadata
         for f, metadata in metadata_for_trace_files.items()
-        if metadata["technology"] == tech
+        if metadata["resource_type"] == resource_type
     }

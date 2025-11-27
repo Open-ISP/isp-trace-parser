@@ -20,13 +20,13 @@ from isp_trace_parser import (
     "valid_input",
     [
         {"name": ["A", "B"]},
-        {"file_type": ["area", "project"]},
-        {"technology": ["SAT", "FFP", "CST"]},
+        {"file_type": ["zone", "project"]},
+        {"resource_type": ["SAT", "FFP", "CST"]},
         {"reference_year": [2011, 2012]},
         {
             "name": ["A"],
-            "file_type": ["area"],
-            "technology": ["SAT"],
+            "file_type": ["zone"],
+            "resource_type": ["SAT"],
             "reference_year": [2011],
         },
     ],
@@ -38,8 +38,8 @@ def test_solar_metadata_filter_valid(valid_input):
 @pytest.mark.parametrize(
     "invalid_input,expected_error",
     [
-        ({"file_type": ["invalid"]}, "Input should be 'area' or 'project'"),
-        ({"technology": ["invalid"]}, "Input should be 'SAT', 'FFP' or 'CST'"),
+        ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
+        ({"resource_type": ["invalid"]}, "Input should be 'SAT', 'FFP' or 'CST'"),
         ({"reference_year": ["invalid"]}, "Input should be a valid integer"),
         ({"name": 123}, "Input should be a valid list"),
     ],
@@ -53,13 +53,13 @@ def test_solar_metadata_filter_invalid(invalid_input, expected_error):
     "valid_input",
     [
         {"name": ["A", "B"]},
-        {"file_type": ["area", "project"]},
-        {"resource_quality": ["WH", "WM", "WL", "WX"]},
+        {"file_type": ["zone", "project"]},
+        {"resource_type": ["WH", "WM", "WL", "WX", "wind"]},
         {"reference_year": [2011, 2012]},
         {
             "name": ["A"],
-            "file_type": ["area"],
-            "resource_quality": ["WH"],
+            "file_type": ["zone"],
+            "resource_type": ["WH"],
             "reference_year": [2011],
         },
     ],
@@ -71,8 +71,11 @@ def test_wind_metadata_filter_valid(valid_input):
 @pytest.mark.parametrize(
     "invalid_input,expected_error",
     [
-        ({"file_type": ["invalid"]}, "Input should be 'area' or 'project'"),
-        ({"resource_quality": ["invalid"]}, "Input should be 'WH', 'WM', 'WL' or 'WX'"),
+        ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
+        (
+            {"resource_type": ["invalid"]},
+            "Input should be 'WH', 'WM', 'WL', 'WX' or 'wind'",
+        ),
         ({"reference_year": ["invalid"]}, "Input should be a valid integer"),
         ({"name": 123}, "Input should be a valid list"),
     ],

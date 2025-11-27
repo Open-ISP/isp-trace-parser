@@ -21,7 +21,7 @@ Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 - [Examples](#examples)
     - [Parsing trace data](#parsing-trace-data)
     - [Querying parsed trace data](#querying-parsed-trace-data)
-    - [Querying trace data for a sets of generators, areas or subregions](#querying-trace-data-for-a-sets-of-generators-areas-or-subregions)
+    - [Querying trace data for sets of projects, zones or subregions](#querying-trace-data-for-sets-of-projects-zones-or-subregions)
     - [Constructing reference year mapping](#constructing-reference-year-mapping)
     - [Dataframe trace parsing](#dataframe-trace-parsing)
 - [Contributing](#contributing)
@@ -38,8 +38,8 @@ pip install isp-trace-parser
 1. Parse raw AEMO trace data using the functions `parse_wind_traces`, `parse_solar_traces`, and
    `parse_demand_traces`.
    - These functions reformat and restructure the data to a specified directory.
-     - *Reformatting* puts the data in a standard time series format (i.e. with a `Datetime` column and `Values` column).
-     - The data is *restructured* into half-yearly chunks in [Parquet](https://parquet.apache.org/) files, which significantly improves the speed at which data can be read from disk.
+     - *Reformatting* puts the data in a standard time series format (i.e. with a `datetime` column and `value` column).
+     - The data is *restructured* into [Parquet](https://parquet.apache.org/) files, which significantly improves the speed at which data can be read from disk.
    - To access the full documentation for these functions, you can run `help` in the Python console, e.g. `help(parse_wind_traces)`.
 
 2. Query the parsed data using the naming conventions for generators, renewable energy zones (REZs), and subregions established in the
@@ -56,18 +56,27 @@ and unzipped manually before the trace parser can be used.
 > [!Note]
 > However, it is likely future versions of the trace parser will automate this process by using a third party platform to host the trace data.
 
+TO BE UPDATED IN LATER PR
+
 ## Key terminology
 
 ### Solar/wind
 
 - _**Project**_: Traces for a specific solar/wind project
-- _**Area**_: Traces for an area, e.g. a renewable energy zone
+- _**Zone**_: Traces for a zone, e.g. a renewable energy zone
 - _**Reference year**_: A historical weather year that is used to produce the generation trace.
   - Modelled years are mapped to reference years, e.g. generation data for one or multiple years can be mapped to a single reference year, or generation data for each year can be mapped to different reference years (refer to the [Querying parsed trace data example](https://github.com/Open-ISP/isp-trace-parser#querying-parsed-trace-data)).
-- _**Technology**_ (solar): Fixed flat plate (FFP), single-axis tracking (SAT), concentrated solar thermal (CST).
-- _**Resource quality**_ (wind):
-    - Onshore wind: Wind High (WH) and Wind Low (WL)
-    - Offshore wind: Wind Offshore Fixed (WFX) and Wind Offshore Floating (WFL)
+- _**Resource type**_ : This is used to categorise types of resource data:
+    - Solar:
+        - FFP: fixed flat plate
+        - SAT: single-axis tracking.
+        - CST: concentrated solar thermal
+    - Wind:
+        - WH: onshore wind (high)
+        - WL: onshore wind (low)
+        - WFX: offshore wind (fixed)
+        - WFL: offshore wind (floating)
+        - WIND: (existing project)
 
 ### Demand
 - _**Reference year**_: A historical weather year that is used to produce the demand trace.
@@ -85,30 +94,9 @@ If AEMO trace data is downloaded onto a local machine, it can be reformatted usi
 
 To perform the reformatting and restructuring, the solar, wind and demand data should each be stored in separate directories (though no exact directory structure within the solar, wind and demand subdirectories needs to be followed).
 
-The following code can then be used to parse the data:
+The following code can then be used to parse out the `project`, `zone` or `demand` data, by making use of appropriate filters.
 
 ### Parsing all files in a directory
-
-```python
-from isp_trace_parser import parse_solar_traces, parse_wind_traces, parse_demand_traces
-
-parse_solar_traces(
-    input_directory='<path/to/aemo/solar/traces>',
-    parsed_directory='<path/to/store/solar/output>',
-)
-
-parse_wind_traces(
-    input_directory='<path/to/aemo/wind/traces>',
-    parsed_directory='<path/to/store/wind/output>',
-)
-
-parse_demand_traces(
-    input_directory='<path/to/aemo/demand/traces>',
-    parsed_directory='<path/to/store/demand/output>',
-)
-```
-
-### Filtering which files get parsed
 
 ```python
 from isp_trace_parser import (
@@ -122,49 +110,60 @@ from isp_trace_parser import (
 
 # Note: to not filter on a component of the metadata it can be excluded from the filter definition.
 
-solar_filters = SolarMetadataFilter(
-    name=['N1'],
-    file_type=['area'],
-    technology=['SAT'],
-    reference_year=[2011]
-)
-
+filters = SolarMetadataFilter(file_type=["project"])
 parse_solar_traces(
     input_directory='<path/to/aemo/solar/traces>',
-    parsed_directory='<path/to/store/solar/output>',
-    filters=solar_filters
+    parsed_directory='<path/to/store/project>',
+    filters = filters,
 )
 
-wind_filters = WindMetadataFilter(
-    name=['N1'],
-    file_type=['area'],
-    resouce_quality=['WH'],
-    reference_year=[2011]
-)
-
+filters = WindMetadataFilter(file_type=["project"])
 parse_wind_traces(
     input_directory='<path/to/aemo/wind/traces>',
-    parsed_directory='<path/to/store/wind/output>',
-    filters=wind_filters
+    parsed_directory='<path/to/store/project>',
+    filters = filters,
 )
 
-demand_filters = DemandMetadataFilter(
-    scenario=['Green Energy Exports'],
-    subregion=['CNSW'],
-    poe=['POE50'],
-    demand_type=['OPSO_MODELLING'],
-    reference_year=[2011]
+filters = SolarMetadataFilter(file_type=["zone"])
+parse_solar_traces(
+    input_directory='<path/to/aemo/solar/traces>',
+    parsed_directory='<path/to/store/zone>',
+    filters = filters,
+)
+
+filters = WindMetadataFilter(file_type=["zone"])
+parse_wind_traces(
+    input_directory='<path/to/aemo/wind/traces>',
+    parsed_directory='<path/to/store/zone>',
+    filters = filters,
 )
 
 parse_demand_traces(
     input_directory='<path/to/aemo/demand/traces>',
-    parsed_directory='<path/to/store/demand/output>',
-    filters=demand_filters
+    parsed_directory='<path/to/store/demand>',
 )
+```
+
+### Optimising stored data
+The following code illustrates how the parsed parquet files can be consolidated and optimised with `optimise_parquet.py`
+
+```python
+from isp_trace_parser import optimise_parquet
+
+# For optimising `zone` and `project`, suggest partitioning on reference year
+optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/zone|project>",
+                                             output_directory="<path/to/store/optimised_zone|optimised_project>",
+                                             partition_cols=["reference_year"])
+
+# For optimising `demand`, suggest partitioning on scenario and reference year
+optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/demand>",
+                                             output_directory="<path/to/store/optimised_demand>",
+                                             partition_cols=["scenario", "reference_year"])
 ```
 
 ### Querying parsed trace data
 
+TO BE UPDATE IN LATER PR
 Once trace data has been parsed it can be queried using the following API functionality.
 
 <details>
@@ -294,7 +293,7 @@ demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference
 
 </details>
 
-### Querying trace data for a sets of generators, areas or subregions
+### Querying trace data for sets of projects, zones or subregions
 
 Often modelling or analysis will require a set of traces. For example, all the existing solar generators traces, all
 the wind REZ traces, or all the subregion demand traces. To query a set of traces the names of generators, REZ IDs,
@@ -587,10 +586,10 @@ print(mapping)
 # {2030: 2011, 2031: 2013, 2032: 2018, 2033: 2011, 2034: 2013, 2035: 2018}
 ```
 
-### polars Dataframe trace parsing
+### Polars DataFrame trace parsing
 
-`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`polars`](https://pola.rs/)
-`DataFrame`) in the AEMO format to a standard time series format (i.e. "Datetime" and "Values" columns). As shown
+`isp-trace-parser` also exposes functionality for transforming input trace data (in a [`Polars`](https://pola.rs/)
+`DataFrame`) in the AEMO format to a standard time series format (i.e. "datetime" and "value" columns). As shown
 below, the data can be converted to polars from pandas before performing Dataframe trace parsing, and back to pandas
 after the parsing is complete, the polars package provides [functionality for converting to and from `pandas`](https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.to_pandas.html).
 

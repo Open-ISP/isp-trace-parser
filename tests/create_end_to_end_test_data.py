@@ -46,10 +46,10 @@ def create_solar_csvs(directory):
     for y, project in combos:
         data.to_csv(directory / Path(f"{project}_FFP_RefYear{y}.csv"), index=False)
 
-    combos = itertools.product(config.reference_years, config.areas, config.area_techs)
-    for y, area, tech in combos:
+    combos = itertools.product(config.reference_years, config.zones, config.zone_techs)
+    for y, zone, tech in combos:
         data.to_csv(
-            directory / Path(f"REZ_{area}_blah_{tech}_RefYear{y}.csv"), index=False
+            directory / Path(f"REZ_{zone}_blah_{tech}_RefYear{y}.csv"), index=False
         )
 
 
@@ -62,12 +62,12 @@ def create_wind_csvs(directory):
         data.to_csv(directory / Path(f"{project}_RefYear{y}.csv"), index=False)
 
     combos = itertools.product(
-        config.reference_years, config.areas, config.area_wind_resources
+        config.reference_years, config.zones, config.zone_wind_resources
     )
-    for y, area, resource in combos:
+    for y, zone, resource in combos:
         data = generate_random_data(start_year=config.start, end_year=config.end)
         data.to_csv(
-            directory / Path(f"{area}_{resource}_blah_RefYear{y}.csv"), index=False
+            directory / Path(f"{zone}_{resource}_blah_RefYear{y}.csv"), index=False
         )
 
 
