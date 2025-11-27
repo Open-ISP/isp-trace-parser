@@ -45,11 +45,11 @@ def test_demand_trace_parsing(use_concurrency: bool):
         ("RefYear2022_N1_WM.parquet", "zone"),
     ],
 )
-def test_wind_trace_parsing(parsed_wind_trace_directory, expected_filename, file_type):
+def test_wind_trace_parsing(parsed_trace_trace_directory, expected_filename, file_type):
     """Test wind trace parsing produces expected parquet outputs (both for a sample wind project and wind zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename
 
-    output_file = parsed_wind_trace_directory / file_type / expected_filename
+    output_file = parsed_trace_trace_directory / file_type / expected_filename
 
     parquet_output = pl.read_parquet(output_file)
     parquet_test = pl.read_parquet(test_output_parquet)
@@ -65,12 +65,12 @@ def test_wind_trace_parsing(parsed_wind_trace_directory, expected_filename, file
     ],
 )
 def test_solar_trace_parsing(
-    parsed_solar_trace_directory, expected_filename, file_type
+    parsed_trace_trace_directory, expected_filename, file_type
 ):
     """Test solar trace parsing produces expected parquet output (both for a sample solar project and solar zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename
 
-    output_file = parsed_solar_trace_directory / file_type / expected_filename
+    output_file = parsed_trace_trace_directory / file_type / expected_filename
 
     parquet_output = pl.read_parquet(output_file)
     parquet_test = pl.read_parquet(test_output_parquet)
