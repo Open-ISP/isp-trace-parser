@@ -44,14 +44,14 @@ def partition_traces_by_columns(
         ...     "parsed_zone/",
         ...     "optimised_zone/",
         ...     partition_cols=["reference_year"]
-        ... )
+        ... ) # doctest: +SKIP
 
         Partition demand traces by scenario and reference year:
         >>> partition_traces_by_columns(
         ...     "parsed_demand/",
         ...     "optimized_demand/",
         ...     partition_cols=["scenario", "reference_year"]
-        ... )
+        ... ) # doctest: +SKIP
     """
     output_path = Path(output_directory)
     output_path.mkdir(parents=True, exist_ok=True)

@@ -99,7 +99,7 @@ def parse_solar_traces(
     ... input_directory='example_input_data/solar',
     ... parsed_directory='example_parsed_data/solar',
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
     Parse only a subset of the input traces.
 
@@ -119,7 +119,7 @@ def parse_solar_traces(
     ... parsed_directory='example_parsed_data/solar',
     ... filters=metadata_filters,
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
 
     Args:

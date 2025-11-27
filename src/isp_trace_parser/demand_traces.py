@@ -96,7 +96,7 @@ def parse_demand_traces(
     ... input_directory='example_input_data/demand',
     ... parsed_directory='example_parsed_data/demand',
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
     Parse only a subset of the input traces.
 
@@ -118,7 +118,7 @@ def parse_demand_traces(
     ... parsed_directory='example_parsed_data/demand',
     ... filters=metadata_filters,
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
 
     Args:

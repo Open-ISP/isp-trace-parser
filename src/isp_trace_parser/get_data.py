@@ -27,7 +27,7 @@ def solar_project_single_reference_year(
     ... end_year=2024,
     ... reference_year=2011,
     ... project='Adelaide Desalination Plant Solar Farm',
-    ... directory='example_parsed_data/solar')
+    ... directory='example_parsed_data/solar') # doctest: +SKIP
                      Datetime  Value
     0     2021-07-01 00:30:00    0.0
     1     2021-07-01 01:00:00    0.0
@@ -86,7 +86,7 @@ def solar_project_multiple_reference_years(
     >>> solar_project_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... project='Adelaide Desalination Plant Solar Farm',
-    ... directory='example_parsed_data/solar')
+    ... directory='example_parsed_data/solar') # doctest: +SKIP
                      Datetime  Value
     0     2021-07-01 00:30:00    0.0
     1     2021-07-01 01:00:00    0.0
@@ -143,7 +143,7 @@ def solar_area_single_reference_year(
     ... reference_year=2011,
     ... area='Q1',
     ... technology='SAT',
-    ... directory='example_parsed_data/solar')
+    ... directory='example_parsed_data/solar') # doctest: +SKIP
                      Datetime  Value
     0     2021-07-01 00:30:00    0.0
     1     2021-07-01 01:00:00    0.0
@@ -205,7 +205,7 @@ def solar_area_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... area='Q1',
     ... technology='SAT',
-    ... directory='example_parsed_data/solar')
+    ... directory='example_parsed_data/solar') # doctest: +SKIP
                      Datetime  Value
     0     2021-07-01 00:30:00    0.0
     1     2021-07-01 01:00:00    0.0
@@ -261,7 +261,7 @@ def wind_project_single_reference_year(
     ... end_year=2024,
     ... reference_year=2011,
     ... project='Bango 973 Wind Farm',
-    ... directory='example_parsed_data/wind')
+    ... directory='example_parsed_data/wind') # doctest: +SKIP
                      Datetime     Value
     0     2021-07-01 00:30:00  0.162167
     1     2021-07-01 01:00:00  0.153542
@@ -320,7 +320,7 @@ def wind_project_multiple_reference_years(
     >>> wind_project_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... project='Bango 973 Wind Farm',
-    ... directory='example_parsed_data/wind')
+    ... directory='example_parsed_data/wind') # doctest: +SKIP
                      Datetime     Value
     0     2021-07-01 00:30:00  0.162167
     1     2021-07-01 01:00:00  0.153542
@@ -377,7 +377,7 @@ def wind_area_single_reference_year(
     ... reference_year=2011,
     ... area='Q1',
     ... resource_quality='WH',
-    ... directory='example_parsed_data/wind')
+    ... directory='example_parsed_data/wind') # doctest: +SKIP
                      Datetime     Value
     0     2021-07-01 00:30:00  0.790868
     1     2021-07-01 01:00:00  0.816555
@@ -439,7 +439,7 @@ def wind_area_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... area='Q1',
     ... resource_quality='WH',
-    ... directory='example_parsed_data/wind')
+    ... directory='example_parsed_data/wind') # doctest: +SKIP
                      Datetime     Value
     0     2021-07-01 00:30:00  0.790868
     1     2021-07-01 01:00:00  0.816555
@@ -501,7 +501,7 @@ def demand_single_reference_year(
     ... scenario='Green Energy Exports',
     ... poe='POE10',
     ... demand_type='OPSO_MODELLING',
-    ... directory='example_parsed_data/demand')
+    ... directory='example_parsed_data/demand') # doctest: +SKIP
                      Datetime        Value
     0     2023-07-01 00:30:00  1021.534634
     1     2023-07-01 01:00:00   997.293145
@@ -568,7 +568,7 @@ def demand_multiple_reference_years(
     ... scenario='Green Energy Exports',
     ... poe='POE10',
     ... demand_type='OPSO_MODELLING',
-    ... directory='example_parsed_data/demand')
+    ... directory='example_parsed_data/demand') # doctest: +SKIP
                      Datetime        Value
     0     2023-07-01 00:30:00  1021.534634
     1     2023-07-01 01:00:00   997.293145

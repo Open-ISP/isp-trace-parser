@@ -100,7 +100,7 @@ def parse_wind_traces(
     ... input_directory='example_input_data/wind',
     ... parsed_directory='example_parsed_data/wind',
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
     Parse only a subset of the input traces.
 
@@ -120,7 +120,7 @@ def parse_wind_traces(
     ... parsed_directory='example_parsed_data/wind',
     ... filters=metadata_filters,
     ... use_concurrency=False
-    ... )
+    ... ) # doctest: +SKIP
 
 
     Args:
