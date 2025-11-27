@@ -21,7 +21,7 @@ Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 - [Examples](#examples)
     - [Parsing trace data](#parsing-trace-data)
     - [Querying parsed trace data](#querying-parsed-trace-data)
-    - [Querying trace data for sets of generators, areas or subregions](#querying-trace-data-for-sets-of-generators-areas-or-subregions)
+    - [Querying trace data for sets of projects, zones or subregions](#querying-trace-data-for-sets-of-projects-zones-or-subregions)
     - [Constructing reference year mapping](#constructing-reference-year-mapping)
     - [Dataframe trace parsing](#dataframe-trace-parsing)
 - [Contributing](#contributing)
@@ -55,7 +55,8 @@ and unzipped manually before the trace parser can be used.
 
 > [!Note]
 > However, it is likely future versions of the trace parser will automate this process by using a third party platform to host the trace data.
-<TO BE UPDATE IN LATER PR>
+
+TO BE UPDATED IN LATER PR
 
 ## Key terminology
 
@@ -65,7 +66,7 @@ and unzipped manually before the trace parser can be used.
 - _**Zone**_: Traces for a zone, e.g. a renewable energy zone
 - _**Reference year**_: A historical weather year that is used to produce the generation trace.
   - Modelled years are mapped to reference years, e.g. generation data for one or multiple years can be mapped to a single reference year, or generation data for each year can be mapped to different reference years (refer to the [Querying parsed trace data example](https://github.com/Open-ISP/isp-trace-parser#querying-parsed-trace-data)).
-- _**Technology Type**_ : This is used to categorise types of resource data:
+- _**Resource Type**_ : This is used to categorise types of resource data:
     - Solar:
         - FFP: - fixed flat plate
         - SAT: - single-axis tracking.
@@ -93,7 +94,7 @@ If AEMO trace data is downloaded onto a local machine, it can be reformatted usi
 
 To perform the reformatting and restructuring, the solar, wind and demand data should each be stored in separate directories (though no exact directory structure within the solar, wind and demand subdirectories needs to be followed).
 
-The following code can then be used to parse out the `project`, `area` or `demand` data, by making use of appropriate filters.
+The following code can then be used to parse out the `project`, `zone` or `demand` data, by making use of appropriate filters.
 
 ### Parsing all files in a directory
 
@@ -144,7 +145,7 @@ parse_demand_traces(
 ```
 
 ### Optimising stored data
-The follow code illustrates how the parsed parquet files can be consolidated and optimised with `optimise_parquet.py`
+The following code illustrates how the parsed parquet files can be consolidated and optimised with `optimise_parquet.py`
 
 ```python
 from isp_trace_parser import optimise_parquet
@@ -155,14 +156,14 @@ optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/zon
                                              partition_cols=["reference_year"])
 
 # For optimising `demand`, suggest partitioning on scenario and reference year
-optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/zone>",
+optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/demand>",
                                              output_directory="<path/to/store/optimised_demand>",
                                              partition_cols=["scenario", "reference_year"])
 ```
 
 ### Querying parsed trace data
 
-<TO BE UPDATE IN LATER PR>
+TO BE UPDATE IN LATER PR
 Once trace data has been parsed it can be queried using the following API functionality.
 
 <details>
@@ -292,7 +293,7 @@ demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference
 
 </details>
 
-### Querying trace data for sets of generators, areas or subregions
+### Querying trace data for sets of projects, zones or subregions
 
 Often modelling or analysis will require a set of traces. For example, all the existing solar generators traces, all
 the wind REZ traces, or all the subregion demand traces. To query a set of traces the names of generators, REZ IDs,
