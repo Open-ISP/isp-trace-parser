@@ -40,7 +40,12 @@ def test_demand_trace_parsing(use_concurrency: bool):
 
 @pytest.fixture(params=[True, False], ids=["concurrent", "sequential"])
 def parsed_wind_traces(request):
-    """Fixture that parses wind traces once and yields the output directory."""
+    """Fixture that performs parsing of wind trace directory once, providing
+    the output directory to multiple test cases that validate different files.
+
+    Automatically cleans up temporary resources after all tests complete.
+    """
+
     use_concurrency = request.param
 
     with tempfile.TemporaryDirectory() as tmp_parsed_directory:
@@ -57,7 +62,11 @@ def parsed_wind_traces(request):
 
 @pytest.fixture(params=[True, False], ids=["concurrent", "sequential"])
 def parsed_solar_traces(request):
-    """Fixture that parses solar traces once and yields the output directory."""
+    """Fixture that performs parsing of solar trace directory once, providing
+    the output directory to multiple test cases that validate different files.
+
+    Automatically cleans up temporary resources after all tests complete.
+    """
     use_concurrency = request.param
 
     with tempfile.TemporaryDirectory() as tmp_parsed_directory:
