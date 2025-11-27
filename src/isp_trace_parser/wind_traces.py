@@ -24,9 +24,9 @@ from isp_trace_parser.trace_restructure_helper_functions import (
 
 
 class WindMetadataFilter(BaseModel):
-    """A Pydantic class for defining a metadata based filter that specifies which wind trace files to parser.
+    """A Pydantic class for defining a metadata based filter that specifies which wind trace files to parse.
 
-    All attributes of the filter are optional, any atribute not included will not be filtered on. If an attribute is
+    All attributes of the filter are optional, any attribute not included will not be filtered on. If an attribute is
     included then only traces with metadata matching the values in the corresponding list will be parsed.
 
     Examples:
@@ -88,9 +88,9 @@ def parse_wind_traces(
 
         "RefYear2011_Snowtown_South_Wind_Farm.parquet"
 
-    By default, all trace data in the input directory is parsed. However, a filters dictionary can be provided to
-    filter the traces to pass based on metadata. If a metadata type is present in the filters then only traces with a
-    metadata value present in the corresponding filter list will be passed, see examples below.
+    By default, all trace data in the input directory is parsed. However, a WindMetadataFilter can be provided to
+    filter the traces based on metadata. If a metadata type is present in the filter then only traces with a
+    metadata value present in the corresponding filter list will be parsed, see examples below.
 
     Examples:
 
@@ -127,8 +127,8 @@ def parse_wind_traces(
         input_directory: str or pathlib.Path, path to data to parse.
         parsed_directory: str or pathlib.Path, path to directory where parsed traces will be saved.
         use_concurrency: boolean, default True, specifies whether to use parallel processing
-        filters: dict{str: list[str]}, dict that specifies which traces to parse, if a component
-            of the metadata is missing from the dict no filtering on that component occurs. See example.
+        filters: WindMetadataFilter or None, specifies which traces to parse. If a metadata
+            attribute is not set, no filtering on that attribute occurs. See example.
 
     Returns: None
     """
