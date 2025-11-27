@@ -73,25 +73,20 @@ def parse_wind_traces(
     For example, "SNOWSTH1_RefYear2011.csv" for a project or "N8_WH_Cooma-Monaro_RefYear2023.csv" for a zone.
 
     The trace parser reformats the data, modifies the file naming convention, and stores
-    the data files with a directory structure that mirrors the new file naming convention. Firstly, the data format is
-    changed to a two column format with a column "datetime" specifying the end of the half hour period the measurement
-    is for in the format %Y-%m-%d %HH:%MM%:%SS, and a column "value" specifying the measurement value. The data is saved
-    in parquet format in half-yearly chunks to improved read speeds. The files are saved with the following
-    directory structure and naming convention:
+    the data files in parquet format. The data format is changed to a two column format with a column "datetime"
+    specifying the end of the half hour period the measurement is for in the format %Y-%m-%d %H:%M:%S, and a
+    column "value" specifying the measurement value. The files are saved with the following naming convention:
 
     For projects:
-         "RefYear<reference year>/Project/<project name>/"
-         "RefYear<reference year>_<project name>_HalfYear<year>-<half of year>.parquet"
+         "RefYear<reference year>_<project name>.parquet"
 
     For zones:
-         "RefYear<reference year>/Zone/<zone name>/<resource_type>/"
-         "RefYear<reference year>_<zone id>_<resource_type>_HalfYear<year>-<half of year>.parquet"
+         "RefYear<reference year>_<zone name>_<resource_type>.parquet"
 
     With the project and zone names mapped from the names used in the raw AEMO trace data to the names used in the IASR workbook.
-    For one half-yearly chunk of the CSV example above, the parsed filepath for a project would be:
+    For the CSV example above, the parsed filename for a project would be:
 
-        "RefYear2011/Project/Snowtown_South_Wind_Farm/"
-        "RefYear2011_Snowtown_South_Wind_Farm_HalfYear2030-1.parquet"
+        "RefYear2011_Snowtown_South_Wind_Farm.parquet"
 
     By default, all trace data in the input directory is parsed. However, a filters dictionary can be provided to
     filter the traces to pass based on metadata. If a metadata type is present in the filters then only traces with a

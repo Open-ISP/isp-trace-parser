@@ -77,12 +77,12 @@ def parse_demand_traces(
     The data format is changed to include a column "datetime" specifying the end of the half hour period
     the measurement is for in the format %Y-%m-%d %H:%M:%S, a column "value" specifying the measurement
     value, and metadata columns (subregion, reference_year, scenario, poe, demand_type). The scenario
-    column contains the mapped scenario name from the IASR workbook. Files are saved with the original
-    input filename stem and a .parquet extension.
+    column contains the mapped scenario name from the IASR workbook. Files are saved with a new naming
+    convention: "<mapped_scenario>_RefYear<reference_year>_<subregion>_<poe>_<demand_type>.parquet".
 
-    For the CSV example above, the parsed filepath would be:
+    For the CSV example above, the parsed filename would be:
 
-        "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
+        "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
 
     By default, all trace data in the input directory is parsed. However, a DemandMetadataFilter can be provided
     to filter the traces based on metadata. If a metadata type is present in the filter then only traces with a
