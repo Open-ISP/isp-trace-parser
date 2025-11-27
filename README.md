@@ -38,8 +38,8 @@ pip install isp-trace-parser
 1. Parse raw AEMO trace data using the functions `parse_wind_traces`, `parse_solar_traces`, and
    `parse_demand_traces`.
    - These functions reformat and restructure the data to a specified directory.
-     - *Reformatting* puts the data in a standard time series format (i.e. with a `datetime` column and `values` column).
-     - The data is *restructured* into in [Parquet](https://parquet.apache.org/) files, which significantly improves the speed at which data can be read from disk.
+     - *Reformatting* puts the data in a standard time series format (i.e. with a `datetime` column and `value` column).
+     - The data is *restructured* into [Parquet](https://parquet.apache.org/) files, which significantly improves the speed at which data can be read from disk.
    - To access the full documentation for these functions, you can run `help` in the Python console, e.g. `help(parse_wind_traces)`.
 
 2. Query the parsed data using the naming conventions for generators, renewable energy zones (REZs), and subregions established in the
@@ -66,11 +66,11 @@ TO BE UPDATED IN LATER PR
 - _**Zone**_: Traces for a zone, e.g. a renewable energy zone
 - _**Reference year**_: A historical weather year that is used to produce the generation trace.
   - Modelled years are mapped to reference years, e.g. generation data for one or multiple years can be mapped to a single reference year, or generation data for each year can be mapped to different reference years (refer to the [Querying parsed trace data example](https://github.com/Open-ISP/isp-trace-parser#querying-parsed-trace-data)).
-- _**Resource Type**_ : This is used to categorise types of resource data:
+- _**Resource type**_ : This is used to categorise types of resource data:
     - Solar:
-        - FFP: - fixed flat plate
-        - SAT: - single-axis tracking.
-        - CST: - concentrated solar thermal
+        - FFP: fixed flat plate
+        - SAT: single-axis tracking.
+        - CST: concentrated solar thermal
     - Wind:
         - WH: onshore wind (high)
         - WL: onshore wind (low)
