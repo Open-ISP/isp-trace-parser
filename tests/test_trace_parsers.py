@@ -38,61 +38,18 @@ def test_demand_trace_parsing(use_concurrency: bool):
     assert_frame_equal(parquet_test, parquet_output)
 
 
-@pytest.fixture(params=[True, False], ids=["concurrent", "sequential"])
-def parsed_wind_traces(request):
-    """Fixture that performs parsing of wind trace directory once, providing
-    the output directory to multiple test cases that validate different files.
-
-    Automatically cleans up temporary resources after all tests complete.
-    """
-
-    use_concurrency = request.param
-
-    with tempfile.TemporaryDirectory() as tmp_parsed_directory:
-        tmp_parsed_directory = Path(tmp_parsed_directory)
-
-        wind_traces.parse_wind_traces(
-            input_directory=TEST_DATA / "wind",
-            parsed_directory=tmp_parsed_directory,
-            use_concurrency=use_concurrency,
-        )
-
-        yield tmp_parsed_directory
-
-
-@pytest.fixture(params=[True, False], ids=["concurrent", "sequential"])
-def parsed_solar_traces(request):
-    """Fixture that performs parsing of solar trace directory once, providing
-    the output directory to multiple test cases that validate different files.
-
-    Automatically cleans up temporary resources after all tests complete.
-    """
-    use_concurrency = request.param
-
-    with tempfile.TemporaryDirectory() as tmp_parsed_directory:
-        tmp_parsed_directory = Path(tmp_parsed_directory)
-
-        solar_traces.parse_solar_traces(
-            input_directory=TEST_DATA / "solar",
-            parsed_directory=tmp_parsed_directory,
-            use_concurrency=use_concurrency,
-        )
-
-        yield tmp_parsed_directory
-
-
 @pytest.mark.parametrize(
-    "expected_filename",
+    "expected_filename, file_type",
     [
-        "RefYear2022_Bodangora_Wind_Farm.parquet",
-        "RefYear2022_N1_WM.parquet",
+        ("RefYear2022_Bodangora_Wind_Farm.parquet", "project"),
+        ("RefYear2022_N1_WM.parquet", "zone"),
     ],
 )
-def test_wind_trace_parsing(parsed_wind_traces, expected_filename):
+def test_wind_trace_parsing(parsed_wind_trace_directory, expected_filename, file_type):
     """Test wind trace parsing produces expected parquet outputs (both for a sample wind project and wind zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename
 
-    output_file = parsed_wind_traces / expected_filename
+    output_file = parsed_wind_trace_directory / file_type / expected_filename
 
     parquet_output = pl.read_parquet(output_file)
     parquet_test = pl.read_parquet(test_output_parquet)
@@ -101,17 +58,19 @@ def test_wind_trace_parsing(parsed_wind_traces, expected_filename):
 
 
 @pytest.mark.parametrize(
-    "expected_filename",
+    "expected_filename,  file_type",
     [
-        "RefYear2022_N2_CST.parquet",
-        "RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet",
+        ("RefYear2022_N2_CST.parquet", "zone"),
+        ("RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet", "project"),
     ],
 )
-def test_solar_trace_parsing(parsed_solar_traces, expected_filename):
+def test_solar_trace_parsing(
+    parsed_solar_trace_directory, expected_filename, file_type
+):
     """Test solar trace parsing produces expected parquet output (both for a sample solar project and solar zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename
 
-    output_file = parsed_solar_traces / expected_filename
+    output_file = parsed_solar_trace_directory / file_type / expected_filename
 
     parquet_output = pl.read_parquet(output_file)
     parquet_test = pl.read_parquet(test_output_parquet)
