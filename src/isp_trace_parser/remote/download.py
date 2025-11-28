@@ -160,7 +160,7 @@ def _download_file(
 
 
 def fetch_trace_data(
-    dataset_type: Literal["full", "example"],
+    dataset_type: Literal["full", "example", "test"],
     dataset_src: str,
     save_directory: Path | str,
     data_format: Literal["processed", "archive"] = "processed",
@@ -208,8 +208,9 @@ def fetch_trace_data(
     >>> fetch_trace_data("full", "isp_2024", "data/archive", "archive") # doctest: +SKIP
     # Downloads original zip files to: data/archive/...
     """
+
     # Validate inputs
-    if dataset_type not in ["full", "example"]:
+    if dataset_type not in ["full", "example", "test"]:
         raise ValueError(
             f"dataset_type must be 'full' or 'example', got: {dataset_type}"
         )
