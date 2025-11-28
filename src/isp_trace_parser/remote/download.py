@@ -26,7 +26,7 @@ def _download_from_manifest(
     --------
     >>> _download_from_manifest("processed/example_isp_2024", "data/traces", strip_levels=2)  # doctest: +SKIP
     # Downloads to: data/traces/project/reference_year=2018/data_0.parquet
-    
+
     Parameters
     ----------
     manifest_name : str
