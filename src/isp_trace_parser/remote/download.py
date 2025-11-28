@@ -4,7 +4,7 @@ import time
 from importlib.resources import files
 from pathlib import Path
 from typing import Literal
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 import requests
 from tqdm import tqdm
@@ -14,6 +14,7 @@ def _download_from_manifest(
     manifest_name: str,
     save_directory: Path | str,
     strip_levels: int = 0,
+    unquote_path: bool = True,
 ) -> None:
     """Download files from a manifest file.
 
@@ -31,6 +32,9 @@ def _download_from_manifest(
     strip_levels : int, optional
         Number of directory levels to remove from URL path when creating
         local file structure (default: 0)
+    unquote_path : bool, optional
+        Whether to decode URL encoding (e.g., %20 -> space) in local file paths
+        (default: True)
 
     Raises
     ------
@@ -63,16 +67,20 @@ def _download_from_manifest(
 
     # Download each file with progress bar
     for url in tqdm(urls, desc="Downloading files", unit="file"):
-        _download_with_retry(url, save_directory, strip_levels)
+        _download_with_retry(url, save_directory, strip_levels, unquote_path)
 
 
 def _download_with_retry(
-    url: str, save_directory: Path, strip_levels: int, max_retries: int = 3
+    url: str,
+    save_directory: Path,
+    strip_levels: int,
+    unquote_path: bool = True,
+    max_retries: int = 3,
 ) -> None:
     """Retry wrapper for _download_file with exponential backoff."""
     for attempt in range(max_retries):
         try:
-            _download_file(url, save_directory, strip_levels)
+            _download_file(url, save_directory, strip_levels, unquote_path)
             return
         except requests.exceptions.RequestException:
             if attempt < max_retries - 1:
@@ -81,7 +89,9 @@ def _download_with_retry(
                 raise
 
 
-def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
+def _download_file(
+    url: str, save_directory: Path, strip_levels: int, unquote_path: bool = True
+) -> None:
     """Download a single file from URL to destination.
 
     Parameters
@@ -92,6 +102,9 @@ def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
         Root directory where file should be saved
     strip_levels : int
         Number of directory levels to strip from URL path
+    unquote_path : bool, optional
+        Whether to decode URL encoding (e.g., %20 -> space) in local file paths
+        (default: True)
 
     Raises
     ------
@@ -103,6 +116,10 @@ def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
     # Parse URL to extract path
     parsed_url = urlparse(url)
     url_path = parsed_url.path.lstrip("/")
+
+    # Decode URL encoding for filesystem if requested
+    if unquote_path:
+        url_path = unquote(url_path)
 
     # Strip specified number of directory levels
     path_parts = url_path.split("/")
@@ -141,11 +158,13 @@ def _download_file(url: str, save_directory: Path, strip_levels: int) -> None:
             f.write(chunk)
             pbar.update(len(chunk))
 
+
 def fetch_trace_data(
     dataset_type: Literal["full", "example"],
     dataset_src: str,
     save_directory: Path | str,
     data_format: Literal["processed", "archive"] = "processed",
+    unquote_path: bool = True,
 ) -> None:
     """Download ISP trace data.
 
@@ -164,6 +183,9 @@ def fetch_trace_data(
     data_format : {"processed", "archive"}
         Format of data to download. "processed" downloads parquet files,
         "archive" downloads original zip files.
+    unquote_path : bool, optional
+        Whether to decode URL encoding (e.g., %20 -> space) in local file paths
+        (default: True)
 
     Raises
     ------
@@ -193,9 +215,7 @@ def fetch_trace_data(
         )
 
     if dataset_src != "isp_2024":
-        raise ValueError(
-            f"Only isp_2024 is currently supported, got: {dataset_src}"
-        )
+        raise ValueError(f"Only isp_2024 is currently supported, got: {dataset_src}")
 
     if data_format not in ["processed", "archive"]:
         raise ValueError(
@@ -206,5 +226,7 @@ def fetch_trace_data(
     manifest_name = f"{data_format}/{dataset_type}_{dataset_src}"
 
     print(f"Downloading {dataset_type} {data_format} trace data for {dataset_src}")
-    _download_from_manifest(manifest_name, save_directory, strip_levels=2)
+    _download_from_manifest(
+        manifest_name, save_directory, strip_levels=2, unquote_path=unquote_path
+    )
     print(f"Trace data saved to: {save_directory}")
