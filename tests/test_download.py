@@ -80,21 +80,24 @@ def test_fetch_trace_data(unquote: bool):
 
 
 def test_wrong_source():
-    #no ISP 2025 data
+    # no ISP 2025 data
     with pytest.raises(ValueError):
         download.fetch_trace_data("test", "isp_2025", "/", "archive")
 
+
 def test_wrong_format():
-    #only archive or processed data
+    # only archive or processed data
     with pytest.raises(ValueError):
         download.fetch_trace_data("test", "isp_2024", "/", "other")
 
+
 def test_wrong_type():
-    #only full, example, test type
+    # only full, example, test type
     with pytest.raises(ValueError):
         download.fetch_trace_data("other", "isp_2024", "/", "archive")
 
+
 def test_empty_manifest():
-    #Manifest with empty file
+    # Manifest with empty file
     with pytest.raises(ValueError):
         download._download_from_manifest("processed/test_isp_2024", "/", strip_levels=2)
