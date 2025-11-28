@@ -20,9 +20,6 @@ def test_download_test_file():
         assert downloaded.exists()
         assert downloaded.read_bytes() == TEST_EXPECTED_CONTENT
 
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
-
 
 def test_download_with_retry():
     """Test retry logic with real server."""
