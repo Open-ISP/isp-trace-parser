@@ -47,7 +47,7 @@ def _download_from_manifest(
 
     Example
     --------
-    >>> _download_from_manifest("/example_isp_2024", "data/traces", strip_levels=2)
+    >>> _download_from_manifest("processed/example_isp_2024", "data/traces", strip_levels=2)  # doctest: +SKIP
     # Downloads to: data/traces/project/RefYear=2018/data_0.parquet
     """
     # Construct manifest path
@@ -200,12 +200,12 @@ def fetch_trace_data(
 
     Examples
     --------
-    >>> fetch_trace_data("example", "isp_2024", "data/traces", "processed")
+    >>> fetch_trace_data("example", "isp_2024", "data/traces", "processed")   # doctest: +SKIP
     # Downloads to: data/traces/isp_2024/project/RefYear=2018/data_0.parquet
     #               data/traces/isp_2024/zone/RefYear=2018/data_0.parquet
     #               data/traces/isp_2024/demand/Scenario=Step_Change/RefYear=2018/data_0.parquet
 
-    >>> fetch_trace_data("full", "isp_2024", "data/archive", "archive")
+    >>> fetch_trace_data("full", "isp_2024", "data/archive", "archive") # doctest: +SKIP
     # Downloads original zip files to: data/archive/...
     """
     # Validate inputs
