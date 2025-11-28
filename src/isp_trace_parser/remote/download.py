@@ -49,11 +49,6 @@ def _download_from_manifest(
         If any download fails
     OSError
         If there are filesystem errors (permissions, disk space, etc.)
-
-    Example
-    --------
-    >>> _download_from_manifest("processed/example_isp_2024", "data/traces", strip_levels=2)  # doctest: +SKIP
-    # Downloads to: data/traces/project/reference_year=2018/data_0.parquet
     """
     # Construct manifest path
     manifest_path = files("isp_trace_parser.remote.manifests") / f"{manifest_name}.txt"
