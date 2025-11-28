@@ -50,20 +50,26 @@ def test_fetch_trace_data_with_test_manifest():
         assert downloaded.exists()
         assert downloaded.read_bytes() == TEST_EXPECTED_CONTENT
 
+
 def test_manifest_not_found():
     """Test downloading from a small, test manifest."""
 
     with pytest.raises(FileNotFoundError):
-        download._download_from_manifest("archive/missing_manifest", "/", strip_levels=2)
-    
+        download._download_from_manifest(
+            "archive/missing_manifest", "/", strip_levels=2
+        )
+
+
 @pytest.mark.parametrize("unquote", [True, False])
-def test_fetch_trace_data(unquote : bool):
+def test_fetch_trace_data(unquote: bool):
     """Test downloading from a small, test manifest."""
 
     with TemporaryDirectory() as tmp_path:
         tmp_path = Path(tmp_path)
-    
-        download.fetch_trace_data("test", "isp_2024", tmp_path, "archive", unquote_path=unquote)
+
+        download.fetch_trace_data(
+            "test", "isp_2024", tmp_path, "archive", unquote_path=unquote
+        )
 
         assert len(list(tmp_path.iterdir())) == 1
 
@@ -72,12 +78,14 @@ def test_fetch_trace_data(unquote : bool):
         assert downloaded.exists()
         assert downloaded.read_bytes() == TEST_EXPECTED_CONTENT
 
+
 def test_wrong_source():
-    #no ISP 2025 data
+    # no ISP 2025 data
     with pytest.raises(ValueError):
         download.fetch_trace_data("test", "isp_2025", "/", "archive")
 
+
 def test_wrong_type():
-    #only archive or processed data
+    # only archive or processed data
     with pytest.raises(ValueError):
         download.fetch_trace_data("test", "isp_2024", "/", "other")
