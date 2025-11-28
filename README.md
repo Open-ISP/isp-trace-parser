@@ -48,15 +48,52 @@ pip install isp-trace-parser
     - To access the full documentation for these functions, you can run `help` in the Python console, e.g.
   `help(get_data.solar_project_trace_single_reference_year)`.
 
-## Accessing raw trace data
+## Accessing trace data
 
+### Original trace data
 Currently, AEMO trace data needs to be downloaded from the [AEMO website](https://aemo.com.au/en/energy-systems/major-publications/integrated-system-plan-isp/2024-integrated-system-plan-isp)
 and unzipped manually before the trace parser can be used.
 
-> [!Note]
-> However, it is likely future versions of the trace parser will automate this process by using a third party platform to host the trace data.
+The zipped data is also archived in publicly accessible object storage ([data.openisp.au](https://data.openisp.au)). This can be downloaded by:
 
-TO BE UPDATED IN LATER PR
+```python
+from isp_trace_parser.remote import fetch_trace_data
+
+fetch_trace_data("full", dataset_src="isp_2024", save_directory="data/archive", data_format="archive")
+```
+
+This will download all the archived zip files into the provided directory with the following structure:
+
+```bash
+archive/
+  ├── solar/
+  ├── wind/
+  └── demand/
+```
+
+### Pre-processed trace data
+
+Trace data that has been processed into the hive-partitioned format is also available for download from the object store. Both "full" and "example" datasets are available (the example dataset contains only data for the 2018 reference year):
+
+```python
+from isp_trace_parser.remote import fetch_trace_data
+
+# Download example dataset (2018 reference year only)
+fetch_trace_data("example", dataset_src="isp_2024", save_directory="data/trace_data", data_format="processed")
+```
+
+This will download the processed parquet files with the following structure:
+
+```bash
+trace_data/
+  ├── project/
+  │   └── reference_year=<year>/
+  ├── zone/
+  │   └── reference_year=<year>/
+  └── demand/
+      └── scenario=<scenario_name>/
+          └── reference_year=<year>/
+```
 
 ## Key terminology
 
