@@ -102,13 +102,13 @@ def test_wrong_source():
 
 
 def test_wrong_format():
-    # only archive or processed data
+    # only archive or processed data (not other)
     with pytest.raises(ValueError):
         download.fetch_trace_data("test", "isp_2024", "/", "other")
 
 
 def test_wrong_type():
-    # only full, example, test type
+    # only full or example type
     with pytest.raises(ValueError):
         download.fetch_trace_data("other", "isp_2024", "/", "archive")
 
@@ -128,3 +128,13 @@ def test_empty_manifest(monkeypatch):
 
         with pytest.raises(ValueError, match="No URLs found in manifest"):
             download._download_from_manifest("empty_manifest", tmp_path, strip_levels=0)
+
+
+def test_strip_levels_too_high():
+    """Test that strip_levels >= path parts raises ValueError."""
+    with TemporaryDirectory() as tmp_path:
+        tmp_path = Path(tmp_path)
+
+        # TEST_URL has path "test/test/test_file.txt" = 3 parts
+        with pytest.raises(ValueError, match="Cannot strip .* levels"):
+            download._download_file(TEST_URL, tmp_path, strip_levels=10)
