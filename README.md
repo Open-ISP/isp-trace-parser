@@ -66,6 +66,7 @@ This will download all the archived zip files into the provided directory with t
 
 ```bash
 archive/
+└── isp_2024/
   ├── solar/
   ├── wind/
   └── demand/
