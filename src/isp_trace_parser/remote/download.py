@@ -136,7 +136,7 @@ def _download_file(
     destination.parent.mkdir(parents=True, exist_ok=True)
 
     # Download file with progress bar for individual file
-    response = requests.get(url, stream=True)
+    response = requests.get(url, stream=True, timeout=(5, 60))
     response.raise_for_status()
 
     # Get file size if available for progress bar
