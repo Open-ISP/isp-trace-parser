@@ -31,13 +31,20 @@ def test_download_with_retry():
         assert (tmp_path / "test" / "test" / "test_file.txt").exists()
 
 
-def test_fetch_trace_data_with_test_manifest():
+def test_fetch_trace_data_with_test_manifest(monkeypatch):
     """Test downloading from a small, test manifest."""
 
     with TemporaryDirectory() as tmp_path:
         tmp_path = Path(tmp_path)
+
+        # Point to test fixtures instead of production manifests
+        def mock_files(package):
+            return Path(__file__).parent / "fixtures" / "manifests"
+
+        monkeypatch.setattr("isp_trace_parser.remote.download.files", mock_files)
+
         download._download_from_manifest(
-            "archive/test_isp_2024", tmp_path, strip_levels=2
+            "archive/full_isp_2024", tmp_path, strip_levels=2
         )
 
         assert len(list(tmp_path.iterdir())) == 1
@@ -58,14 +65,20 @@ def test_manifest_not_found():
 
 
 @pytest.mark.parametrize("unquote", [True, False])
-def test_fetch_trace_data(unquote: bool):
-    """Test downloading from a small, test manifest."""
+def test_fetch_trace_data(unquote: bool, monkeypatch):
+    """Test downloading via fetch_trace_data with test fixtures."""
 
     with TemporaryDirectory() as tmp_path:
         tmp_path = Path(tmp_path)
 
+        # Point to test manifests instead of production manifests
+        def mock_files(package):
+            return Path(__file__).parent / "fixtures" / "manifests"
+
+        monkeypatch.setattr("isp_trace_parser.remote.download.files", mock_files)
+
         download.fetch_trace_data(
-            "test", "isp_2024", tmp_path, "archive", unquote_path=unquote
+            "full", "isp_2024", tmp_path, "archive", unquote_path=unquote
         )
 
         assert len(list(tmp_path.iterdir())) == 1
@@ -94,7 +107,18 @@ def test_wrong_type():
         download.fetch_trace_data("other", "isp_2024", "/", "archive")
 
 
-def test_empty_manifest():
-    # Manifest with empty file
-    with pytest.raises(ValueError):
-        download._download_from_manifest("processed/test_isp_2024", "/", strip_levels=2)
+def test_empty_manifest(monkeypatch):
+    """Test that empty manifest raises ValueError."""
+    from importlib.resources import files
+
+    with TemporaryDirectory() as tmp_path:
+        tmp_path = Path(tmp_path)
+
+        # Point to test manifest instead of production manifests
+        def mock_files(package):
+            return Path(__file__).parent / "fixtures" / "manifests"
+
+        monkeypatch.setattr("isp_trace_parser.remote.download.files", mock_files)
+
+        with pytest.raises(ValueError, match="No URLs found in manifest"):
+            download._download_from_manifest("empty_manifest", tmp_path, strip_levels=0)
