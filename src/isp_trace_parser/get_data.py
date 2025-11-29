@@ -147,7 +147,7 @@ def get_project_single_reference_year(
     project: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["datetime", "value"],
+    select_columns: list[str] = None,
 ):
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -169,7 +169,7 @@ def get_zone_single_reference_year(
     resource_type: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["datetime", "value"],
+    select_columns: list[str] = None,
 ):
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -217,7 +217,7 @@ def get_project_multiple_reference_years(
     project: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["datetime", "value"],
+    select_columns: list[str] = None,
 ):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
@@ -235,7 +235,7 @@ def get_zone_multiple_reference_years(
     resource_type: str,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["datetime", "value"],
+    select_columns: list[str] = None,
 ):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
