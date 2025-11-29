@@ -150,6 +150,77 @@ def get_project_single_reference_year(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
 ):
+    """
+    Query project trace data for a single reference year.
+
+    Retrieves trace data for one or more projects within a specified time window.
+    When querying multiple projects (as a list), the 'project' column is automatically
+    included in the output to distinguish between projects.
+
+    Args:
+        start_year: Start of time window (inclusive)
+        end_year: End of time window (inclusive)
+        reference_year: Reference year of the trace data
+        project: Project name (str) or list of project names
+        directory: Directory containing parquet files
+        year_type: 'fy' for financial year or 'calendar' for calendar year.
+            Default is 'fy' (financial year ending nomenclature).
+        select_columns: Optional list of columns to return. If None, returns
+            ["datetime", "value"] for single project, or ["datetime", "value", "project"]
+            for multiple projects.
+
+    Returns:
+        pd.DataFrame with trace data sorted by datetime
+
+    Examples:
+        Query single project:
+
+        >>> get_project_single_reference_year(
+        ...     start_year=2023,
+        ...     end_year=2024,
+        ...     reference_year=2011,
+        ...     project="Bango 973 Wind Farm",
+        ...     directory="parsed_data/project"
+        ... ) # doctest: +SKIP
+                         datetime     value
+        0     2022-07-01 00:30:00  0.000000
+        1     2022-07-01 01:00:00  0.000000
+        2     2022-07-01 01:30:00  0.000000
+        3     2022-07-01 02:00:00  0.000000
+        4     2022-07-01 02:30:00  0.000000
+        ...                   ...       ...
+        35083 2024-06-30 22:00:00  0.044304
+        35084 2024-06-30 22:30:00  0.046103
+        35085 2024-06-30 23:00:00  0.046103
+        35086 2024-06-30 23:30:00  0.057853
+        35087 2024-07-01 00:00:00  0.076900
+        <BLANKLINE>
+        [35088 rows x 2 columns]
+
+        Query multiple projects:
+
+        >>> get_project_single_reference_year(
+        ...     start_year=2023,
+        ...     end_year=2024,
+        ...     reference_year=2011,
+        ...     project=["Bango 973 Wind Farm", "Bodangora Wind Farm"],
+        ...     directory="parsed_data/project"
+        ... ) # doctest: +SKIP
+                         datetime     value              project
+        0     2022-07-01 00:30:00  0.001436  Bodangora Wind Farm
+        1     2022-07-01 00:30:00  0.000000  Bango 973 Wind Farm
+        2     2022-07-01 01:00:00  0.001436  Bodangora Wind Farm
+        3     2022-07-01 01:00:00  0.000000  Bango 973 Wind Farm
+        4     2022-07-01 01:30:00  0.000000  Bango 973 Wind Farm
+        ...                   ...       ...                  ...
+        70171 2024-06-30 23:00:00  0.046103  Bango 973 Wind Farm
+        70172 2024-06-30 23:30:00  0.449124  Bodangora Wind Farm
+        70173 2024-06-30 23:30:00  0.057853  Bango 973 Wind Farm
+        70174 2024-07-01 00:00:00  0.512703  Bodangora Wind Farm
+        70175 2024-07-01 00:00:00  0.076900  Bango 973 Wind Farm
+        <BLANKLINE>
+        [70176 rows x 3 columns]
+    """
     return _query_parquet_single_reference_year(
         start_year=start_year,
         end_year=end_year,
