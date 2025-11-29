@@ -128,7 +128,7 @@ def get_zone_single_reference_year(
     end_year: int,
     reference_year: int,
     zone: str | List,
-    tech: str | List,
+    resource_type: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = ["datetime", "value"],
@@ -138,7 +138,7 @@ def get_zone_single_reference_year(
         end_year=end_year,
         reference_year=reference_year,
         directory=directory,
-        filters={"zone": zone, "tech": tech},
+        filters={"zone": zone, "resource_type": resource_type},
         year_type=year_type,
         select_columns=select_columns,
     )
@@ -194,7 +194,7 @@ def get_project_multiple_reference_years(
 def get_zone_multiple_reference_years(
     reference_year_mapping: dict[int, int],
     zone: str | List,
-    tech: str,
+    resource_type: str,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = ["datetime", "value"],
@@ -202,7 +202,7 @@ def get_zone_multiple_reference_years(
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
-        filters={"zone": zone, "tech": tech},
+        filters={"zone": zone, "resource_type": resource_type},
         year_type=year_type,
         select_columns=select_columns,
     )
@@ -411,7 +411,7 @@ def solar_area_single_reference_year(
         end_year=end_year,
         reference_year=reference_year,
         zone=area,
-        tech=technology,
+        resource_type=technology,
         directory=directory,
         year_type=year_type,
     )
@@ -471,7 +471,7 @@ def solar_area_multiple_reference_years(
     return get_zone_multiple_reference_years(
         reference_year_mapping=reference_years,
         zone=area,
-        tech=technology,
+        resource_type=technology,
         directory=directory,
         year_type=year_type,
     )
@@ -593,7 +593,7 @@ def wind_area_single_reference_year(
         end_year=end_year,
         reference_year=reference_year,
         zone=area,
-        tech=resource_quality,
+        resource_type=resource_quality,
         directory=directory,
         year_type=year_type,
     )
@@ -717,7 +717,7 @@ def wind_area_multiple_reference_years(
     return get_zone_multiple_reference_years(
         reference_year_mapping=reference_years,
         zone=area,
-        tech=resource_quality,
+        resource_type=resource_quality,
         directory=directory,
         year_type=year_type,
     )
