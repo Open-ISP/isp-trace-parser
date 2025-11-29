@@ -27,19 +27,6 @@ def _year_range_to_dt_range(
         )
 
 
-def _format_string_filters(filters: dict) -> None:
-    """Format string filters by replacing spaces with underscores.
-
-    Currently handles: project, scenario
-    """
-    for key in ["project", "scenario"]:
-        if key in filters:
-            if isinstance(filters[key], list):
-                filters[key] = [i.replace(" ", "_") for i in filters[key]]
-            else:
-                filters[key] = filters[key].replace(" ", "_")
-
-
 def _query_parquet_single_reference_year(
     start_year: int,
     end_year: int,
@@ -65,7 +52,6 @@ def _query_parquet_single_reference_year(
     Returns:
         pd.DataFrame with selected columns, sorted by datetime
     """
-    _format_string_filters(filters)
     start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
 
     df_lazy = pl.scan_parquet(directory)
