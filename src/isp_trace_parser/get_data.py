@@ -136,7 +136,7 @@ def _query_parquet_multiple_reference_years(
                 start_year=year, end_year=year, reference_year=reference_year, **kwargs
             )
         )
-    data = pd.concat(data)
+    data = pd.concat(data).reset_index(drop=True)
     return data
 
 
