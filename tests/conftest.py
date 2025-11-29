@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from isp_trace_parser import solar_traces, wind_traces
+from isp_trace_parser import optimise_parquet, solar_traces, wind_traces
 
 TEST_DATA = Path(__file__).parent / "test_data"
 
@@ -36,6 +36,12 @@ def parsed_trace_trace_directory(request):
                 parsed_directory=tmp_parsed_directory / file_type,
                 use_concurrency=use_concurrency,
                 filters=filters,
+            )
+
+            optimise_parquet.partition_traces_by_columns(
+                input_directory=tmp_parsed_directory / file_type,
+                output_directory=tmp_parsed_directory / f"{file_type}_optimised",
+                partition_cols=["reference_year"],
             )
 
         yield tmp_parsed_directory
