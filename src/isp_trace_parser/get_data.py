@@ -303,7 +303,7 @@ def solar_project_multiple_reference_years(
 ) -> pd.DataFrame:
     """
     Pass-through function to keep backwards capability with previos API
-    
+
     Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
 
@@ -341,11 +341,14 @@ def solar_project_multiple_reference_years(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns Datetime and Value
-    """    
-    return get_project_multiple_reference_years(reference_year_mapping=reference_years,
+    """
+    return get_project_multiple_reference_years(
+        reference_year_mapping=reference_years,
         project=project,
         directory=directory,
-        year_type=year_type)
+        year_type=year_type,
+    )
+
 
 def solar_area_single_reference_year(
     start_year: int,
@@ -356,7 +359,6 @@ def solar_area_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-
     """
     Pass-through function to keep backwards capability with previos API
 
@@ -403,15 +405,17 @@ def solar_area_single_reference_year(
     Returns: pd.DataFrame with columns Datetime and Value
 
     """
-    
+
     return get_zone_single_reference_year(
-    start_year= start_year,
-    end_year= end_year,
-    reference_year= reference_year,
-    zone= area,
-    tech=technology,
-    directory= directory,
-    year_type=year_type)
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        zone=area,
+        tech=technology,
+        directory=directory,
+        year_type=year_type,
+    )
+
 
 @validate_call
 def solar_area_multiple_reference_years(
@@ -421,13 +425,11 @@ def solar_area_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-
     """
     Pass-through function to keep backwards capability with previos API
-    
+
     Reads solar area trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
-    Examples:
     Examples:
 
     >>> solar_area_multiple_reference_years(
@@ -466,11 +468,13 @@ def solar_area_multiple_reference_years(
     Returns: pd.DataFrame with columns Datetime and Value
     """
 
-    return get_zone_multiple_reference_years(reference_year_mapping=reference_years,
-    zone=area,
-    tech=technology,
-    directory = directory,
-    year_type=year_type)     
+    return get_zone_multiple_reference_years(
+        reference_year_mapping=reference_years,
+        zone=area,
+        tech=technology,
+        directory=directory,
+        year_type=year_type,
+    )
 
 
 @validate_call
@@ -480,10 +484,9 @@ def wind_project_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-
     """
     Pass-through function to keep backwards capability with previos API
-    
+
     Reads wind project trace data from an output directory created by isp_trace_parser.wind_trace_parser.
 
     Examples:
@@ -523,10 +526,11 @@ def wind_project_multiple_reference_years(
     """
 
     return get_project_multiple_reference_years(
-    reference_year_mapping=reference_years,
-    project=project,
-    directory= directory,
-    year_type=year_type)
+        reference_year_mapping=reference_years,
+        project=project,
+        directory=directory,
+        year_type=year_type,
+    )
 
 
 @validate_call
@@ -584,14 +588,15 @@ def wind_area_single_reference_year(
     Returns: pd.DataFrame with columns Datetime and Value
     """
 
-
-    return get_zone_single_reference_year(start_year=start_year,
-    end_year=end_year,
-    reference_year=reference_year,
-    zone=area,
-    tech=resource_quality,
-    directory=directory,
-    year_type=year_type)
+    return get_zone_single_reference_year(
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        zone=area,
+        tech=resource_quality,
+        directory=directory,
+        year_type=year_type,
+    )
 
 
 def demand_multiple_reference_years(
@@ -604,7 +609,7 @@ def demand_multiple_reference_years(
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """Pass-through function to keep backwards capability with previos API
-    
+
     Reads wind area trace data from an output directory created by isp_trace_parser.demand_trace_parser.
 
     Examples:
@@ -648,15 +653,17 @@ def demand_multiple_reference_years(
 
     Returns: pd.DataFrame with columns Datetime and Value
     """
-    
+
     return get_demand_multiple_reference_years(
-    reference_year_mapping= reference_years,
-    scenario=scenario,
-    subregion=subregion,
-    category= demand_type,
-    poe=poe,
-    directory=directory,
-    year_type=year_type)
+        reference_year_mapping=reference_years,
+        scenario=scenario,
+        subregion=subregion,
+        category=demand_type,
+        poe=poe,
+        directory=directory,
+        year_type=year_type,
+    )
+
 
 @validate_call
 def wind_area_multiple_reference_years(
@@ -666,7 +673,6 @@ def wind_area_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    
     """
     Reads wind area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
@@ -709,11 +715,13 @@ def wind_area_multiple_reference_years(
     """
 
     return get_zone_multiple_reference_years(
-    reference_year_mapping=reference_years,
-    zone=area,
-    tech=resource_quality,
-    directory=directory,
-    year_type=year_type)
+        reference_year_mapping=reference_years,
+        zone=area,
+        tech=resource_quality,
+        directory=directory,
+        year_type=year_type,
+    )
+
 
 @validate_call
 def demand_single_reference_year(
@@ -729,7 +737,7 @@ def demand_single_reference_year(
 ) -> pd.DataFrame:
     """
     Pass-through function to keep backwards capability with previos API
-    
+
     Reads demand trace data from an output directory created by isp_trace_parser.demand_trace_parser.
 
     Examples:
@@ -778,12 +786,13 @@ def demand_single_reference_year(
     """
 
     return get_demand_single_reference_year(
-    start_year= start_year,
-    end_year=end_year,
-    reference_year=reference_year,
-    scenario=scenario,
-    subregion=subregion,
-    category=demand_type,
-    poe=poe,
-    directory=directory,
-    year_type= year_type)
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        scenario=scenario,
+        subregion=subregion,
+        category=demand_type,
+        poe=poe,
+        directory=directory,
+        year_type=year_type,
+    )
