@@ -91,15 +91,16 @@ def _query_parquet_single_reference_year(
 
     # Determine which columns to select
     if select_columns is not None:
+        # Based on choice, if provided
         columns_to_select = select_columns
     elif filters:
-        # based on filters
+        # or on filters
         columns_to_select = ["datetime", "value"]
         for col, value in filters.items():
             if isinstance(value, list) and len(value) > 1:
                 columns_to_select.append(col)
     else:
-        # Select all
+        # Otherwise select all
         columns_to_select = df_lazy.columns
 
     df = (
