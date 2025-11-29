@@ -256,15 +256,76 @@ This section is just passthrough functions from original API. This includes:
 
 
 @validate_call
-def solar_project_single_reference_year(*args, **kwargs):
+def solar_project_single_reference_year(
+    start_year: int,
+    end_year: int,
+    reference_year: int,
+    project: str,
+    directory: str | Path,
+    year_type: Literal["fy", "calendar"] = "fy",
+) -> pd.DataFrame:
     """
     Pass-through function to keep backwards capability with previos API
+
+    Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
+
+    Examples:
+
+    >>> solar_project_single_reference_year(
+    ... start_year=2022,
+    ... end_year=2024,
+    ... reference_year=2011,
+    ... project='Adelaide Desalination Plant Solar Farm',
+    ... directory='example_parsed_data/solar') # doctest: +SKIP
+                     datetime  value
+    0     2021-07-01 00:30:00    0.0
+    1     2021-07-01 01:00:00    0.0
+    2     2021-07-01 01:30:00    0.0
+    3     2021-07-01 02:00:00    0.0
+    4     2021-07-01 02:30:00    0.0
+    ...                   ...   ...
+    52603 2024-06-30 22:00:00    0.0
+    52604 2024-06-30 22:30:00    0.0
+    52605 2024-06-30 23:00:00    0.0
+    52606 2024-06-30 23:30:00    0.0
+    52607 2024-07-01 00:00:00    0.0
+    <BLANKLINE>
+    [52608 rows x 2 columns]
+
+    Args:
+        start_year: int, start of time window to return trace data for.
+        end_year: int, end of time window (inclusive) to return trace data for.
+        reference_year: int, the reference year of the trace data to retrieve.
+        project: str, the name of solar project (generator) to return data for. Names should as given in the IASR
+            workbook.
+        directory: str or pathlib.Path, the directory were the trace data is stored. Trace data needs to be in the
+            format as produced by isp_trace_parser.restructure_solar_directory.
+        year_type: str, 'fy' or 'calendar', if 'fy' then time filtering is by financial year with start_year and
+            end_year specifiying the financial year to return data for, using year ending nomenclature (2016 ->
+            FY2015/2016). If 'calendar', then filtering is by calendar year.
+
+    Returns: pd.DataFrame with columns datetime and value
     """
-    return get_project_single_reference_year(*args, **kwargs)
+
+    return get_project_single_reference_year(
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        project=project,
+        directory=directory,
+        year_type=year_type,
+    )
 
 
 @validate_call
-def wind_project_single_reference_year(*args, **kwargs):
+def wind_project_single_reference_year(
+    start_year: int,
+    end_year: int,
+    reference_year: int,
+    project: str,
+    directory: str | Path,
+    year_type: Literal["fy", "calendar"] = "fy",
+) -> pd.DataFrame:
     """
     Pass-through function to keep backwards capability with previos API
 
@@ -306,7 +367,14 @@ def wind_project_single_reference_year(*args, **kwargs):
 
     Returns: pd.DataFrame with columns datetime and value
     """
-    return get_project_single_reference_year(*args, **kwargs)
+    return get_project_single_reference_year(
+        start_year=start_year,
+        end_year=end_year,
+        reference_year=reference_year,
+        project=project,
+        directory=directory,
+        year_type=year_type,
+    )
 
 
 @validate_call
