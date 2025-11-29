@@ -32,8 +32,6 @@ def _year_range_to_dt_range(
         (datetime.datetime(2022, 1, 1, 0, 0), datetime.datetime(2025, 1, 1, 0, 0))
     """
 
-    ##Need to make a call on end dates
-
     if year_type == "fy":
         return datetime.datetime(start_year - 1, 7, 1), datetime.datetime(
             end_year, 7, 1
@@ -94,6 +92,19 @@ def _query_parquet_single_reference_year(
 def _query_parquet_multiple_reference_years(
     reference_year_mapping: dict[int, int], **kwargs: any
 ) -> pd.DataFrame:
+    """
+    Query parquet files across multiple reference years.
+
+    Iteratively calls _query_parquet_single_reference_year for each year-reference_year
+    pair and concatenates the results.
+
+    Args:
+        reference_year_mapping: Mapping of year to reference_year (e.g., {2022: 2011, 2024: 2012})
+        **kwargs: Additional arguments passed to _query_parquet_single_reference_year
+
+    Returns:
+        pd.DataFrame with concatenated results from all years
+    """
     data = []
     for year, reference_year in reference_year_mapping.items():
         data.append(
