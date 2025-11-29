@@ -341,6 +341,87 @@ def get_demand_single_reference_year(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
 ):
+    """
+    Query demand trace data for a single reference year.
+
+    Retrieves demand trace data for specified scenario, subregion, demand type, and
+    probability of exceedance (POE) within a time window. When querying with multiple
+    values for any parameter (as a list), those columns are automatically included in
+    the output.
+
+    Args:
+        start_year: Start of time window (inclusive)
+        end_year: End of time window (inclusive)
+        reference_year: Reference year of the trace data
+        scenario: Scenario name (str) or list of scenarios (e.g., "Green Energy Exports")
+        subregion: Subregion code (str) or list of subregions (e.g., "VIC", ["VIC", "CSA"])
+        demand_type: Demand type (str) or list of types (e.g., "OPSO_MODELLING", "PV_TOT")
+        poe: Probability of exceedance (str) or list (e.g., "POE10", ["POE10", "POE50"])
+        directory: Directory containing parquet files
+        year_type: 'fy' for financial year or 'calendar' for calendar year.
+            Default is 'fy' (financial year ending nomenclature).
+        select_columns: Optional list of columns to return. If None, returns
+            ["datetime", "value"] for single values, or ["datetime", "value"] plus
+            any multi-value filter columns (sorted alphabetically).
+
+    Returns:
+        pd.DataFrame with trace data sorted by datetime
+
+    Examples:
+        Query single demand configuration:
+
+        >>> get_demand_single_reference_year(
+        ...     start_year=2024,
+        ...     end_year=2025,
+        ...     reference_year=2018,
+        ...     scenario="Green Energy Exports",
+        ...     subregion="VIC",
+        ...     demand_type="OPSO_MODELLING",
+        ...     poe="POE10",
+        ...     directory="parsed_data/demand"
+        ... ) # doctest: +SKIP
+                         datetime        value
+        0     2023-07-01 00:30:00  5612.328685
+        1     2023-07-01 01:00:00  5386.638540
+        2     2023-07-01 01:30:00  5192.704179
+        3     2023-07-01 02:00:00  4969.665691
+        4     2023-07-01 02:30:00  4763.455486
+        ...                   ...          ...
+        35083 2025-06-30 22:00:00  6065.453897
+        35084 2025-06-30 22:30:00  5783.557418
+        35085 2025-06-30 23:00:00  5624.744198
+        35086 2025-06-30 23:30:00  5760.429165
+        35087 2025-07-01 00:00:00  5708.627939
+        <BLANKLINE>
+        [35088 rows x 2 columns]
+
+        Query multiple subregions and demand types:
+
+        >>> get_demand_single_reference_year(
+        ...     start_year=2024,
+        ...     end_year=2025,
+        ...     reference_year=2018,
+        ...     scenario="Green Energy Exports",
+        ...     subregion=["CSA", "VIC"],
+        ...     demand_type=["OPSO_MODELLING", "PV_TOT"],
+        ...     poe="POE10",
+        ...     directory="parsed_data/demand"
+        ... ) # doctest: +SKIP
+                         datetime        value     demand_type subregion
+        0     2023-07-01 00:30:00     0.000000          PV_TOT       VIC
+        1     2023-07-01 00:30:00     0.000000          PV_TOT       CSA
+        2     2023-07-01 00:30:00  1813.726159  OPSO_MODELLING       CSA
+        3     2023-07-01 00:30:00  5612.328685  OPSO_MODELLING       VIC
+        4     2023-07-01 01:00:00     0.000000          PV_TOT       VIC
+        ...                   ...          ...             ...       ...
+        140347 2025-06-30 23:30:00  1767.772016  OPSO_MODELLING       CSA
+        140348 2025-07-01 00:00:00     0.000000          PV_TOT       VIC
+        140349 2025-07-01 00:00:00     0.000000          PV_TOT       CSA
+        140350 2025-07-01 00:00:00  5708.627939  OPSO_MODELLING       VIC
+        140351 2025-07-01 00:00:00  1952.508153  OPSO_MODELLING       CSA
+        <BLANKLINE>
+        [140352 rows x 4 columns]
+    """
     return _query_parquet_single_reference_year(
         start_year=start_year,
         end_year=end_year,
