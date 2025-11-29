@@ -61,14 +61,6 @@ def save_trace(
     path_in_output_directory = write_output_filepath(file_metadata)
     save_filepath = output_directory / path_in_output_directory
     save_filepath.parent.mkdir(parents=True, exist_ok=True)
-
-    # Ensure consistent column ordering for reliable reading across platforms
-    # Sort all columns except datetime and value alphabetically, with datetime and value first
-    columns = trace.columns
-    metadata_cols = sorted([col for col in columns if col not in ["datetime", "value"]])
-    ordered_columns = ["datetime", "value"] + metadata_cols
-    trace = trace.select(ordered_columns)
-
     trace.write_parquet(save_filepath)
 
 
