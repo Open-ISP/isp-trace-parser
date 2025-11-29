@@ -11,6 +11,9 @@ from isp_trace_parser.get_data import (
     get_project_single_reference_year,
     get_zone_multiple_reference_years,
     get_zone_single_reference_year,
+    solar_project_multiple_reference_years,
+    solar_project_single_reference_year,
+    wind_project_multiple_reference_years,
     wind_project_single_reference_year,
 )
 
@@ -186,4 +189,80 @@ def test_wind_project_single_reference_year(parsed_trace_trace_directory):
         directory=parsed_trace_trace_directory / "project_optimised",
         year_type="fy",
     )
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_solar_project_single_reference_year(parsed_trace_trace_directory):
+    test_df_lazy = pl.scan_parquet(
+        TEST_DATA / "output" / "RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet"
+    )
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > datetime.datetime(2022, 7, 1))
+            & (pl.col("datetime") <= datetime.datetime(2024, 7, 1))
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = solar_project_single_reference_year(
+        start_year=2023,
+        end_year=2024,
+        reference_year=2022,
+        project="Broken Hill Solar Farm",
+        directory=parsed_trace_trace_directory / "project_optimised",
+        year_type="fy",
+    )
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_solar_project_multiple_reference_years(parsed_trace_trace_directory: Path):
+    test_df_lazy = pl.scan_parquet(
+        TEST_DATA / "output" / "RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet"
+    )
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > datetime.datetime(2028, 7, 1))
+            & (pl.col("datetime") <= datetime.datetime(2030, 7, 1))
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = solar_project_multiple_reference_years(
+        reference_years={2029: 2022, 2030: 2022},
+        project="Broken Hill Solar Farm",
+        directory=parsed_trace_trace_directory / "project_optimised",
+        year_type="fy",
+    )
+
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_wind_project_multiple_reference_years(parsed_trace_trace_directory: Path):
+    test_df_lazy = pl.scan_parquet(
+        TEST_DATA / "output" / "RefYear2022_Bodangora_Wind_Farm.parquet"
+    )
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > datetime.datetime(2028, 7, 1))
+            & (pl.col("datetime") <= datetime.datetime(2030, 7, 1))
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = wind_project_multiple_reference_years(
+        reference_years={2029: 2022, 2030: 2022},
+        project="Bodangora Wind Farm",
+        directory=parsed_trace_trace_directory / "project_optimised",
+        year_type="fy",
+    )
+
     pd.testing.assert_frame_equal(test_df, df)
