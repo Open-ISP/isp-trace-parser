@@ -46,7 +46,7 @@ def _query_parquet_single_reference_year(
     reference_year: int,
     directory: str | Path,
     filters: dict[str, any] = {},
-    select_columns: list[str] = ["Datetime", "Value"],
+    select_columns: list[str] = ["datetime", "value"],
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """
@@ -59,11 +59,11 @@ def _query_parquet_single_reference_year(
         directory: Directory containing parquet files
         filters: Dictionary of column_name: value or column_name: list_of_values.
                 Single values use equality (==), lists use membership (.is_in())
-        select_columns: Columns to return in the result. Defaults to ["Datetime", "Value"]
+        select_columns: Columns to return in the result. Defaults to ["datetime", "value"]
         year_type: 'fy' or 'calendar'
 
     Returns:
-        pd.DataFrame with selected columns, sorted by Datetime
+        pd.DataFrame with selected columns, sorted by datetime
     """
     _format_string_filters(filters)
     start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
@@ -82,7 +82,7 @@ def _query_parquet_single_reference_year(
         else:
             filter_expr &= pl.col(col) == value
 
-    df = df_lazy.filter(filter_expr).select(*select_columns).sort("Datetime").collect()
+    df = df_lazy.filter(filter_expr).select(*select_columns).sort("datetime").collect()
 
     return df.to_pandas()
 
@@ -109,7 +109,7 @@ def get_project_single_reference_year(
     project: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"],
+    select_columns: list[str] = ["datetime", "value"],
 ):
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -131,7 +131,7 @@ def get_zone_single_reference_year(
     tech: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"],
+    select_columns: list[str] = ["datetime", "value"],
 ):
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -155,7 +155,7 @@ def get_demand_single_reference_year(
     poe: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"],
+    select_columns: list[str] = ["datetime", "value"],
 ):
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -179,7 +179,7 @@ def get_project_multiple_reference_years(
     project: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"],
+    select_columns: list[str] = ["datetime", "value"],
 ):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
@@ -197,7 +197,7 @@ def get_zone_multiple_reference_years(
     tech: str,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["Datetime", "Value"],
+    select_columns: list[str] = ["datetime", "value"],
 ):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
