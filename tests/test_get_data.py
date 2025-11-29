@@ -11,6 +11,7 @@ from isp_trace_parser.get_data import (
     get_project_single_reference_year,
     get_zone_multiple_reference_years,
     get_zone_single_reference_year,
+    solar_area_single_reference_year,
     solar_project_multiple_reference_years,
     solar_project_single_reference_year,
     wind_project_multiple_reference_years,
@@ -263,6 +264,32 @@ def test_wind_project_multiple_reference_years(parsed_trace_trace_directory: Pat
         project="Bodangora Wind Farm",
         directory=parsed_trace_trace_directory / "project_optimised",
         year_type="fy",
+    )
+
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path):
+    test_df_lazy = pl.scan_parquet(TEST_DATA / "output" / "RefYear2022_N2_CST.parquet")
+
+    start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type="fy")
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > start_dt) & (pl.col("datetime") <= end_dt)
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = solar_area_single_reference_year(
+        start_year=2023,
+        end_year=2024,
+        reference_year=2022,
+        area="N2",
+        technology="CST",
+        directory=parsed_trace_trace_directory / "zone_optimised",
     )
 
     pd.testing.assert_frame_equal(test_df, df)
