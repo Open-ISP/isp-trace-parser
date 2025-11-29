@@ -48,8 +48,8 @@ def _query_parquet_single_reference_year(
     end_year: int,
     reference_year: int,
     directory: str | Path,
-    filters: dict[str, any] = {},
-    select_columns: list[str] = ["datetime", "value"],
+    filters: dict[str, any] = None,
+    select_columns: list[str] = None,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """
@@ -61,8 +61,11 @@ def _query_parquet_single_reference_year(
         reference_year: Reference year for the trace data
         directory: Directory containing parquet files
         filters: Dictionary of column_name: value or column_name: list_of_values.
-                Single values use equality (==), lists use membership (.is_in())
-        select_columns: Columns to return in the result. Defaults to ["datetime", "value"]
+                Single values use equality (==), lists use membership (.is_in()).
+                If None, no additional filters are applied.
+        select_columns: Columns to return in the result. If None, column selection
+                depends on filters: all columns if no filters, ["datetime", "value"]
+                plus multi-value filter columns if filters provided.
         year_type: 'fy' or 'calendar'
 
     Returns:
@@ -72,19 +75,39 @@ def _query_parquet_single_reference_year(
 
     df_lazy = pl.scan_parquet(directory)
 
+    # Build filter expression
     filter_expr = (
         (pl.col("reference_year") == reference_year)
         & (pl.col("datetime") > start_dt)
         & (pl.col("datetime") <= end_dt)
     )
 
-    for col, value in filters.items():
-        if isinstance(value, list):
-            filter_expr &= pl.col(col).is_in(value)
-        else:
-            filter_expr &= pl.col(col) == value
+    if filters:
+        for col, value in filters.items():
+            if isinstance(value, list):
+                filter_expr &= pl.col(col).is_in(value)
+            else:
+                filter_expr &= pl.col(col) == value
 
-    df = df_lazy.filter(filter_expr).select(*select_columns).sort("datetime").collect()
+    # Determine which columns to select
+    if select_columns is not None:
+        columns_to_select = select_columns
+    elif filters:
+        # based on filters
+        columns_to_select = ["datetime", "value"]
+        for col, value in filters.items():
+            if isinstance(value, list) and len(value) > 1:
+                columns_to_select.append(col)
+    else:
+        # Select all
+        columns_to_select = df_lazy.columns
+
+    df = (
+        df_lazy.filter(filter_expr)
+        .select(*columns_to_select)
+        .sort("datetime")
+        .collect()
+    )
 
     return df.to_pandas()
 
@@ -170,7 +193,7 @@ def get_demand_single_reference_year(
     poe: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = ["datetime", "value"],
+    select_columns: list[str] = None,
 ):
     return _query_parquet_single_reference_year(
         start_year=start_year,
