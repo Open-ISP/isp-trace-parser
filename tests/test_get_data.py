@@ -58,7 +58,7 @@ def test_get_zone_single_reference_year(parsed_trace_trace_directory: Path, year
         reference_year=2022,
         zone="N2",
         resource_type="CST",
-        directory=parsed_trace_trace_directory / "zone_optimised",
+        directory=parsed_trace_trace_directory / "zone",
         year_type=year_type,
     )
 
@@ -82,7 +82,7 @@ def test_get_zone_multiple_reference_year(parsed_trace_trace_directory: Path):
         reference_year_mapping={2029: 2022, 2030: 2022},
         zone="N1",
         resource_type="WM",
-        directory=parsed_trace_trace_directory / "zone_optimised",
+        directory=parsed_trace_trace_directory / "zone",
         year_type="fy",
     )
 
@@ -134,7 +134,7 @@ def test_get_project_multiple_reference_year(parsed_trace_trace_directory: Path)
     df = get_project_multiple_reference_years(
         reference_year_mapping={2029: 2022, 2030: 2022},
         project="Broken Hill Solar Farm",
-        directory=parsed_trace_trace_directory / "project_optimised",
+        directory=parsed_trace_trace_directory / "project",
         year_type="fy",
     )
 
@@ -187,7 +187,7 @@ def test_wind_project_single_reference_year(parsed_trace_trace_directory):
         end_year=2024,
         reference_year=2022,
         project="Bodangora Wind Farm",
-        directory=parsed_trace_trace_directory / "project_optimised",
+        directory=parsed_trace_trace_directory / "project",
         year_type="fy",
     )
     pd.testing.assert_frame_equal(test_df, df)
