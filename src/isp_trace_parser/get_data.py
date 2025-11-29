@@ -11,7 +11,25 @@ def _year_range_to_dt_range(
     start_year: int, end_year: int, year_type: Literal["fy", "calendar"] = "fy"
 ):
     """
-    Converting years to datetimes (for more efficient filters / selects)
+    Convert year range to datetime boundaries for efficient time filtering.
+
+    Handles both financial year (FY) and calendar year conventions. For FY, uses
+    year-ending nomenclature where FY2022 spans July 1, 2021 to July 1, 2022.
+
+    Args:
+        start_year: Start year of the range
+        end_year: End year of the range (inclusive)
+        year_type: 'fy' for financial year or 'calendar' for calendar year
+
+    Returns:
+        Tuple of (start_datetime, end_datetime)
+
+    Examples:
+        >>> _year_range_to_dt_range(2022, 2024, year_type="fy")
+        (datetime.datetime(2021, 7, 1, 0, 0), datetime.datetime(2024, 7, 1, 0, 0))
+
+        >>> _year_range_to_dt_range(2022, 2024, year_type="calendar")
+        (datetime.datetime(2022, 1, 1, 0, 0), datetime.datetime(2025, 1, 1, 0, 0))
     """
 
     ##Need to make a call on end dates
