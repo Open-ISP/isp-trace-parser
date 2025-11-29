@@ -104,7 +104,10 @@ def _query_parquet_single_reference_year(
         columns_to_select.extend(sorted(filter_cols))
     else:
         # Otherwise select all columns except reference_year (used for filtering only)
-        columns_to_select = [col for col in df_lazy.columns if col != "reference_year"]
+        # Sort columns alphabetically for consistent ordering across files
+        columns_to_select = sorted(
+            [col for col in df_lazy.columns if col != "reference_year"]
+        )
 
     df = (
         df_lazy.filter(filter_expr)
