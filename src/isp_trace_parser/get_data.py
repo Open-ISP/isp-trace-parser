@@ -30,9 +30,9 @@ def _year_range_to_dt_range(
 def _format_string_filters(filters: dict) -> None:
     """Format string filters by replacing spaces with underscores.
 
-    Currently handles: Project, Scenario
+    Currently handles: project, scenario
     """
-    for key in ["Project", "Scenario"]:
+    for key in ["project", "scenario"]:
         if key in filters:
             if isinstance(filters[key], list):
                 filters[key] = [i.replace(" ", "_") for i in filters[key]]
@@ -71,9 +71,9 @@ def _query_parquet_single_reference_year(
     df_lazy = pl.scan_parquet(directory)
 
     filter_expr = (
-        (pl.col("RefYear") == reference_year)
-        & (pl.col("Datetime") > start_dt)
-        & (pl.col("Datetime") <= end_dt)
+        (pl.col("reference_year") == reference_year)
+        & (pl.col("datetime") > start_dt)
+        & (pl.col("datetime") <= end_dt)
     )
 
     for col, value in filters.items():
@@ -116,7 +116,7 @@ def get_project_single_reference_year(
         end_year=end_year,
         reference_year=reference_year,
         directory=directory,
-        filters={"Project": project},
+        filters={"project": project},
         year_type=year_type,
         select_columns=select_columns,
     )
@@ -138,7 +138,7 @@ def get_zone_single_reference_year(
         end_year=end_year,
         reference_year=reference_year,
         directory=directory,
-        filters={"Zone": zone, "Tech": tech},
+        filters={"zone": zone, "tech": tech},
         year_type=year_type,
         select_columns=select_columns,
     )
@@ -163,10 +163,10 @@ def get_demand_single_reference_year(
         reference_year=reference_year,
         directory=directory,
         filters={
-            "Scenario": scenario,
-            "Subregion": subregion,
-            "Category": category,
-            "POE": poe,
+            "scenario": scenario,
+            "subregion": subregion,
+            "category": category,
+            "poe": poe,
         },
         year_type=year_type,
         select_columns=select_columns,
@@ -184,7 +184,7 @@ def get_project_multiple_reference_years(
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
-        filters={"Project": project},
+        filters={"project": project},
         year_type=year_type,
         select_columns=select_columns,
     )
@@ -202,7 +202,7 @@ def get_zone_multiple_reference_years(
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
-        filters={"Zone": zone, "Tech": tech},
+        filters={"zone": zone, "tech": tech},
         year_type=year_type,
         select_columns=select_columns,
     )
@@ -222,10 +222,10 @@ def get_demand_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
         filters={
-            "Scenario": scenario,
-            "Subregion": subregion,
-            "Category": category,
-            "POE": poe,
+            "scenario": scenario,
+            "subregion": subregion,
+            "category": category,
+            "poe": poe,
         },
         year_type=year_type,
     )
