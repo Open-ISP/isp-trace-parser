@@ -243,6 +243,80 @@ def get_zone_single_reference_year(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
 ):
+    """
+    Query zone trace data for a single reference year.
+
+    Retrieves trace data for one or more zones and resource types within a specified
+    time window. When querying multiple zones (as a list), the 'zone' column is
+    automatically included in the output to distinguish between zones.
+
+    Args:
+        start_year: Start of time window (inclusive)
+        end_year: End of time window (inclusive)
+        reference_year: Reference year of the trace data
+        zone: Zone name (str) or list of zone names (e.g., "N2" or ["N1", "N2", "N3"])
+        resource_type: Resource type (str) or list of resource types (e.g., "SAT", "WM")
+        directory: Directory containing parquet files
+        year_type: 'fy' for financial year or 'calendar' for calendar year.
+            Default is 'fy' (financial year ending nomenclature).
+        select_columns: Optional list of columns to return. If None, returns
+            ["datetime", "value"] for single zone, or ["datetime", "value", "zone"]
+            for multiple zones.
+
+    Returns:
+        pd.DataFrame with trace data sorted by datetime
+
+    Examples:
+        Query single zone:
+
+        >>> get_zone_single_reference_year(
+        ...     start_year=2023,
+        ...     end_year=2024,
+        ...     reference_year=2022,
+        ...     zone="N2",
+        ...     resource_type="SAT",
+        ...     directory="parsed_data/zone"
+        ... ) # doctest: +SKIP
+                         datetime  value
+        0     2022-07-01 00:30:00    0.0
+        1     2022-07-01 01:00:00    0.0
+        2     2022-07-01 01:30:00    0.0
+        3     2022-07-01 02:00:00    0.0
+        4     2022-07-01 02:30:00    0.0
+        ...                   ...    ...
+        35083 2024-06-30 22:00:00    0.0
+        35084 2024-06-30 22:30:00    0.0
+        35085 2024-06-30 23:00:00    0.0
+        35086 2024-06-30 23:30:00    0.0
+        35087 2024-07-01 00:00:00    0.0
+        <BLANKLINE>
+        [35088 rows x 2 columns]
+
+        Query multiple zones:
+
+        >>> get_zone_single_reference_year(
+        ...     start_year=2023,
+        ...     end_year=2024,
+        ...     reference_year=2022,
+        ...     zone=["N1", "N2", "N3"],
+        ...     resource_type="SAT",
+        ...     directory="parsed_data/zone"
+        ... ) # doctest: +SKIP
+                         datetime  value zone
+        0     2022-07-01 00:30:00    0.0   N3
+        1     2022-07-01 00:30:00    0.0   N2
+        2     2022-07-01 00:30:00    0.0   N1
+        3     2022-07-01 01:00:00    0.0   N3
+        4     2022-07-01 01:00:00    0.0   N2
+        ...                   ...    ...  ...
+        105259 2024-06-30 23:30:00    0.0   N2
+        105260 2024-06-30 23:30:00    0.0   N1
+        105261 2024-07-01 00:00:00    0.0   N3
+        105262 2024-07-01 00:00:00    0.0   N2
+        105263 2024-07-01 00:00:00    0.0   N1
+        <BLANKLINE>
+        [105264 rows x 3 columns]
+    """
     return _query_parquet_single_reference_year(
         start_year=start_year,
         end_year=end_year,
