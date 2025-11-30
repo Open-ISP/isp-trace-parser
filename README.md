@@ -281,19 +281,16 @@ print(wind_generator_names)
 # ['Bango 973 Wind Farm', 'Bango 999 Wind Farm', 'Boco Rock Wind Farm', 'Bodangora Wind Farm' . . .
 
 
-# These names can be used to retrieve trace data
+# The names can be used to retrieve trace data from the following dataframe.
 
-solar_generator_traces = {}
-
-for generator_name in solar_generator_names:
-    trace_for_generator = get_data.solar_project_single_reference_year(
-        start_year=2025,
-        end_year=2030,
-        reference_year=2011,
-        project=generator_name,
-        directory=parsed_solar_data
+solar_traces = get_data.get_project_single_reference_year(
+    start_year=2025,
+    end_year=2030,
+    reference_year=2011,
+    project=solar_generator_names,
+    directory="parsed_project_data"
     )
-    solar_generator_traces[generator_name] = trace_for_generator
+
 ```
 
 </details>
@@ -340,35 +337,27 @@ onshore_rezs = build_limits[build_limits["Wind generation total limits (MW)_High
 print(list(onshore_rezs['REZ ID']))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
-# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data
+# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data from the following dataframes
 
-wind_offshore_rez_traces = {}
+wind_offshore_rez_traces = get_data.get_zone_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    zone=list(offshore_rezs['REZ ID']),
+    resource_type="WFL",
+    directory="parsed_zone_data"
+)
 
-for rez in list(offshore_rezs['REZ ID']):
-    trace_for_rez = get_data.wind_area_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        area=rez,
-        resource_quality='WFL',
-        directory=parsed_wind_data
-    )
-    wind_offshore_rez_traces[rez] = trace_for_rez
+wind_onshore_rez_traces = get_data.get_zone_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    zone=list(onshore_rezs['REZ ID']),
+    resource_type="WH",
+    directory="parsed_zone_data"
+)
 
-wind_onshore_rez_traces = {}
-
-for rez in list(onshore_rezs['REZ ID']):
-    trace_for_rez = get_data.wind_area_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        area=rez,
-        resource_quality='WH',
-        directory=parsed_wind_data
-    )
-    wind_onshore_rez_traces[rez] = trace_for_rez
 ```
-
 </details>
 
 
@@ -405,20 +394,17 @@ onshore_solar_rezs = build_limits[build_limits["Solar PV plus Solar thermal Limi
 print(list(onshore_solar_rezs['REZ ID']))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
-# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data
+# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data from the following call and dataframe
 
-single_axis_tracking_traces = {}
+single_axis_tracking_traces = get_data.get_zone_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    zone=onshore_solar_rezs['REZ ID'],
+    resource_type="SAT",
+    directory="parsed_zone_data"
+)
 
-for rez in list(onshore_solar_rezs['REZ ID']):
-    trace_for_rez = get_data.solar_area_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        area=rez,
-        technology='SAT',
-        directory=parsed_solar_data
-    )
-    single_axis_tracking_traces[rez] = trace_for_rez
 ```
 
 </details>
@@ -455,21 +441,16 @@ print(subregions)
 
 # This set of subregions can then can be used to retrieve demand trace data
 
-demand_traces = {}
-
-for subregion in subregions:
-    trace = get_data.demand_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        subregion=subregion,
-        demand_type='OPSO_MODELLING',
-        poe='POE50',
-        scenario='Step Change',
-        directory=parsed_demand_data
-    )
-    demand_traces[subregion] = trace
-
+demand_trace = get_demand_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    scenario="Step Change",
+    subregion=subregions,
+    demand_type="OPSO_MODELLING",
+    poe="POE50",
+    directory="parsed_data/demand"
+     )
 ```
 
 </details>
