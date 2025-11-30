@@ -1,6 +1,6 @@
 [project]
 name = "isp-trace-parser"
-version = "2.0.1"
+version = "2.0.2"
 description = """A Python package for reformatting and accessing demand, solar, and wind time series data used by the
 Australian Energy Market Operator in their Integrated System Plan modelling study."""
 authors = [
@@ -59,3 +59,4 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 isp_trace_name_mapping_configs = ["**/*.yaml"]
+isp_trace_parser = ["remote/manifests/**/*.txt"]
