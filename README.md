@@ -20,7 +20,7 @@ Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 - [Key terminology](#key-terminology)
 - [Examples](#examples)
     - [Parsing trace data](#parsing-trace-data)
-    - [Querying parsed trace data](#querying-parsed-trace-data)
+    - [Querying parsed trace data using alternative approach](#querying-parsed-trace-data-using-alternative-approach)
     - [Querying trace data for sets of projects, zones or subregions](#querying-trace-data-for-sets-of-projects-zones-or-subregions)
     - [Constructing reference year mapping](#constructing-reference-year-mapping)
     - [Dataframe trace parsing](#dataframe-trace-parsing)
@@ -185,6 +185,9 @@ parse_demand_traces(
 ### Optimising stored data
 The following code illustrates how the parsed parquet files can be consolidated and optimised with `optimise_parquet.py`
 
+> [!NOTE]
+> There _may_ be an issue with this step on some architectures (see issue https://github.com/Open-ISP/isp-trace-parser/issues/23).
+
 ```python
 from isp_trace_parser import optimise_parquet
 
@@ -199,137 +202,6 @@ optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/dem
                                              partition_cols=["scenario", "reference_year"])
 ```
 
-### Querying parsed trace data
-
-TO BE UPDATE IN LATER PR
-Once trace data has been parsed it can be queried using the following API functionality.
-
-<details>
-<summary>Solar project traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
-<br>
-
-```python
-from isp_trace_parser import get_data
-
-solar_project_trace_single_reference_year = get_data.solar_project_single_reference_year(
-    start_year=2022,
-    end_year=2024,
-    reference_year=2011,
-    project='Adelaide Desalination Plant Solar Farm',
-    directory='example_parsed_data/solar'
-)
-
-solar_project_trace_many_reference_years = get_data.solar_project_multiple_reference_years(
-    reference_years={2022: 2011, 2024: 2012},
-    project='Adelaide Desalination Plant Solar Farm',
-    directory='example_parsed_data/solar'
-)
-```
-
-</details>
-
-<details>
-<summary>Solar area/REZ traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
-<br>
-
-```python
-from isp_trace_parser import get_data
-solar_rez_trace_single_reference_years = get_data.solar_area_single_reference_year(
-    start_year=2022,
-    end_year=2024,
-    reference_year=2011,
-    area='Q1',
-    technology='SAT',
-    directory='example_parsed_data/solar'
-)
-
-solar_rez_trace_many_reference_years = get_data.solar_area_multiple_reference_years(
-    reference_years={2022: 2011, 2024: 2012},
-    area='Q1',
-    technology='SAT',
-    directory='example_parsed_data/solar'
-)
-```
-
-</details>
-
-<details>
-<summary>Wind project traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
-<br>
-
-```python
-from isp_trace_parser import get_data
-wind_project_trace_single_reference_years = get_data.wind_project_single_reference_year(
-    start_year=2022,
-    end_year=2024,
-    reference_year=2011,
-    project='Bango 973 Wind Farm',
-    directory='example_parsed_data/wind'
-)
-
-wind_project_trace_many_reference_years = get_data.wind_project_multiple_reference_years(
-    reference_years={2022: 2011, 2024: 2012},
-    project='Bango 973 Wind Farm',
-    directory='example_parsed_data/wind'
-)
-```
-
-</details>
-
-<details>
-<summary>Wind area/REZ traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
-<br>
-
-```python
-from isp_trace_parser import get_data
-wind_rez_trace_single_reference_years = get_data.wind_area_single_reference_year(
-    start_year=2022,
-    end_year=2024,
-    reference_year=2011,
-    area='Q1',
-    resource_quality='WH',
-    directory='example_parsed_data/wind'
-)
-
-wind_rez_trace_many_reference_years = get_data.wind_area_multiple_reference_years(
-    reference_years={2022: 2011, 2024: 2012},
-    area='Q1',
-    resource_quality='WH',
-    directory='example_parsed_data/wind'
-)
-```
-
-</details>
-
-<details>
-<summary>OPSO_MODELLING POE10 traces from 2022 to 2024 (for a single reference year), and for 2024 (multiple reference years) from the "Green Energy Exports" scenario</summary>
-<br>
-
-```python
-from isp_trace_parser import get_data
-demand_subregion_trace_single_reference_years = get_data.demand_single_reference_year(
-    start_year=2024,
-    end_year=2024,
-    reference_year=2011,
-    subregion='CNSW',
-    scenario='Green Energy Exports',
-    poe='POE10',
-    demand_type='OPSO_MODELLING',
-    directory='example_parsed_data/demand'
-)
-
-demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference_years(
-    reference_years={2024: 2011},
-    subregion='CNSW',
-    scenario='Green Energy Exports',
-    poe='POE10',
-    demand_type='OPSO_MODELLING',
-    directory='example_parsed_data/demand'
-)
-
-```
-
-</details>
 
 ### Querying trace data for sets of projects, zones or subregions
 
@@ -412,19 +284,16 @@ print(wind_generator_names)
 # ['Bango 973 Wind Farm', 'Bango 999 Wind Farm', 'Boco Rock Wind Farm', 'Bodangora Wind Farm' . . .
 
 
-# These names can be used to retrieve trace data
+# The project names can be used to retrieves a dataframe containing all project traces, which can be filtered by project name using the 'project' column"
 
-solar_generator_traces = {}
-
-for generator_name in solar_generator_names:
-    trace_for_generator = get_data.solar_project_single_reference_year(
-        start_year=2025,
-        end_year=2030,
-        reference_year=2011,
-        project=generator_name,
-        directory=parsed_solar_data
+solar_traces = get_data.get_project_single_reference_year(
+    start_year=2025,
+    end_year=2030,
+    reference_year=2011,
+    project=solar_generator_names,
+    directory="parsed_project_data"
     )
-    solar_generator_traces[generator_name] = trace_for_generator
+
 ```
 
 </details>
@@ -471,35 +340,27 @@ onshore_rezs = build_limits[build_limits["Wind generation total limits (MW)_High
 print(list(onshore_rezs['REZ ID']))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
-# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data
+# These sets of onshore and offshore REZ IDs can the be used to retrieve a dataframes containing all relevant traces, which can be filtered by REZ name using the 'zone' column"
 
-wind_offshore_rez_traces = {}
+wind_offshore_rez_traces = get_data.get_zone_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    zone=list(offshore_rezs['REZ ID']),
+    resource_type="WFL",
+    directory="parsed_zone_data"
+)
 
-for rez in list(offshore_rezs['REZ ID']):
-    trace_for_rez = get_data.wind_area_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        area=rez,
-        resource_quality='WFL',
-        directory=parsed_wind_data
-    )
-    wind_offshore_rez_traces[rez] = trace_for_rez
+wind_onshore_rez_traces = get_data.get_zone_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    zone=list(onshore_rezs['REZ ID']),
+    resource_type="WH",
+    directory="parsed_zone_data"
+)
 
-wind_onshore_rez_traces = {}
-
-for rez in list(onshore_rezs['REZ ID']):
-    trace_for_rez = get_data.wind_area_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        area=rez,
-        resource_quality='WH',
-        directory=parsed_wind_data
-    )
-    wind_onshore_rez_traces[rez] = trace_for_rez
 ```
-
 </details>
 
 
@@ -536,20 +397,17 @@ onshore_solar_rezs = build_limits[build_limits["Solar PV plus Solar thermal Limi
 print(list(onshore_solar_rezs['REZ ID']))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
-# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data
+# The set of REZ IDs can be used to retrieves a dataframe containing all REZ traces, which can be filtered by REZ name using the 'zone' column"
 
-single_axis_tracking_traces = {}
+single_axis_tracking_traces = get_data.get_zone_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    zone=onshore_solar_rezs['REZ ID'],
+    resource_type="SAT",
+    directory="parsed_zone_data"
+)
 
-for rez in list(onshore_solar_rezs['REZ ID']):
-    trace_for_rez = get_data.solar_area_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        area=rez,
-        technology='SAT',
-        directory=parsed_solar_data
-    )
-    single_axis_tracking_traces[rez] = trace_for_rez
 ```
 
 </details>
@@ -584,26 +442,153 @@ subregions = list(set(rez_definitions["ISP Sub-region"]))
 print(subregions)
 # ['CSA', 'SESA', 'CQ', 'NQ', 'NNSW', 'CNSW', 'SNSW', 'SNW', 'TAS', 'VIC', 'SQ']
 
-# This set of subregions can then can be used to retrieve demand trace data
+# "The list of subregion names retrieves a dataframe containing all subregion traces, which can be filtered or accessed by subregion name using the 'subregion' column"
 
-demand_traces = {}
+demand_trace = get_demand_single_reference_year(
+    start_year=2025,
+    end_year=2026,
+    reference_year=2011,
+    scenario="Step Change",
+    subregion=subregions,
+    demand_type="OPSO_MODELLING",
+    poe="POE50",
+    directory="parsed_data/demand"
+     )
+```
 
-for subregion in subregions:
-    trace = get_data.demand_single_reference_year(
-        start_year=2025,
-        end_year=2026,
-        reference_year=2011,
-        subregion=subregion,
-        demand_type='OPSO_MODELLING',
-        poe='POE50',
-        scenario='Step Change',
-        directory=parsed_demand_data
-    )
-    demand_traces[subregion] = trace
+</details>
+
+### Querying parsed trace data using alternative approach
+
+Once trace data has been parsed it can also queried using legacy API functionality (based on around querying technologies, areas, rather for example).
+
+<details>
+<summary>Solar project traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
+<br>
+
+```python
+from isp_trace_parser import get_data
+
+solar_project_trace_single_reference_year = get_data.solar_project_single_reference_year(
+    start_year=2022,
+    end_year=2024,
+    reference_year=2011,
+    project='Adelaide Desalination Plant Solar Farm',
+    directory='example_project_data/'
+)
+
+solar_project_trace_many_reference_years = get_data.solar_project_multiple_reference_years(
+    reference_years={2022: 2011, 2024: 2012},
+    project='Adelaide Desalination Plant Solar Farm',
+    directory='example_project_data/'
+)
+```
+
+</details>
+
+<details>
+<summary>Solar area/REZ traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
+<br>
+
+```python
+from isp_trace_parser import get_data
+solar_rez_trace_single_reference_years = get_data.solar_area_single_reference_year(
+    start_year=2022,
+    end_year=2024,
+    reference_year=2011,
+    area='Q1',
+    technology='SAT',
+    directory='example_rez_data/'
+)
+
+solar_rez_trace_many_reference_years = get_data.solar_area_multiple_reference_years(
+    reference_years={2022: 2011, 2024: 2012},
+    area='Q1',
+    technology='SAT',
+    directory='example_rez_data/'
+)
+```
+
+</details>
+
+<details>
+<summary>Wind project traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
+<br>
+
+```python
+from isp_trace_parser import get_data
+wind_project_trace_single_reference_years = get_data.wind_project_single_reference_year(
+    start_year=2022,
+    end_year=2024,
+    reference_year=2011,
+    project='Bango 973 Wind Farm',
+    directory='parsed_project_data/'
+)
+
+wind_project_trace_many_reference_years = get_data.wind_project_multiple_reference_years(
+    reference_years={2022: 2011, 2024: 2012},
+    project='Bango 973 Wind Farm',
+    directory='parsed_project_data/'
+)
+```
+
+</details>
+
+<details>
+<summary>Wind area/REZ traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
+<br>
+
+```python
+from isp_trace_parser import get_data
+wind_rez_trace_single_reference_years = get_data.wind_area_single_reference_year(
+    start_year=2022,
+    end_year=2024,
+    reference_year=2011,
+    area='Q1',
+    resource_quality='WH',
+    directory='parsed_rez_data/'
+)
+
+wind_rez_trace_many_reference_years = get_data.wind_area_multiple_reference_years(
+    reference_years={2022: 2011, 2024: 2012},
+    area='Q1',
+    resource_quality='WH',
+    directory='parsed_rez_data/'
+)
+```
+
+</details>
+
+<details>
+<summary>OPSO_MODELLING POE10 traces from 2022 to 2024 (for a single reference year), and for 2024 (multiple reference years) from the "Green Energy Exports" scenario</summary>
+<br>
+
+```python
+from isp_trace_parser import get_data
+demand_subregion_trace_single_reference_years = get_data.demand_single_reference_year(
+    start_year=2024,
+    end_year=2024,
+    reference_year=2011,
+    subregion='CNSW',
+    scenario='Green Energy Exports',
+    poe='POE10',
+    demand_type='OPSO_MODELLING',
+    directory='parsed_demand_data/'
+)
+
+demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference_years(
+    reference_years={2024: 2011},
+    subregion='CNSW',
+    scenario='Green Energy Exports',
+    poe='POE10',
+    demand_type='OPSO_MODELLING',
+    directory='parsed_demand_data/'
+)
 
 ```
 
 </details>
+
 
 ### Constructing a reference year mapping
 

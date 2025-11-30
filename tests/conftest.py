@@ -3,12 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from isp_trace_parser import solar_traces, wind_traces
+from isp_trace_parser import demand_traces, optimise_parquet, solar_traces, wind_traces
 
 TEST_DATA = Path(__file__).parent / "test_data"
 
 
-@pytest.fixture(params=[True, False], ids=["concurrent", "sequential"])
+@pytest.fixture(params=[True, False], ids=["concurrent", "sequential"], scope="module")
 def parsed_trace_trace_directory(request):
     """Fixture that performs parsing of wind and solar trace directory once, providing
     the output directory to multiple test cases that validate different files.
@@ -38,4 +38,21 @@ def parsed_trace_trace_directory(request):
                 filters=filters,
             )
 
+            optimise_parquet.partition_traces_by_columns(
+                input_directory=tmp_parsed_directory / file_type,
+                output_directory=tmp_parsed_directory / f"{file_type}_optimised",
+                partition_cols=["reference_year"],
+            )
+
+        demand_traces.parse_demand_traces(
+            input_directory=TEST_DATA / "demand",
+            parsed_directory=tmp_parsed_directory / "demand",
+            use_concurrency=use_concurrency,
+        )
+
+        optimise_parquet.partition_traces_by_columns(
+            input_directory=tmp_parsed_directory / "demand",
+            output_directory=tmp_parsed_directory / f"demand_optimised",
+            partition_cols=["scenario", "reference_year"],
+        )
         yield tmp_parsed_directory
