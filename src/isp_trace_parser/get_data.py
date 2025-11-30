@@ -476,12 +476,13 @@ def get_zone_multiple_reference_years(
 @validate_call
 def get_demand_multiple_reference_years(
     reference_year_mapping: dict[int, int],
-    scenario: str,
-    subregion: str,
-    demand_type: str,
-    poe: str,
+    scenario: str | List,
+    subregion: str | List,
+    demand_type: str | List,
+    poe: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
+    select_columns: list[str] = None,
 ):
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
@@ -493,6 +494,7 @@ def get_demand_multiple_reference_years(
             "poe": poe,
         },
         year_type=year_type,
+        select_columns=select_columns,
     )
 
 
