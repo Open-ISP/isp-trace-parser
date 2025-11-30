@@ -12,7 +12,11 @@ Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 > [!IMPORTANT]
 > Currently, `isp-trace-parser` only supports trace data in the format of the 2024 ISP.
 
-## Table of contents
+> [!WARNING]
+> **Version 2.0 breaking change:** Version 2.0 of `isp-trace-parser` stores and reads parsed data in a new hive-partitioned storage format. Data originally parsed with version 1.x is **not compatible** with version 2.0.
+While the original API itself remains largely the same, upgrading from version 1.x requires either [re-parsing your raw AEMO trace data](#parsing-trace-data) or [downloading pre-processed data](#pre-processed-trace-data).
+
+  ## Table of contents
 
 - [Install](#install)
 - [How the package works](#how-the-package-works)
@@ -636,7 +640,7 @@ aemo_format_data_as_polars = pl.from_pandas(aemo_format_data)
 trace_parser_format_data = trace_formatter(aemo_format_data_as_polars)
 
 print(trace_parser_format_data.to_pandas())
-#              Datetime  Value
+#              datetime  value
 # 0 2024-06-01 00:30:00   11.2
 # 1 2024-06-01 01:00:00   30.7
 # 2 2024-06-02 00:00:00   17.1
