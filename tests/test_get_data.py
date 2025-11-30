@@ -7,6 +7,9 @@ import pytest
 
 from isp_trace_parser.get_data import (
     _year_range_to_dt_range,
+    demand_multiple_reference_years,
+    demand_single_reference_year,
+    get_demand_multiple_reference_years,
     get_demand_single_reference_year,
     get_project_multiple_reference_years,
     get_project_single_reference_year,
@@ -61,39 +64,6 @@ def test_get_zone_single_reference_year(parsed_trace_trace_directory: Path, year
         resource_type="CST",
         directory=parsed_trace_trace_directory / "zone_optimised",
         year_type=year_type,
-    )
-
-    pd.testing.assert_frame_equal(test_df, df)
-
-
-def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
-    test_df_lazy = pl.scan_parquet(
-        TEST_DATA
-        / "output"
-        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
-    )
-
-    start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type="fy")
-
-    test_df = (
-        test_df_lazy.filter(
-            (pl.col("datetime") > start_dt) & (pl.col("datetime") <= end_dt)
-        )
-        .select(["datetime", "value"])
-        .collect()
-        .to_pandas()
-    )
-
-    df = get_demand_single_reference_year(
-        start_year=2023,
-        end_year=2024,
-        reference_year=2011,
-        scenario="Green Energy Exports",
-        subregion="CNSW",
-        poe="POE10",
-        demand_type="OPSO_MODELLING",
-        directory=parsed_trace_trace_directory / "demand_optimised",
-        year_type="fy",
     )
 
     pd.testing.assert_frame_equal(test_df, df)
@@ -169,6 +139,69 @@ def test_get_project_multiple_reference_year(parsed_trace_trace_directory: Path)
         reference_year_mapping={2029: 2022, 2030: 2022},
         project="Broken Hill Solar Farm",
         directory=parsed_trace_trace_directory / "project_optimised",
+        year_type="fy",
+    )
+
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
+    test_df_lazy = pl.scan_parquet(
+        TEST_DATA
+        / "output"
+        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+    )
+
+    start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type="fy")
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > start_dt) & (pl.col("datetime") <= end_dt)
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = get_demand_single_reference_year(
+        start_year=2023,
+        end_year=2024,
+        reference_year=2011,
+        scenario="Green Energy Exports",
+        subregion="CNSW",
+        poe="POE10",
+        demand_type="OPSO_MODELLING",
+        directory=parsed_trace_trace_directory / "demand_optimised",
+        year_type="fy",
+    )
+
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path):
+    test_df_lazy = pl.scan_parquet(
+        TEST_DATA
+        / "output"
+        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+    )
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > datetime.datetime(2028, 7, 1))
+            & (pl.col("datetime") <= datetime.datetime(2030, 7, 1))
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = get_demand_multiple_reference_years(
+        reference_year_mapping={2029: 2011, 2030: 2011},
+        scenario="Green Energy Exports",
+        subregion="CNSW",
+        poe="POE10",
+        demand_type="OPSO_MODELLING",
+        directory=parsed_trace_trace_directory / "demand_optimised",
         year_type="fy",
     )
 
@@ -324,6 +357,69 @@ def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path):
         area="N2",
         technology="CST",
         directory=parsed_trace_trace_directory / "zone_optimised",
+    )
+
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_demand_single_reference_year(parsed_trace_trace_directory: Path):
+    test_df_lazy = pl.scan_parquet(
+        TEST_DATA
+        / "output"
+        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+    )
+
+    start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type="fy")
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > start_dt) & (pl.col("datetime") <= end_dt)
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = demand_single_reference_year(
+        start_year=2023,
+        end_year=2024,
+        reference_year=2011,
+        scenario="Green Energy Exports",
+        subregion="CNSW",
+        poe="POE10",
+        demand_type="OPSO_MODELLING",
+        directory=parsed_trace_trace_directory / "demand_optimised",
+        year_type="fy",
+    )
+
+    pd.testing.assert_frame_equal(test_df, df)
+
+
+def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path):
+    test_df_lazy = pl.scan_parquet(
+        TEST_DATA
+        / "output"
+        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+    )
+
+    test_df = (
+        test_df_lazy.filter(
+            (pl.col("datetime") > datetime.datetime(2028, 7, 1))
+            & (pl.col("datetime") <= datetime.datetime(2030, 7, 1))
+        )
+        .select(["datetime", "value"])
+        .collect()
+        .to_pandas()
+    )
+
+    df = demand_multiple_reference_years(
+        reference_year_mapping={2029: 2011, 2030: 2011},
+        scenario="Green Energy Exports",
+        subregion="CNSW",
+        poe="POE10",
+        demand_type="OPSO_MODELLING",
+        directory=parsed_trace_trace_directory / "demand_optimised",
+        year_type="fy",
     )
 
     pd.testing.assert_frame_equal(test_df, df)
