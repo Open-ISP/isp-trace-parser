@@ -446,6 +446,78 @@ def get_project_multiple_reference_years(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
 ):
+    """
+    Query project trace data across multiple reference years.
+
+    Retrieves trace data for one or more projects across different years, each
+    potentially using a different reference year. Results from all years are
+    concatenated. When querying multiple projects (as a list), the 'project' column
+    is automatically included in the output.
+
+    Note: By default, the reference_year column is not included in the output. Use
+    select_columns to explicitly include it if needed to identify which reference year
+    was used for each row.
+
+    Args:
+        reference_year_mapping: Mapping of year to reference_year. For example,
+            {2024: 2011, 2025: 2012} retrieves FY2024 data using 2011 reference year
+            and FY2025 data using 2012 reference year.
+        project: Project name (str) or list of project names
+        directory: Directory containing parquet files
+        year_type: 'fy' for financial year or 'calendar' for calendar year.
+            Default is 'fy' (financial year ending nomenclature).
+        select_columns: Optional list of columns to return. If None, returns
+            ["datetime", "value"] plus any multi-value filter columns.
+
+    Returns:
+        pd.DataFrame with concatenated trace data from all years, sorted by datetime
+
+    Examples:
+        Query multiple years with multiple projects:
+
+        >>> get_project_multiple_reference_years(
+        ...     reference_year_mapping={2024: 2011, 2025: 2012},
+        ...     project=["Bango 973 Wind Farm", "Bodangora Wind Farm"],
+        ...     directory="parsed_data/project"
+        ... ) # doctest: +SKIP
+                         datetime     value              project
+        0     2023-07-01 00:30:00  0.244017  Bodangora Wind Farm
+        1     2023-07-01 00:30:00  0.436084  Bango 973 Wind Farm
+        2     2023-07-01 01:00:00  0.273899  Bodangora Wind Farm
+        3     2023-07-01 01:00:00  0.489390  Bango 973 Wind Farm
+        4     2023-07-01 01:30:00  0.340990  Bodangora Wind Farm
+        ...                   ...       ...                  ...
+        70171 2025-06-30 23:00:00  0.065651  Bango 973 Wind Farm
+        70172 2025-06-30 23:30:00  0.182044  Bodangora Wind Farm
+        70173 2025-06-30 23:30:00  0.049964  Bango 973 Wind Farm
+        70174 2025-07-01 00:00:00  0.218949  Bodangora Wind Farm
+        70175 2025-07-01 00:00:00  0.037577  Bango 973 Wind Farm
+        <BLANKLINE>
+        [70176 rows x 3 columns]
+
+        Include reference_year column to identify which reference year was used:
+
+        >>> get_project_multiple_reference_years(
+        ...     reference_year_mapping={2024: 2011, 2025: 2012},
+        ...     project=["Bango 973 Wind Farm", "Bodangora Wind Farm"],
+        ...     directory="parsed_data/project",
+        ...     select_columns=["datetime", "value", "project", "reference_year"]
+        ... ) # doctest: +SKIP
+                         datetime     value              project  reference_year
+        0     2023-07-01 00:30:00  0.244017  Bodangora Wind Farm            2011
+        1     2023-07-01 00:30:00  0.436084  Bango 973 Wind Farm            2011
+        2     2023-07-01 01:00:00  0.273899  Bodangora Wind Farm            2011
+        3     2023-07-01 01:00:00  0.489390  Bango 973 Wind Farm            2011
+        4     2023-07-01 01:30:00  0.340990  Bodangora Wind Farm            2011
+        ...                   ...       ...                  ...             ...
+        70171 2025-06-30 23:00:00  0.065651  Bango 973 Wind Farm            2012
+        70172 2025-06-30 23:30:00  0.182044  Bodangora Wind Farm            2012
+        70173 2025-06-30 23:30:00  0.049964  Bango 973 Wind Farm            2012
+        70174 2025-07-01 00:00:00  0.218949  Bodangora Wind Farm            2012
+        70175 2025-07-01 00:00:00  0.037577  Bango 973 Wind Farm            2012
+        <BLANKLINE>
+        [70176 rows x 4 columns]
+    """
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
@@ -464,6 +536,81 @@ def get_zone_multiple_reference_years(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
 ):
+    """
+    Query zone trace data across multiple reference years.
+
+    Retrieves trace data for one or more zones and resource types across different
+    years, each potentially using a different reference year. Results from all years
+    are concatenated. When querying multiple zones (as a list), the 'zone' column is
+    automatically included in the output.
+
+    Note: By default, the reference_year column is not included in the output. Use
+    select_columns to explicitly include it if needed to identify which reference year
+    was used for each row.
+
+    Args:
+        reference_year_mapping: Mapping of year to reference_year. For example,
+            {2024: 2011, 2025: 2012} retrieves FY2024 data using 2011 reference year
+            and FY2025 data using 2012 reference year.
+        zone: Zone name (str) or list of zone names (e.g., "N2" or ["N1", "N2", "N3"])
+        resource_type: Resource type (str) or list of resource types (e.g., "SAT", "WM")
+        directory: Directory containing parquet files
+        year_type: 'fy' for financial year or 'calendar' for calendar year.
+            Default is 'fy' (financial year ending nomenclature).
+        select_columns: Optional list of columns to return. If None, returns
+            ["datetime", "value"] plus any multi-value filter columns.
+
+    Returns:
+        pd.DataFrame with concatenated trace data from all years, sorted by datetime
+
+    Examples:
+        Query multiple years with multiple zones:
+
+        >>> get_zone_multiple_reference_years(
+        ...     reference_year_mapping={2024: 2011, 2025: 2012},
+        ...     zone=["N1", "N2", "N3"],
+        ...     resource_type="SAT",
+        ...     directory="parsed_data/zone"
+        ... ) # doctest: +SKIP
+                         datetime  value zone
+        0     2023-07-01 00:30:00    0.0   N3
+        1     2023-07-01 00:30:00    0.0   N1
+        2     2023-07-01 00:30:00    0.0   N2
+        3     2023-07-01 01:00:00    0.0   N3
+        4     2023-07-01 01:00:00    0.0   N1
+        ...                   ...    ...  ...
+        105259 2025-06-30 23:30:00    0.0   N3
+        105260 2025-06-30 23:30:00    0.0   N1
+        105261 2025-07-01 00:00:00    0.0   N2
+        105262 2025-07-01 00:00:00    0.0   N3
+        105263 2025-07-01 00:00:00    0.0   N1
+        <BLANKLINE>
+        [105264 rows x 3 columns]
+
+        Include reference_year column to identify which reference year was used:
+
+        >>> get_zone_multiple_reference_years(
+        ...     reference_year_mapping={2024: 2011, 2025: 2012},
+        ...     zone=["N1", "N2", "N3"],
+        ...     resource_type="SAT",
+        ...     directory="parsed_data/zone",
+        ...     select_columns=["datetime", "value", "zone", "reference_year"]
+        ... ) # doctest: +SKIP
+                         datetime  value zone  reference_year
+        0     2023-07-01 00:30:00    0.0   N3            2011
+        1     2023-07-01 00:30:00    0.0   N1            2011
+        2     2023-07-01 00:30:00    0.0   N2            2011
+        3     2023-07-01 01:00:00    0.0   N3            2011
+        4     2023-07-01 01:00:00    0.0   N1            2011
+        ...                   ...    ...  ...             ...
+        105259 2025-06-30 23:30:00    0.0   N3            2012
+        105260 2025-06-30 23:30:00    0.0   N1            2012
+        105261 2025-07-01 00:00:00    0.0   N2            2012
+        105262 2025-07-01 00:00:00    0.0   N3            2012
+        105263 2025-07-01 00:00:00    0.0   N1            2012
+        <BLANKLINE>
+        [105264 rows x 4 columns]
+    """
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
