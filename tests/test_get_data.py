@@ -413,7 +413,7 @@ def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path):
     )
 
     df = demand_multiple_reference_years(
-        reference_year_mapping={2029: 2011, 2030: 2011},
+        reference_years={2029: 2011, 2030: 2011},
         scenario="Green Energy Exports",
         subregion="CNSW",
         poe="POE10",
