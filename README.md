@@ -12,7 +12,11 @@ Market Operator (AEMO) in their Integrated System Plan (ISP) modelling study.
 > [!IMPORTANT]
 > Currently, `isp-trace-parser` only supports trace data in the format of the 2024 ISP.
 
-## Table of contents
+> [!WARNING]
+> **Version 2.0 breaking change:** Version 2.0 of `isp-trace-parser` stores and reads parsed data in a new hive-partitioned storage format. Data originally parsed with version 1.x is **not compatible** with version 2.0.
+While the original API itself remains largely the same, upgrading from version 1.x requires either [re-parsing your raw AEMO trace data](#parsing-trace-data) or [downloading pre-processed data](#pre-processed-trace-data).
+
+  ## Table of contents
 
 - [Install](#install)
 - [How the package works](#how-the-package-works)
