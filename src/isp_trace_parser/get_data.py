@@ -531,7 +531,7 @@ def get_project_multiple_reference_years(
 def get_zone_multiple_reference_years(
     reference_year_mapping: dict[int, int],
     zone: str | List,
-    resource_type: str | Path,
+    resource_type: str | List,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
