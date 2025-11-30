@@ -185,6 +185,9 @@ parse_demand_traces(
 ### Optimising stored data
 The following code illustrates how the parsed parquet files can be consolidated and optimised with `optimise_parquet.py`
 
+> [!NOTE]
+> There _may_ be an issue with this step on some architectures (see issue https://github.com/Open-ISP/isp-trace-parser/issues/23).
+
 ```python
 from isp_trace_parser import optimise_parquet
 
@@ -281,7 +284,7 @@ print(wind_generator_names)
 # ['Bango 973 Wind Farm', 'Bango 999 Wind Farm', 'Boco Rock Wind Farm', 'Bodangora Wind Farm' . . .
 
 
-# The names can be used to retrieve trace data from the following dataframe.
+# The project names can be used to retrieves a dataframe containing all project traces, which can be filtered by project name using the 'project' column"
 
 solar_traces = get_data.get_project_single_reference_year(
     start_year=2025,
@@ -337,7 +340,7 @@ onshore_rezs = build_limits[build_limits["Wind generation total limits (MW)_High
 print(list(onshore_rezs['REZ ID']))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
-# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data from the following dataframes
+# These sets of onshore and offshore REZ IDs can the be used to retrieve a dataframes containing all relevant traces, which can be filtered by REZ name using the 'zone' column"
 
 wind_offshore_rez_traces = get_data.get_zone_single_reference_year(
     start_year=2025,
@@ -394,7 +397,7 @@ onshore_solar_rezs = build_limits[build_limits["Solar PV plus Solar thermal Limi
 print(list(onshore_solar_rezs['REZ ID']))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
-# These sets of onshore and offshore REZ IDs then can be used to retrieve trace data from the following call and dataframe
+# The set of REZ IDs can be used to retrieves a dataframe containing all REZ traces, which can be filtered by REZ name using the 'zone' column"
 
 single_axis_tracking_traces = get_data.get_zone_single_reference_year(
     start_year=2025,
@@ -439,7 +442,7 @@ subregions = list(set(rez_definitions["ISP Sub-region"]))
 print(subregions)
 # ['CSA', 'SESA', 'CQ', 'NQ', 'NNSW', 'CNSW', 'SNSW', 'SNW', 'TAS', 'VIC', 'SQ']
 
-# This set of subregions can then can be used to retrieve demand trace data
+# "The list of subregion names retrieves a dataframe containing all subregion traces, which can be filtered or accessed by subregion name using the 'subregion' column"
 
 demand_trace = get_demand_single_reference_year(
     start_year=2025,
@@ -457,7 +460,7 @@ demand_trace = get_demand_single_reference_year(
 
 ### Querying parsed trace data using alternative approach
 
-Once trace data has been parsed it can also queried using legacy API functionality (based on around querying technologies, areas, rather for example)/
+Once trace data has been parsed it can also queried using legacy API functionality (based on around querying technologies, areas, rather for example).
 
 <details>
 <summary>Solar project traces from 2022 to 2024 (for a single reference year), and for 2022 and 2024 (multiple reference years)</summary>
@@ -471,13 +474,13 @@ solar_project_trace_single_reference_year = get_data.solar_project_single_refere
     end_year=2024,
     reference_year=2011,
     project='Adelaide Desalination Plant Solar Farm',
-    directory='example_parsed_data/solar'
+    directory='example_project_data/'
 )
 
 solar_project_trace_many_reference_years = get_data.solar_project_multiple_reference_years(
     reference_years={2022: 2011, 2024: 2012},
     project='Adelaide Desalination Plant Solar Farm',
-    directory='example_parsed_data/solar'
+    directory='example_project_data/'
 )
 ```
 
@@ -495,14 +498,14 @@ solar_rez_trace_single_reference_years = get_data.solar_area_single_reference_ye
     reference_year=2011,
     area='Q1',
     technology='SAT',
-    directory='example_parsed_data/solar'
+    directory='example_rez_data/'
 )
 
 solar_rez_trace_many_reference_years = get_data.solar_area_multiple_reference_years(
     reference_years={2022: 2011, 2024: 2012},
     area='Q1',
     technology='SAT',
-    directory='example_parsed_data/solar'
+    directory='example_rez_data/'
 )
 ```
 
@@ -519,13 +522,13 @@ wind_project_trace_single_reference_years = get_data.wind_project_single_referen
     end_year=2024,
     reference_year=2011,
     project='Bango 973 Wind Farm',
-    directory='example_parsed_data/wind'
+    directory='parsed_project_data/'
 )
 
 wind_project_trace_many_reference_years = get_data.wind_project_multiple_reference_years(
     reference_years={2022: 2011, 2024: 2012},
     project='Bango 973 Wind Farm',
-    directory='example_parsed_data/wind'
+    directory='parsed_project_data/'
 )
 ```
 
@@ -543,14 +546,14 @@ wind_rez_trace_single_reference_years = get_data.wind_area_single_reference_year
     reference_year=2011,
     area='Q1',
     resource_quality='WH',
-    directory='example_parsed_data/wind'
+    directory='parsed_rez_data/'
 )
 
 wind_rez_trace_many_reference_years = get_data.wind_area_multiple_reference_years(
     reference_years={2022: 2011, 2024: 2012},
     area='Q1',
     resource_quality='WH',
-    directory='example_parsed_data/wind'
+    directory='parsed_rez_data/'
 )
 ```
 
@@ -570,7 +573,7 @@ demand_subregion_trace_single_reference_years = get_data.demand_single_reference
     scenario='Green Energy Exports',
     poe='POE10',
     demand_type='OPSO_MODELLING',
-    directory='example_parsed_data/demand'
+    directory='parsed_demand_data/'
 )
 
 demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference_years(
@@ -579,7 +582,7 @@ demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference
     scenario='Green Energy Exports',
     poe='POE10',
     demand_type='OPSO_MODELLING',
-    directory='example_parsed_data/demand'
+    directory='parsed_demand_data/'
 )
 
 ```
