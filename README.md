@@ -640,7 +640,7 @@ aemo_format_data_as_polars = pl.from_pandas(aemo_format_data)
 trace_parser_format_data = trace_formatter(aemo_format_data_as_polars)
 
 print(trace_parser_format_data.to_pandas())
-#              Datetime  Value
+#              datetime  value
 # 0 2024-06-01 00:30:00   11.2
 # 1 2024-06-01 01:00:00   30.7
 # 2 2024-06-02 00:00:00   17.1
