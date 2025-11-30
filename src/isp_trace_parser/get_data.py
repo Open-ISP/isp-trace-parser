@@ -484,6 +484,88 @@ def get_demand_multiple_reference_years(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
 ):
+    """
+    Query demand trace data across multiple reference years.
+
+    Retrieves demand trace data for specified scenario, subregion, demand type, and
+    probability of exceedance (POE) across different years, each potentially using a
+    different reference year. Results from all years are concatenated. When querying
+    with multiple values for any parameter (as a list), those columns are automatically
+    included in the output.
+
+    Note: By default, the reference_year column is not included in the output. Use
+    select_columns to explicitly include it if needed to identify which reference year
+    was used for each row.
+
+    Args:
+        reference_year_mapping: Mapping of year to reference_year. For example,
+            {2024: 2011, 2025: 2012} retrieves FY2024 data using 2011 reference year
+            and FY2025 data using 2012 reference year.
+        scenario: Scenario name (str) or list of scenarios (e.g., "Green Energy Exports")
+        subregion: Subregion code (str) or list of subregions (e.g., "VIC", ["VIC", "CSA"])
+        demand_type: Demand type (str) or list of types (e.g., "OPSO_MODELLING", "PV_TOT")
+        poe: Probability of exceedance (str) or list (e.g., "POE10", ["POE10", "POE50"])
+        directory: Directory containing parquet files
+        year_type: 'fy' for financial year or 'calendar' for calendar year.
+            Default is 'fy' (financial year ending nomenclature).
+        select_columns: Optional list of columns to return. If None, returns
+            ["datetime", "value"] plus any multi-value filter columns.
+
+    Returns:
+        pd.DataFrame with concatenated trace data from all years, sorted by datetime
+
+    Examples:
+        Query multiple years with multiple subregions:
+
+        >>> get_demand_multiple_reference_years(
+        ...     reference_year_mapping={2024: 2011, 2025: 2012},
+        ...     scenario="Green Energy Exports",
+        ...     subregion=["CSA", "VIC"],
+        ...     demand_type="OPSO_MODELLING",
+        ...     poe="POE10",
+        ...     directory="parsed_data/demand"
+        ... ) # doctest: +SKIP
+                         datetime        value subregion
+        0     2023-07-01 00:30:00  1919.673822       CSA
+        1     2023-07-01 00:30:00  5215.504431       VIC
+        2     2023-07-01 01:00:00  1852.922186       CSA
+        3     2023-07-01 01:00:00  5050.995415       VIC
+        4     2023-07-01 01:30:00  1725.958348       CSA
+        ...                   ...          ...       ...
+        70171 2025-06-30 23:00:00  5457.607049       VIC
+        70172 2025-06-30 23:30:00  1759.593902       CSA
+        70173 2025-06-30 23:30:00  5638.540111       VIC
+        70174 2025-07-01 00:00:00  1950.356725       CSA
+        70175 2025-07-01 00:00:00  5659.380906       VIC
+        <BLANKLINE>
+        [70176 rows x 3 columns]
+
+        Include reference_year column to identify which reference year was used:
+
+        >>> get_demand_multiple_reference_years(
+        ...     reference_year_mapping={2024: 2011, 2025: 2012},
+        ...     scenario="Green Energy Exports",
+        ...     subregion=["CSA", "VIC"],
+        ...     demand_type="OPSO_MODELLING",
+        ...     poe="POE10",
+        ...     directory="parsed_data/demand",
+        ...     select_columns=["datetime", "value", "subregion", "reference_year"]
+        ... ) # doctest: +SKIP
+                         datetime        value subregion  reference_year
+        0     2023-07-01 00:30:00  1919.673822       CSA            2011
+        1     2023-07-01 00:30:00  5215.504431       VIC            2011
+        2     2023-07-01 01:00:00  1852.922186       CSA            2011
+        3     2023-07-01 01:00:00  5050.995415       VIC            2011
+        4     2023-07-01 01:30:00  1725.958348       CSA            2011
+        ...                   ...          ...       ...             ...
+        70171 2025-06-30 23:00:00  5457.607049       VIC            2012
+        70172 2025-06-30 23:30:00  1759.593902       CSA            2012
+        70173 2025-06-30 23:30:00  5638.540111       VIC            2012
+        70174 2025-07-01 00:00:00  1950.356725       CSA            2012
+        70175 2025-07-01 00:00:00  5659.380906       VIC            2012
+        <BLANKLINE>
+        [70176 rows x 4 columns]
+    """
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
         directory=directory,
