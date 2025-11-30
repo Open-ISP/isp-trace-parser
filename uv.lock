@@ -406,7 +406,7 @@ wheels = [
 
 [[package]]
 name = "isp-trace-parser"
-version = "1.0.3"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "duckdb" },
@@ -414,6 +414,8 @@ dependencies = [
     { name = "pandas" },
     { name = "polars" },
     { name = "pydantic" },
+    { name = "pyyaml" },
+    { name = "requests" },
     { name = "tqdm" },
 ]
 
@@ -437,6 +439,8 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.2.2" },
     { name = "polars", specifier = ">=1.7.1" },
     { name = "pydantic", specifier = ">=2.9.2" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "requests", specifier = ">=2.32.3" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
