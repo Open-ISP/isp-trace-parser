@@ -21,7 +21,7 @@ dependencies = [
     "pyarrow>=18.1.0",
 ]
 readme = "README.md"
-requires-python = ">= 3.9"
+requires-python = ">= 3.11"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
