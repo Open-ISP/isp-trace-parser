@@ -67,6 +67,14 @@ Ready to contribute? Here's how to set up `isp-trace-parser` for local developme
 
     - Run tests by running `uv run --frozen pytest`
 
+    - Optionally, run tests across python versions with nox
+    Install `nox` (once, system wide, as a tool):
+    ```bash
+    uv tool install nox
+    ```
+
+    Then run `nox` from project directory
+
 7. Commit your changes and open a pull request.
 
 ## Pull Request Guidelines
