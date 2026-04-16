@@ -24,7 +24,9 @@ def generate_random_data(start_year, end_year):
     half_hour_columns = [f"{i:02d}" for i in range(1, 49)]
 
     # Combine the date components with the random data
-    return pd.concat([dframe, pd.DataFrame(random_data, columns=half_hour_columns)], axis=1)
+    return pd.concat(
+        [dframe, pd.DataFrame(random_data, columns=half_hour_columns)], axis=1
+    )
 
 
 data = generate_random_data(start_year=config.start, end_year=config.end)

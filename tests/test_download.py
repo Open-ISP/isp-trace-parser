@@ -103,7 +103,9 @@ def test_wrong_source():
 
 def test_wrong_format():
     # only archive or processed data (not other)
-    with pytest.raises(ValueError, match="data_format must be 'processed' or 'archive'"):
+    with pytest.raises(
+        ValueError, match="data_format must be 'processed' or 'archive'"
+    ):
         download.fetch_trace_data("test", "isp_2024", "/", "other")
 
 

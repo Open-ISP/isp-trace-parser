@@ -127,8 +127,11 @@ def check_filter_by_metadata(
         return True
 
     for field, allowed_values in filters.model_dump(exclude_unset=True).items():
-        if field in metadata and allowed_values is not None \
-           and metadata[field] not in allowed_values:
+        if (
+            field in metadata
+            and allowed_values is not None
+            and metadata[field] not in allowed_values
+        ):
             return False
 
     return True
@@ -152,7 +155,7 @@ def filter_mapping_by_names_in_input_files(
             if input_name[0] in names_in_input_files:
                 filtered_mapping[output_name] = input_name
         elif input_name in names_in_input_files:
-                filtered_mapping[output_name] = input_name
+            filtered_mapping[output_name] = input_name
     return filtered_mapping
 
 
