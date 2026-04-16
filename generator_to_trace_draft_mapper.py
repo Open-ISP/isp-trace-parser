@@ -22,25 +22,23 @@ def get_all_generators(workbook_filepath):
     additional_gens["Status"] = "additional"
 
     existing_gens = existing_gens.rename(
-        columns={existing_gens.columns.values[0]: "Generator"}
+        columns={existing_gens.columns.to_numpy[0]: "Generator"}
     )
     committed_gens = committed_gens.rename(
-        columns={committed_gens.columns.values[0]: "Generator"}
+        columns={committed_gens.columns.to_numpy[0]: "Generator"}
     )
     anticipated_gens = anticipated_gens.rename(
-        columns={anticipated_gens.columns.values[0]: "Generator"}
+        columns={anticipated_gens.columns.to_numpy[0]: "Generator"}
     )
     additional_gens = additional_gens.rename(
-        columns={additional_gens.columns.values[0]: "Generator"}
+        columns={additional_gens.columns.to_numpy[0]: "Generator"}
     )
 
     all_gens = pd.concat(
         [existing_gens, committed_gens, anticipated_gens, additional_gens]
     )
 
-    all_gens = all_gens.loc[:, ["Generator", "Technology type"]]
-
-    return all_gens
+    return all_gens.loc[:, ["Generator", "Technology type"]]
 
 
 def gets_rezs(workbook_filepath):
@@ -53,15 +51,12 @@ def gets_rezs(workbook_filepath):
     )
     workbook = Parser(workbook_filepath)
     rezs = workbook.get_table_from_config(table_config)
-    rezs = rezs.loc[:, ["Name"]]
-    return rezs
+    return rezs.loc[:, ["Name"]]
 
 
 def find_best_match(plant_name, csv_files):
     best_match = process.extractOne(plant_name, csv_files, scorer=fuzz.token_set_ratio)
-    best_match = best_match[0] if best_match else None
-    best_match = best_match
-    return best_match
+    return best_match[0] if best_match else None
 
 
 def find_best_match_two_columns(row, csv_files):
@@ -91,8 +86,7 @@ def draft_solar_generator_to_trace_mapping(solar_generators, solar_trace_directo
     solar_generators["CSVFile"] = solar_generators["Generator"].apply(
         lambda x: find_best_match(x, csv_project_names)
     )
-    solar_generators = solar_generators.set_index("Generator")["CSVFile"].to_dict()
-    return solar_generators
+    return solar_generators.set_index("Generator")["CSVFile"].to_dict()
 
 
 def draft_solar_rez_mapping(rezs, rezs_trace_directory):
@@ -100,8 +94,7 @@ def draft_solar_rez_mapping(rezs, rezs_trace_directory):
     csv_file_metadata = [extract_solar_trace_metadata(f) for f in csv_file_names]
     csv_rez_names = [f["name"] for f in csv_file_metadata if f["file_type"] == "area"]
     rezs["CSVFile"] = rezs["Name"].apply(lambda x: find_best_match(x, csv_rez_names))
-    rezs = rezs.set_index("Name")["CSVFile"].to_dict()
-    return rezs
+    return rezs.set_index("Name")["CSVFile"].to_dict()
 
 
 def draft_wind_generator_to_trace_mapping(
@@ -131,8 +124,7 @@ def draft_wind_generator_to_trace_mapping(
         :, ["Generator", "Station Name", "DUID", "CSVFile"]
     ]
 
-    wind_generators = wind_generators.set_index("Generator").to_dict(orient="index")
-    return wind_generators
+    return wind_generators.set_index("Generator").to_dict(orient="index")
 
 
 def draft_wind_rez_mapping(rezs, rezs_trace_directory):
@@ -140,5 +132,4 @@ def draft_wind_rez_mapping(rezs, rezs_trace_directory):
     csv_file_metadata = [extract_wind_trace_metadata(f) for f in csv_file_names]
     csv_rez_names = [f["name"] for f in csv_file_metadata if f["file_type"] == "area"]
     rezs["CSVFile"] = rezs["Name"].apply(lambda x: find_best_match(x, csv_rez_names))
-    rezs = rezs.set_index("Name")["CSVFile"].to_dict()
-    return rezs
+    return rezs.set_index("Name")["CSVFile"].to_dict()

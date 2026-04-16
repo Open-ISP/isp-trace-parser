@@ -12,8 +12,8 @@ TEST_EXPECTED_CONTENT = b"ISP Trace Parser Test File\n"
 def test_download_test_file():
     """Test download with actual server file."""
 
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
         download._download_file(TEST_URL, tmp_path, strip_levels=0)
         downloaded = tmp_path / "test" / "test" / "test_file.txt"
 
@@ -24,8 +24,8 @@ def test_download_test_file():
 def test_download_with_retry():
     """Test retry logic with real server."""
 
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
         download._download_with_retry(TEST_URL, tmp_path, strip_levels=0, max_retries=3)
 
         assert (tmp_path / "test" / "test" / "test_file.txt").exists()
@@ -37,8 +37,8 @@ def test_fetch_trace_data_with_test_manifest(monkeypatch):
     with containing a single url ("https://data.openisp.au/test/test/test_file.txt")
     """
 
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
 
         # Point to test fixtures instead of production manifests
         def mock_files(package):
@@ -74,8 +74,8 @@ def test_fetch_trace_data(unquote: bool, monkeypatch):
     manifest with containing a single url ("https://data.openisp.au/test/test/test_file.txt")
     """
 
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
 
         # Point to test manifests instead of production manifests
         def mock_files(package):
@@ -97,28 +97,26 @@ def test_fetch_trace_data(unquote: bool, monkeypatch):
 
 def test_wrong_source():
     # no ISP 2025 data
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, "Only isp_2024 is currently supported"):
         download.fetch_trace_data("test", "isp_2025", "/", "archive")
 
 
 def test_wrong_format():
     # only archive or processed data (not other)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="data_format must be 'processed' or 'archive'"):
         download.fetch_trace_data("test", "isp_2024", "/", "other")
 
 
 def test_wrong_type():
     # only full or example type
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="dataset_type must be 'full' or 'example'"):
         download.fetch_trace_data("other", "isp_2024", "/", "archive")
 
 
 def test_empty_manifest(monkeypatch):
     """Test that empty manifest raises ValueError."""
-    from importlib.resources import files
-
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
 
         # Point to test manifest instead of production manifests
         def mock_files(package):
@@ -132,8 +130,8 @@ def test_empty_manifest(monkeypatch):
 
 def test_strip_levels_too_high():
     """Test that strip_levels >= path parts raises ValueError."""
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
 
         # TEST_URL has path "test/test/test_file.txt" = 3 parts
         with pytest.raises(ValueError, match="Cannot strip .* levels"):

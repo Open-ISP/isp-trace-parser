@@ -4,7 +4,8 @@ from pathlib import Path
 def input_directory(path: Path | str) -> Path:
     path = is_valid_path(path)
     if not path.is_dir():
-        raise ValueError(f"Directory {path} does not exist")
+        msg = f"Directory {path} does not exist"
+        raise ValueError(msg)
     return path
 
 
@@ -16,9 +17,11 @@ def is_valid_path(path: str | Path) -> Path:
     try:
         return Path(path)
     except (TypeError, ValueError):
-        raise ValueError(f"Invalid parsed directory path: {path}")
+        msg = f"Invalid parsed directory path: {path}"
+        raise ValueError(msg)
 
 
-def start_year_before_end_year(start_year, end_year):
+def start_year_before_end_year(start_year, end_year) -> None:
     if end_year < start_year:
-        raise ValueError(f"Start year {end_year} < end year {start_year}")
+        msg = f"Start year {end_year} < end year {start_year}"
+        raise ValueError(msg)

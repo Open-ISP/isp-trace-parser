@@ -138,19 +138,17 @@ def parse_wind_traces(
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_wind_files(files)
 
-    with open(
+    with Path.open(
         Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/wind_project_mapping.yaml"),
-        "r",
+        / Path("isp_trace_name_mapping_configs/wind_project_mapping.yaml")
     ) as f:
         project_name_mappings = yaml.safe_load(f)
 
     project_name_mappings = restructure_wind_project_mapping(project_name_mappings)
 
-    with open(
+    with Path.open(
         Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/wind_zone_mapping.yaml"),
-        "r",
+        / Path("isp_trace_name_mapping_configs/wind_zone_mapping.yaml")
     ) as f:
         zone_name_mappings = yaml.safe_load(f)
 
@@ -161,12 +159,12 @@ def parse_wind_traces(
     zone_name_mappings = filter_mapping_by_names_in_input_files(
         zone_name_mappings, project_and_zone_input_names
     )
-    zone_output_names, zone_input_names = zip(*zone_name_mappings.items())
+    zone_output_names, zone_input_names = zip(*zone_name_mappings.items(), strict=True)
 
     project_name_mappings = filter_mapping_by_names_in_input_files(
         project_name_mappings, project_and_zone_input_names
     )
-    project_output_names, project_input_names = zip(*project_name_mappings.items())
+    project_output_names, project_input_names = zip(*project_name_mappings.items(), strict=True)
 
     zone_partial_func = functools.partial(
         restructure_wind_zone_files,
@@ -187,21 +185,21 @@ def parse_wind_traces(
 
         Parallel(n_jobs=max_workers)(
             delayed(zone_partial_func)(save_name, old_trace_name)
-            for save_name, old_trace_name in zip(zone_output_names, zone_input_names)
+            for save_name, old_trace_name in zip(zone_output_names, zone_input_names, strict=True)
         )
 
         Parallel(n_jobs=max_workers)(
             delayed(project_partial_func)(save_name, old_trace_name)
             for save_name, old_trace_name in zip(
-                project_output_names, project_input_names
+                project_output_names, project_input_names, strict=True
             )
         )
 
     else:
-        for save_name, old_trace_name in zip(zone_output_names, zone_input_names):
+        for save_name, old_trace_name in zip(zone_output_names, zone_input_names, strict=True):
             zone_partial_func(save_name, old_trace_name)
 
-        for save_name, old_trace_name in zip(project_output_names, project_input_names):
+        for save_name, old_trace_name in zip(project_output_names, project_input_names, strict=True):
             project_partial_func(save_name, old_trace_name)
 
 
@@ -343,14 +341,14 @@ def extract_metadata_for_all_wind_files(filepaths: list) -> dict:
     Returns a dict with filepaths as keys and metadata dicts as values.
     """
     file_metadata = [extract_wind_trace_metadata(str(f.name)) for f in filepaths]
-    return dict(zip(filepaths, file_metadata))
+    return dict(zip(filepaths, file_metadata, strict=True))
 
 
 def get_unique_resource_types_in_metadata(
     metadata_for_trace_files: dict[str:str],
 ) -> list:
     return list(
-        set(metadata["resource_type"] for metadata in metadata_for_trace_files.values())
+        {metadata["resource_type"] for metadata in metadata_for_trace_files.values()}
     )
 
 

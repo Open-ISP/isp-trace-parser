@@ -173,7 +173,7 @@ def test_construct_reference_year_mapping_validation_valid():
         start_year=2030, end_year=2035, reference_years=[2011, 2013, 2018]
     )
     assert isinstance(result, dict)
-    assert len(result) == 6
+    assert len(result) == 2035 - 2030 + 1
     assert all(isinstance(k, int) and isinstance(v, int) for k, v in result.items())
 
 

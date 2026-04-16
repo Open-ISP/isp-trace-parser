@@ -18,8 +18,8 @@ def parsed_trace_trace_directory(request):
 
     use_concurrency = request.param
 
-    with tempfile.TemporaryDirectory() as tmp_parsed_directory:
-        tmp_parsed_directory = Path(tmp_parsed_directory)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_parsed_directory = Path(tmpdir)
 
         for file_type in ["zone", "project"]:
             filters = wind_traces.WindMetadataFilter(file_type=[file_type])
@@ -52,7 +52,7 @@ def parsed_trace_trace_directory(request):
 
         optimise_parquet.partition_traces_by_columns(
             input_directory=tmp_parsed_directory / "demand",
-            output_directory=tmp_parsed_directory / f"demand_optimised",
+            output_directory=tmp_parsed_directory / "demand_optimised",
             partition_cols=["scenario", "reference_year"],
         )
         yield tmp_parsed_directory

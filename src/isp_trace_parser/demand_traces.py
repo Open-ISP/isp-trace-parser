@@ -135,10 +135,9 @@ def parse_demand_traces(
 
     files = get_all_filepaths(input_directory)
 
-    with open(
+    with Path.open(
         Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/demand_scenario_mapping.yaml"),
-        "r",
+        / Path("isp_trace_name_mapping_configs/demand_scenario_mapping.yaml")
     ) as f:
         demand_scenario_mapping = yaml.safe_load(f)
 
@@ -276,4 +275,4 @@ def extract_metadata_for_all_demand_files(
         A dictionary with filepaths as keys and metadata dicts as values.
     """
     file_metadata = [extract_demand_trace_metadata(str(f.name)) for f in filenames]
-    return dict(zip(filenames, file_metadata))
+    return dict(zip(filenames, file_metadata, strict=True))

@@ -28,7 +28,8 @@ def extract_solar_trace_metadata(filename):
         match_data["reference_year"] = int(match_data["reference_year"])
         return match_data
 
-    raise ValueError(f"Filename '{filename}' does not match the expected pattern")
+    msg = f"Filename '{filename}' does not match the expected pattern"
+    raise ValueError(msg)
 
 
 def extract_wind_trace_metadata(filename):
@@ -57,7 +58,8 @@ def extract_wind_trace_metadata(filename):
         match_data["reference_year"] = int(match_data["reference_year"])
         return match_data
 
-    raise ValueError(f"Filename '{filename}' does not match the expected pattern")
+    msg = f"Filename '{filename}' does not match the expected pattern"
+    raise ValueError(msg)
 
 
 def extract_demand_trace_metadata(filename):
@@ -75,6 +77,7 @@ def extract_demand_trace_metadata(filename):
         match_data = match.groupdict()
         match_data["reference_year"] = int(match_data["reference_year"])
         return match_data
-    else:
-        # If the pattern does not match, raise an error or return None
-        raise ValueError(f"Filename '{filename}' does not match the expected pattern")
+
+    # If the pattern does not match, raise an error or return None
+    msg = f"Filename '{filename}' does not match the expected pattern"
+    raise ValueError(msg)
