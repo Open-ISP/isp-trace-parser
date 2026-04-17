@@ -3,6 +3,7 @@ from isp_trace_parser import metadata_extractors
 YEAR_2011 = 2011
 YEAR_2023 = 2023
 
+
 def test_solar_trace_metadata_extraction():
     file_name = "Woolooga_SAT_RefYear2023.csv"
     metadata = metadata_extractors.extract_solar_trace_metadata(file_name)

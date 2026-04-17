@@ -1,6 +1,7 @@
-from nemosis import static_table
 from pathlib import Path
+
 import yaml
+from nemosis import static_table
 
 from generator_to_trace_draft_mapper import (
     draft_solar_generator_to_trace_mapping,
