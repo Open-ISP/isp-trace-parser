@@ -1,3 +1,5 @@
+"""Create trace mapping."""
+
 from pathlib import Path
 
 import yaml

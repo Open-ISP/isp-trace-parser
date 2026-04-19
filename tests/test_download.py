@@ -97,7 +97,7 @@ def test_fetch_trace_data(unquote: bool, monkeypatch):
 
 def test_wrong_source():
     # no ISP 2025 data
-    with pytest.raises(ValueError, "Only isp_2024 is currently supported"):
+    with pytest.raises(ValueError, match="Only isp_2024 is currently supported"):
         download.fetch_trace_data("test", "isp_2025", "/", "archive")
 
 

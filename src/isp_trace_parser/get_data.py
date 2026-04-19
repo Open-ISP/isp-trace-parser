@@ -49,8 +49,8 @@ def _query_parquet_single_reference_year(
     end_year: int,
     reference_year: int,
     directory: str | Path,
-    filters: dict[str, any] = None,
-    select_columns: list[str] = None,
+    filters: dict[str, any] | None = None,
+    select_columns: list[str] | None = None,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """
@@ -148,7 +148,7 @@ def get_project_single_reference_year(
     project: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
+    select_columns: list[str] | None = None,
 ):
     """
     Query project trace data for a single reference year.
@@ -241,7 +241,7 @@ def get_zone_single_reference_year(
     resource_type: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
+    select_columns: list[str] | None = None,
 ):
     """
     Query zone trace data for a single reference year.
@@ -339,7 +339,7 @@ def get_demand_single_reference_year(
     poe: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
+    select_columns: list[str] | None = None,
 ):
     """
     Query demand trace data for a single reference year.
@@ -444,7 +444,7 @@ def get_project_multiple_reference_years(
     project: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
+    select_columns: list[str] | None = None,
 ):
     """
     Query project trace data across multiple reference years.
@@ -534,7 +534,7 @@ def get_zone_multiple_reference_years(
     resource_type: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
+    select_columns: list[str] | None = None,
 ):
     """
     Query zone trace data across multiple reference years.
@@ -629,7 +629,7 @@ def get_demand_multiple_reference_years(
     poe: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
+    select_columns: list[str] | None = None,
 ):
     """
     Query demand trace data across multiple reference years.

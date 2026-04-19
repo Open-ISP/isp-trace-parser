@@ -56,7 +56,7 @@ def test_get_zone_single_reference_year(parsed_trace_trace_directory: Path, year
         .to_pandas()
     )
 
-    df = get_zone_single_reference_year(
+    dframe = get_zone_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2022,
@@ -66,7 +66,7 @@ def test_get_zone_single_reference_year(parsed_trace_trace_directory: Path, year
         year_type=year_type,
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_get_zone_multiple_reference_year(parsed_trace_trace_directory: Path):
@@ -82,7 +82,7 @@ def test_get_zone_multiple_reference_year(parsed_trace_trace_directory: Path):
         .to_pandas()
     )
 
-    df = get_zone_multiple_reference_years(
+    dframe = get_zone_multiple_reference_years(
         reference_year_mapping={2029: 2022, 2030: 2022},
         zone="N1",
         resource_type="WM",
@@ -90,7 +90,7 @@ def test_get_zone_multiple_reference_year(parsed_trace_trace_directory: Path):
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_get_project_single_reference_year(parsed_trace_trace_directory: Path):
@@ -108,7 +108,7 @@ def test_get_project_single_reference_year(parsed_trace_trace_directory: Path):
         .to_pandas()
     )
 
-    df = get_project_single_reference_year(
+    dframe = get_project_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2022,
@@ -117,7 +117,7 @@ def test_get_project_single_reference_year(parsed_trace_trace_directory: Path):
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_get_project_multiple_reference_year(parsed_trace_trace_directory: Path):
@@ -135,14 +135,14 @@ def test_get_project_multiple_reference_year(parsed_trace_trace_directory: Path)
         .to_pandas()
     )
 
-    df = get_project_multiple_reference_years(
+    dframe = get_project_multiple_reference_years(
         reference_year_mapping={2029: 2022, 2030: 2022},
         project="Broken Hill Solar Farm",
         directory=parsed_trace_trace_directory / "project_optimised",
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
@@ -163,7 +163,7 @@ def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
         .to_pandas()
     )
 
-    df = get_demand_single_reference_year(
+    dframe = get_demand_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2011,
@@ -175,7 +175,7 @@ def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path):
@@ -195,7 +195,7 @@ def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path):
         .to_pandas()
     )
 
-    df = get_demand_multiple_reference_years(
+    dframe = get_demand_multiple_reference_years(
         reference_year_mapping={2029: 2011, 2030: 2011},
         scenario="Green Energy Exports",
         subregion="CNSW",
@@ -205,11 +205,11 @@ def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path):
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_explicit_select_columns(parsed_trace_trace_directory):
-    df = get_zone_single_reference_year(
+    dframe = get_zone_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2022,
@@ -218,11 +218,11 @@ def test_explicit_select_columns(parsed_trace_trace_directory):
         directory=parsed_trace_trace_directory / "zone_optimised",
         select_columns=["datetime", "value", "zone"],
     )
-    assert list(df.columns) == ["datetime", "value", "zone"]
+    assert list(dframe.columns) == ["datetime", "value", "zone"]
 
 
 def test_multi_value_filter(parsed_trace_trace_directory):
-    df = get_zone_single_reference_year(
+    dframe = get_zone_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2022,
@@ -231,7 +231,7 @@ def test_multi_value_filter(parsed_trace_trace_directory):
         directory=parsed_trace_trace_directory / "zone_optimised",
     )
     # Should have both zone column included in output
-    assert "zone" in df.columns
+    assert "zone" in dframe.columns
 
 
 def test_wind_project_single_reference_year(parsed_trace_trace_directory):
@@ -249,7 +249,7 @@ def test_wind_project_single_reference_year(parsed_trace_trace_directory):
         .to_pandas()
     )
 
-    df = wind_project_single_reference_year(
+    dframe = wind_project_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2022,
@@ -257,7 +257,7 @@ def test_wind_project_single_reference_year(parsed_trace_trace_directory):
         directory=parsed_trace_trace_directory / "project_optimised",
         year_type="fy",
     )
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_solar_project_single_reference_year(parsed_trace_trace_directory):
@@ -275,7 +275,7 @@ def test_solar_project_single_reference_year(parsed_trace_trace_directory):
         .to_pandas()
     )
 
-    df = solar_project_single_reference_year(
+    dframe = solar_project_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2022,
@@ -283,7 +283,7 @@ def test_solar_project_single_reference_year(parsed_trace_trace_directory):
         directory=parsed_trace_trace_directory / "project_optimised",
         year_type="fy",
     )
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_solar_project_multiple_reference_years(parsed_trace_trace_directory: Path):
@@ -301,14 +301,14 @@ def test_solar_project_multiple_reference_years(parsed_trace_trace_directory: Pa
         .to_pandas()
     )
 
-    df = solar_project_multiple_reference_years(
+    dframe = solar_project_multiple_reference_years(
         reference_years={2029: 2022, 2030: 2022},
         project="Broken Hill Solar Farm",
         directory=parsed_trace_trace_directory / "project_optimised",
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_wind_project_multiple_reference_years(parsed_trace_trace_directory: Path):
@@ -326,14 +326,14 @@ def test_wind_project_multiple_reference_years(parsed_trace_trace_directory: Pat
         .to_pandas()
     )
 
-    df = wind_project_multiple_reference_years(
+    dframe = wind_project_multiple_reference_years(
         reference_years={2029: 2022, 2030: 2022},
         project="Bodangora Wind Farm",
         directory=parsed_trace_trace_directory / "project_optimised",
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path):
@@ -350,7 +350,7 @@ def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path):
         .to_pandas()
     )
 
-    df = solar_area_single_reference_year(
+    dframe = solar_area_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2022,
@@ -359,7 +359,7 @@ def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path):
         directory=parsed_trace_trace_directory / "zone_optimised",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_demand_single_reference_year(parsed_trace_trace_directory: Path):
@@ -380,7 +380,7 @@ def test_demand_single_reference_year(parsed_trace_trace_directory: Path):
         .to_pandas()
     )
 
-    df = demand_single_reference_year(
+    dframe = demand_single_reference_year(
         start_year=2023,
         end_year=2024,
         reference_year=2011,
@@ -392,7 +392,7 @@ def test_demand_single_reference_year(parsed_trace_trace_directory: Path):
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)
 
 
 def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path):
@@ -412,7 +412,7 @@ def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path):
         .to_pandas()
     )
 
-    df = demand_multiple_reference_years(
+    dframe = demand_multiple_reference_years(
         reference_years={2029: 2011, 2030: 2011},
         scenario="Green Energy Exports",
         subregion="CNSW",
@@ -422,4 +422,4 @@ def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path):
         year_type="fy",
     )
 
-    pd.testing.assert_frame_equal(test_df, df)
+    pd.testing.assert_frame_equal(test_df, dframe)

@@ -140,9 +140,7 @@ def check_filter_by_metadata(
 def get_unique_project_and_zone_names_in_input_files(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
-    names = []
-    for _, meta_data in metadata_for_trace_files.items():
-        names.append(meta_data["name"])
+    names = [meta_data["name"] for meta_data in metadata_for_trace_files.values()]
     return list(set(names))
 
 

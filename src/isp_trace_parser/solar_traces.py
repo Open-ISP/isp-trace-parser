@@ -1,7 +1,7 @@
 import functools
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 import yaml
 from joblib import Parallel, delayed
@@ -51,10 +51,10 @@ class SolarMetadataFilter(BaseModel):
         reference_year: list of ints specifying reference_years
     """
 
-    name: Optional[list[str]] = None
-    file_type: Optional[list[Literal["zone", "project"]]] = None
-    resource_type: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
-    reference_year: Optional[list[int]] = None
+    name: list[str] | None = None
+    file_type: list[Literal["zone", "project"]] | None = None
+    resource_type: list[Literal["SAT", "FFP", "CST"]] | None = None
+    reference_year: list[int] | None = None
 
 
 @validate_call
