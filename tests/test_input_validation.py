@@ -36,7 +36,7 @@ def test_solar_metadata_filter_valid(valid_input):
 
 
 @pytest.mark.parametrize(
-    "invalid_input,expected_error",
+    ("invalid_input", "expected_error"),
     [
         ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
         ({"resource_type": ["invalid"]}, "Input should be 'SAT', 'FFP' or 'CST'"),
@@ -69,7 +69,7 @@ def test_wind_metadata_filter_valid(valid_input):
 
 
 @pytest.mark.parametrize(
-    "invalid_input,expected_error",
+    ("invalid_input", "expected_error"),
     [
         ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
         (
@@ -107,7 +107,7 @@ def test_demand_metadata_filter_valid(valid_input):
 
 
 @pytest.mark.parametrize(
-    "invalid_input,expected_error",
+    ("invalid_input", "expected_error"),
     [
         (
             {"scenario": ["invalid"]},
@@ -238,7 +238,7 @@ def test_is_valid_path_invalid(invalid_path):
 
 
 @pytest.mark.parametrize(
-    "start,end",
+    ("start", "end"),
     [
         (2020, 2025),
         (2020, 2020),
@@ -250,7 +250,7 @@ def test_start_year_before_end_year_valid(start, end):
 
 
 @pytest.mark.parametrize(
-    "start,end",
+    ("start", "end"),
     [
         (2025, 2020),
         (0, -10),

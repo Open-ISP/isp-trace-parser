@@ -39,7 +39,7 @@ def test_demand_trace_parsing(use_concurrency: bool):
 
 
 @pytest.mark.parametrize(
-    "expected_filename, file_type",
+    ("expected_filename", "file_type"),
     [
         ("RefYear2022_Bodangora_Wind_Farm.parquet", "project"),
         ("RefYear2022_N1_WM.parquet", "zone"),
@@ -58,7 +58,7 @@ def test_wind_trace_parsing(parsed_trace_trace_directory, expected_filename, fil
 
 
 @pytest.mark.parametrize(
-    "expected_filename,  file_type",
+    ("expected_filename", "file_type"),
     [
         ("RefYear2022_N2_CST.parquet", "zone"),
         ("RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet", "project"),

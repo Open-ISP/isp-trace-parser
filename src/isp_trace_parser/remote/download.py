@@ -83,7 +83,7 @@ def _download_with_retry(
     for attempt in range(max_retries):
         try:
             _download_file(url, save_directory, strip_levels, unquote_path)
-        except requests.exceptions.RequestException:
+        except requests.exceptions.RequestException:  # noqa: PERF203
             if attempt < max_retries - 1:
                 time.sleep(2**attempt)
             else:
