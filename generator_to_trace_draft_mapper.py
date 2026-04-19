@@ -111,8 +111,8 @@ def draft_wind_generator_to_trace_mapping(
     wind_generators["Station Name"] = wind_generators["Generator"].apply(
         lambda x: find_best_match(x, wind_station_names)
     )
-    wind_generators = pd.merge(
-        wind_generators, wind_duids_and_station_names, how="left", on="Station Name"
+    wind_generators = wind_generators.merge(
+        wind_duids_and_station_names, how="left", on="Station Name"
     )
     wind_generators = wind_generators.drop_duplicates(["Generator"])
 

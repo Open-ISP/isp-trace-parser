@@ -18,7 +18,7 @@ def is_valid_path(path: str | Path) -> Path:
         return Path(path)
     except (TypeError, ValueError):
         msg = f"Invalid parsed directory path: {path}"
-        raise ValueError(msg)
+        raise ValueError(msg) from None
 
 
 def start_year_before_end_year(start_year, end_year) -> None:
