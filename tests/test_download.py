@@ -136,5 +136,5 @@ def test_strip_levels_too_high():
         tmp_path = Path(tmpdir)
 
         # TEST_URL has path "test/test/test_file.txt" = 3 parts
-        with pytest.raises(ValueError, match="Cannot strip .* levels"):
+        with pytest.raises(ValueError, match=r"Cannot strip .* levels"):
             download._download_file(TEST_URL, tmp_path, strip_levels=10)

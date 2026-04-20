@@ -183,7 +183,7 @@ def test_input_directory(tmp_path):
     valid_dir.mkdir()
     assert input_validation.input_directory(valid_dir) == valid_dir
 
-    with pytest.raises(ValueError, match="Directory .* does not exist"):
+    with pytest.raises(ValueError, match=r"Directory .* does not exist"):
         input_validation.input_directory(tmp_path / "non_existent_dir")
 
 
@@ -258,5 +258,5 @@ def test_start_year_before_end_year_valid(start, end):
     ],
 )
 def test_start_year_before_end_year_invalid(start, end):
-    with pytest.raises(ValueError, match="Start year .* < end year"):
+    with pytest.raises(ValueError, match=r"Start year .* < end year"):
         input_validation.start_year_before_end_year(start, end)
