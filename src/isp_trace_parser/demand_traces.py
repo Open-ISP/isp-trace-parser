@@ -1,7 +1,7 @@
 import functools
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 import polars as pl
 import yaml
@@ -47,15 +47,16 @@ class DemandMetadataFilter(BaseModel):
         reference_year: list of ints specifying reference_years
     """
 
-    subregion: Optional[list[str]] = None
-    scenario: Optional[
+    subregion: list[str] | None = None
+    scenario: (
         list[Literal["Step Change", "Progressive Change", "Green Energy Exports"]]
-    ] = None
-    poe: Optional[list[Literal["POE50", "POE10"]]] = None
-    demand_type: Optional[
-        list[Literal["OPSO_MODELLING", "OPSO_MODELLING_PVLITE", "PV_TOT"]]
-    ] = None
-    reference_year: Optional[list[int]] = None
+        | None
+    ) = None
+    poe: list[Literal["POE50", "POE10"]] | None = None
+    demand_type: (
+        list[Literal["OPSO_MODELLING", "OPSO_MODELLING_PVLITE", "PV_TOT"]] | None
+    ) = None
+    reference_year: list[int] | None = None
 
 
 @validate_call
@@ -135,10 +136,9 @@ def parse_demand_traces(
 
     files = get_all_filepaths(input_directory)
 
-    with open(
+    with Path.open(
         Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/demand_scenario_mapping.yaml"),
-        "r",
+        / Path("isp_trace_name_mapping_configs/demand_scenario_mapping.yaml")
     ) as f:
         demand_scenario_mapping = yaml.safe_load(f)
 
@@ -276,4 +276,4 @@ def extract_metadata_for_all_demand_files(
         A dictionary with filepaths as keys and metadata dicts as values.
     """
     file_metadata = [extract_demand_trace_metadata(str(f.name)) for f in filenames]
-    return dict(zip(filenames, file_metadata))
+    return dict(zip(filenames, file_metadata, strict=True))

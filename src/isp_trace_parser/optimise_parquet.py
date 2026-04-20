@@ -1,6 +1,5 @@
 from itertools import product
 from pathlib import Path
-from typing import Optional
 
 import duckdb
 from pydantic import validate_call
@@ -23,7 +22,7 @@ def partition_traces_by_columns(
     input_directory: str | Path,
     output_directory: str | Path,
     partition_cols: list[str],
-    sort_by: Optional[list[str]] = ["datetime"],
+    sort_by: list[str] | None = None,
 ) -> None:
     """Partition parquet traces by specified columns with optional sorting.
 
@@ -53,6 +52,10 @@ def partition_traces_by_columns(
         ...     partition_cols=["scenario", "reference_year"]
         ... ) # doctest: +SKIP
     """
+    # handle default parameters to avoid using mutable objects as argument defaults
+    if sort_by is None:
+        sort_by = ["datetime"]
+
     output_path = Path(output_directory)
     output_path.mkdir(parents=True, exist_ok=True)
 
@@ -70,10 +73,8 @@ def partition_traces_by_columns(
     partitions = [tuple(val[0] for val in vals) for vals in product(*distinct_values)]
 
     for partition_values in partitions:
-        # print(*partition_values)
-
         conditions = []
-        for col, val in zip(partition_cols, partition_values):
+        for col, val in zip(partition_cols, partition_values, strict=True):
             if isinstance(val, str):
                 conditions.append(f"{col}='{val}'")
             else:

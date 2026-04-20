@@ -36,7 +36,7 @@ def test_solar_metadata_filter_valid(valid_input):
 
 
 @pytest.mark.parametrize(
-    "invalid_input,expected_error",
+    ("invalid_input", "expected_error"),
     [
         ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
         ({"resource_type": ["invalid"]}, "Input should be 'SAT', 'FFP' or 'CST'"),
@@ -69,7 +69,7 @@ def test_wind_metadata_filter_valid(valid_input):
 
 
 @pytest.mark.parametrize(
-    "invalid_input,expected_error",
+    ("invalid_input", "expected_error"),
     [
         ({"file_type": ["invalid"]}, "Input should be 'zone' or 'project'"),
         (
@@ -107,7 +107,7 @@ def test_demand_metadata_filter_valid(valid_input):
 
 
 @pytest.mark.parametrize(
-    "invalid_input,expected_error",
+    ("invalid_input", "expected_error"),
     [
         (
             {"scenario": ["invalid"]},
@@ -173,7 +173,7 @@ def test_construct_reference_year_mapping_validation_valid():
         start_year=2030, end_year=2035, reference_years=[2011, 2013, 2018]
     )
     assert isinstance(result, dict)
-    assert len(result) == 6
+    assert len(result) == 2035 - 2030 + 1
     assert all(isinstance(k, int) and isinstance(v, int) for k, v in result.items())
 
 
@@ -183,7 +183,7 @@ def test_input_directory(tmp_path):
     valid_dir.mkdir()
     assert input_validation.input_directory(valid_dir) == valid_dir
 
-    with pytest.raises(ValueError, match="Directory .* does not exist"):
+    with pytest.raises(ValueError, match=r"Directory .* does not exist"):
         input_validation.input_directory(tmp_path / "non_existent_dir")
 
 
@@ -238,7 +238,7 @@ def test_is_valid_path_invalid(invalid_path):
 
 
 @pytest.mark.parametrize(
-    "start,end",
+    ("start", "end"),
     [
         (2020, 2025),
         (2020, 2020),
@@ -250,7 +250,7 @@ def test_start_year_before_end_year_valid(start, end):
 
 
 @pytest.mark.parametrize(
-    "start,end",
+    ("start", "end"),
     [
         (2025, 2020),
         (0, -10),
@@ -258,5 +258,5 @@ def test_start_year_before_end_year_valid(start, end):
     ],
 )
 def test_start_year_before_end_year_invalid(start, end):
-    with pytest.raises(ValueError, match="Start year .* < end year"):
+    with pytest.raises(ValueError, match=r"Start year .* < end year"):
         input_validation.start_year_before_end_year(start, end)

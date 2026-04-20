@@ -5,7 +5,7 @@ import polars as pl
 import pytest
 from polars.testing import assert_frame_equal
 
-from isp_trace_parser import demand_traces, solar_traces, wind_traces
+from isp_trace_parser import demand_traces
 
 TEST_DATA = Path(__file__).parent / "test_data"
 
@@ -19,8 +19,8 @@ def test_demand_trace_parsing(use_concurrency: bool):
     )
     test_demand_output_parquet = TEST_DATA / "output" / expected_filename
 
-    with tempfile.TemporaryDirectory() as tmp_parsed_directory:
-        tmp_parsed_directory = Path(tmp_parsed_directory)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_parsed_directory = Path(tmpdir)
 
         demand_traces.parse_demand_traces(
             input_directory=test_demand_csv_directory,
@@ -39,7 +39,7 @@ def test_demand_trace_parsing(use_concurrency: bool):
 
 
 @pytest.mark.parametrize(
-    "expected_filename, file_type",
+    ("expected_filename", "file_type"),
     [
         ("RefYear2022_Bodangora_Wind_Farm.parquet", "project"),
         ("RefYear2022_N1_WM.parquet", "zone"),
@@ -58,7 +58,7 @@ def test_wind_trace_parsing(parsed_trace_trace_directory, expected_filename, fil
 
 
 @pytest.mark.parametrize(
-    "expected_filename,  file_type",
+    ("expected_filename", "file_type"),
     [
         ("RefYear2022_N2_CST.parquet", "zone"),
         ("RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet", "project"),

@@ -13,7 +13,7 @@ def generate_random_data(start_year, end_year):
     )
 
     # Create a DataFrame for the date components
-    df = pd.DataFrame(
+    dframe = pd.DataFrame(
         {"Year": date_range.year, "Month": date_range.month, "Day": date_range.day}
     )
 
@@ -24,8 +24,9 @@ def generate_random_data(start_year, end_year):
     half_hour_columns = [f"{i:02d}" for i in range(1, 49)]
 
     # Combine the date components with the random data
-    df = pd.concat([df, pd.DataFrame(random_data, columns=half_hour_columns)], axis=1)
-    return df
+    return pd.concat(
+        [dframe, pd.DataFrame(random_data, columns=half_hour_columns)], axis=1
+    )
 
 
 data = generate_random_data(start_year=config.start, end_year=config.end)
@@ -53,7 +54,7 @@ def create_solar_csvs(directory):
         )
 
 
-def create_wind_csvs(directory):
+def create_wind_csvs(directory) -> None:
     combos = itertools.product(
         config.reference_years, simple_flatten(config.wind_projects.values())
     )
@@ -71,7 +72,7 @@ def create_wind_csvs(directory):
         )
 
 
-def create_demand_csvs(directory):
+def create_demand_csvs(directory) -> None:
     combos = itertools.product(
         config.reference_years,
         config.sub_regions,

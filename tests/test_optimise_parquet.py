@@ -10,7 +10,7 @@ TEST_DATA = Path(__file__).parent / "test_data"
 
 
 @pytest.mark.parametrize(
-    "expected_data, file_type",
+    ("expected_data", "file_type"),
     [("zone_data_0.parquet", "zone"), ("project_data_0.parquet", "project")],
 )
 def test_optimisation(parsed_trace_trace_directory, expected_data, file_type):

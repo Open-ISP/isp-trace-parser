@@ -65,10 +65,10 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         value_name="value",
     )
 
-    def get_hour(time_label):
+    def get_hour(time_label) -> timedelta:
         return timedelta(hours=int(time_label) // 2)
 
-    def get_minute(time_label):
+    def get_minute(time_label) -> timedelta:
         return timedelta(minutes=int(time_label) % 2 * 30)
 
     trace_data = trace_data.with_columns(
@@ -92,12 +92,10 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         ]
     )
 
-    trace_data = (
+    return (
         trace_data.with_columns(
             [(pl.col("datetime") + pl.col("Hour") + pl.col("Minute")).alias("datetime")]
         )
         .select(["datetime", "value"])
         .sort("datetime")
     )
-
-    return trace_data
