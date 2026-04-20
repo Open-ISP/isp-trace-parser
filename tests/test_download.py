@@ -97,14 +97,16 @@ def test_fetch_trace_data(unquote: bool, monkeypatch):
 
 def test_wrong_source():
     # no ISP 2025 data
-    with pytest.raises(ValueError):
-        download.fetch_trace_data("test", "isp_2025", "/", "archive")
+    with pytest.raises(ValueError, match="Only isp_2024 is currently supported"):
+        download.fetch_trace_data("example", "isp_2025", "/", "archive")
 
 
 def test_wrong_format():
     # only archive or processed data (not other)
-    with pytest.raises(ValueError):
-        download.fetch_trace_data("test", "isp_2024", "/", "other")
+    with pytest.raises(
+        ValueError, match="data_format must be 'processed' or 'archive'"
+    ):
+        download.fetch_trace_data("example", "isp_2024", "/", "other")
 
 
 def test_wrong_type():
