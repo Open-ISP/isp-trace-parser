@@ -137,14 +137,12 @@ def parse_solar_traces(
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_solar_files(files)
     with open(
-        Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/solar_project_mapping.yaml"),
+        Path(__file__).parent / "mappings" / "solar_project_mapping.yaml",
         "r",
     ) as f:
         project_name_mapping = yaml.safe_load(f)
     with open(
-        Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/solar_zone_mapping.yaml"),
+        Path(__file__).parent / "mappings" / "solar_zone_mapping.yaml",
         "r",
     ) as f:
         zone_name_mapping = yaml.safe_load(f)

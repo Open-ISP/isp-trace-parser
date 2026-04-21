@@ -136,8 +136,7 @@ def parse_demand_traces(
     files = get_all_filepaths(input_directory)
 
     with open(
-        Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/demand_scenario_mapping.yaml"),
+        Path(__file__).parent / "mappings" / "demand_scenario_mapping.yaml",
         "r",
     ) as f:
         demand_scenario_mapping = yaml.safe_load(f)

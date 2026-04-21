@@ -139,8 +139,7 @@ def parse_wind_traces(
     file_metadata = extract_metadata_for_all_wind_files(files)
 
     with open(
-        Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/wind_project_mapping.yaml"),
+        Path(__file__).parent / "mappings" / "wind_project_mapping.yaml",
         "r",
     ) as f:
         project_name_mappings = yaml.safe_load(f)
@@ -148,8 +147,7 @@ def parse_wind_traces(
     project_name_mappings = restructure_wind_project_mapping(project_name_mappings)
 
     with open(
-        Path(__file__).parent.parent
-        / Path("isp_trace_name_mapping_configs/wind_zone_mapping.yaml"),
+        Path(__file__).parent / "mappings" / "wind_zone_mapping.yaml",
         "r",
     ) as f:
         zone_name_mappings = yaml.safe_load(f)
