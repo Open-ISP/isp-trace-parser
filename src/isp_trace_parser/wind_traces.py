@@ -3,11 +3,10 @@ import os
 from pathlib import Path
 from typing import Literal, Optional
 
-import yaml
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
-from isp_trace_parser import input_validation
+from isp_trace_parser import input_validation, mappings
 from isp_trace_parser.metadata_extractors import extract_wind_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
     check_filter_by_metadata,
@@ -138,19 +137,10 @@ def parse_wind_traces(
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_wind_files(files)
 
-    with open(
-        Path(__file__).parent / "mappings" / "wind_project_mapping.yaml",
-        "r",
-    ) as f:
-        project_name_mappings = yaml.safe_load(f)
-
+    project_name_mappings = mappings.load("wind_project_mapping")
     project_name_mappings = restructure_wind_project_mapping(project_name_mappings)
 
-    with open(
-        Path(__file__).parent / "mappings" / "wind_zone_mapping.yaml",
-        "r",
-    ) as f:
-        zone_name_mappings = yaml.safe_load(f)
+    zone_name_mappings = mappings.load("wind_zone_mapping")
 
     project_and_zone_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata

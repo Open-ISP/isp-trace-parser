@@ -4,11 +4,10 @@ from pathlib import Path
 from typing import Literal, Optional
 
 import polars as pl
-import yaml
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
-from isp_trace_parser import input_validation
+from isp_trace_parser import input_validation, mappings
 from isp_trace_parser.metadata_extractors import extract_demand_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
     check_filter_by_metadata,
@@ -135,11 +134,7 @@ def parse_demand_traces(
 
     files = get_all_filepaths(input_directory)
 
-    with open(
-        Path(__file__).parent / "mappings" / "demand_scenario_mapping.yaml",
-        "r",
-    ) as f:
-        demand_scenario_mapping = yaml.safe_load(f)
+    demand_scenario_mapping = mappings.load("demand_scenario_mapping")
 
     partial_func = functools.partial(
         restructure_demand_file,
