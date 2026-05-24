@@ -7,6 +7,11 @@ import polars as pl
 from pydantic import validate_call
 
 
+def nem_datetime(*args, **kwargs):
+    """Wrap datetime so that we can introduce timezone-aware datatimes in future."""
+    return datetime.datetime(*args, **kwargs)
+
+
 def _year_range_to_dt_range(
     start_year: int, end_year: int, year_type: Literal["fy", "calendar"] = "fy"
 ):
@@ -33,14 +38,10 @@ def _year_range_to_dt_range(
     """
 
     if year_type == "fy":
-        return datetime.datetime(start_year - 1, 7, 1), datetime.datetime(
-            end_year, 7, 1
-        )
+        return nem_datetime(start_year - 1, 7, 1), nem_datetime(end_year, 7, 1)
 
     elif year_type == "calendar":
-        return datetime.datetime(start_year, 1, 1), datetime.datetime(
-            end_year + 1, 1, 1
-        )
+        return nem_datetime(start_year, 1, 1), nem_datetime(end_year + 1, 1, 1)
 
 
 def _query_parquet_single_reference_year(
