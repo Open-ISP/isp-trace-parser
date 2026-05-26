@@ -1,3 +1,7 @@
+"""Create trace mapping."""
+
+from pathlib import Path
+
 import yaml
 from nemosis import static_table
 
@@ -20,14 +24,14 @@ solar_gens = all_generators[
 solar_generator_mapping = draft_solar_generator_to_trace_mapping(
     solar_gens, solar_traces
 )
-with open("draft_solar_generator_mapping.yaml", "w") as file:
+with Path.open("draft_solar_generator_mapping.yaml", "w") as file:
     yaml.dump(solar_generator_mapping, file, default_flow_style=False)
 
 
 solar_traces = "/media/nick/Samsung_T5/isp_2024_data/trace_data/solar/solar_2023"
 rezs = gets_rezs(workbook)
 solar_rez_mapping = draft_solar_rez_mapping(rezs, solar_traces)
-with open("solar_area_mapping.yaml", "w") as file:
+with Path.open("solar_area_mapping.yaml", "w") as file:
     yaml.dump(solar_rez_mapping, file, default_flow_style=False)
 
 duids_and_station_names = static_table(
@@ -48,12 +52,12 @@ wind_gens = wind_gens.drop(columns=["Technology type"])
 wind_generator_mapping = draft_wind_generator_to_trace_mapping(
     wind_gens, wind_duids_and_station_names, wind_traces
 )
-with open("draft_wind_generator_mapping.yaml", "w") as file:
+with Path.open("draft_wind_generator_mapping.yaml", "w") as file:
     yaml.dump(wind_generator_mapping, file, default_flow_style=False, sort_keys=False)
 
 
 wind_traces = "D:/isp_2024_data/trace_data/wind/wind_2023"
 rezs = gets_rezs(workbook)
 wind_rez_mapping = draft_wind_rez_mapping(rezs, wind_traces)
-with open("draft_wind_rez_mapping.yaml", "w") as file:
+with Path.open("draft_wind_rez_mapping.yaml", "w") as file:
     yaml.dump(wind_rez_mapping, file, default_flow_style=False)

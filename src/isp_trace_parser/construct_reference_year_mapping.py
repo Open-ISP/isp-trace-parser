@@ -35,4 +35,4 @@ def construct_reference_year_mapping(
         reference_years = (
             reference_years * full_reference_year_cycles
         ) + reference_years[:partial_cycle_length]
-    return dict(zip(years, reference_years))
+    return dict(zip(years, reference_years, strict=True))

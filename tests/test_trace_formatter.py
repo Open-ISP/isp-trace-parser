@@ -53,7 +53,7 @@ def test_trace_formatter():
 
     formatted_data = formatted_data.sort(by=["Year", "Month", "Day", "Period"])
 
-    formatted_data = formatted_data.pivot(
+    formatted_data = formatted_data.pivot_table(
         index=["Year", "Month", "Day"], on="Period", values="value"
     )
 
