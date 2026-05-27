@@ -320,18 +320,6 @@ def write_output_wind_zone_filename(metadata: dict) -> str:
     return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
 
 
-def restructure_wind_project_mapping(project_name_mapping: dict) -> dict:
-    """
-    Simplifies the wind project name mapping.
-
-    Returns a dict with the workbook project names as keys and CSV file project names as values.
-    """
-    return {
-        name: mapping_data["CSVFile"]
-        for name, mapping_data in project_name_mapping.items()
-    }
-
-
 def extract_metadata_for_all_wind_files(filepaths: list) -> dict:
     """
     Extracts metadata for all wind trace files.

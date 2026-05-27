@@ -7,7 +7,7 @@ def load(name: str, version: str = "2024") -> dict:
     """Load a mapping YAML bundled as package data.
 
     Args:
-        name: Mapping file stem (e.g. ``"solar_project_mapping"``).
+        name: Mapping file stem (e.g. ``"resources"``).
         version: ISP version subdirectory (e.g. ``"2024"``).
 
     Returns:
