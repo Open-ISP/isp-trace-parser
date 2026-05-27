@@ -1,0 +1,2468 @@
+# 2024 ISP resources mapping
+#
+# Notes:
+#   * Keys are trace filename stems (the part before `_RefYear<year>.csv`).
+#   * `location` is the general location identifier, distinct from the
+#     full trace stem: for projects it is the project name; for zones
+#      it is the REZ code (e.g. `N6`).
+#   * `location_type` is either "project" (power-station-level CSVs) or
+#     "zone" (REZ-level CSVs), for the 2024 ISP.
+#   * Project entries carry exactly one parent field:
+#      - `zone` (REZ code) when the project sits inside a formal REZ, or
+#      - `subregion` (e.g. SNSW) when it does not.
+#   * Zone entries don't include any parent field (their parent is determined
+#     via topography.yaml.
+#   * Entries are grouped by type then technology, alphabetical within
+#     each group: solar projects, wind projects, solar zones, wind zones.
+#
+# (See ADR-001 for further details and options considered.)
+
+# ---------------------------------------------------------------------------
+# Solar project traces.
+# ---------------------------------------------------------------------------
+
+Adelaide_Desal_FFP:
+  location_type: project
+  location: Adelaide_Desal
+  resource_type: solar_ffp
+  subregion: CSA
+  iasr_aliases: [Adelaide Desalination Plant Solar Farm]
+
+Aramara_SAT:
+  location_type: project
+  location: Aramara
+  resource_type: solar_sat
+  zone: Q7
+  iasr_aliases: [Aramara Solar Farm]
+
+Avonlie_SAT:
+  location_type: project
+  location: Avonlie
+  resource_type: solar_sat
+  zone: N6
+  iasr_aliases: [Avonlie Solar Farm]
+
+Banksia_SAT:
+  location_type: project
+  location: Banksia
+  resource_type: solar_sat
+  zone: Q7
+  iasr_aliases: [Banksia Solar Farm]
+
+Bannerton_SAT:
+  location_type: project
+  location: Bannerton
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Bannerton Solar Park]
+
+Beryl_SAT:
+  location_type: project
+  location: Beryl
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Beryl Solar Farm]
+
+Bluegrass_SAT:
+  location_type: project
+  location: Bluegrass
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Bluegrass Solar Farm]
+
+Bolivar_FFP:
+  location_type: project
+  location: Bolivar
+  resource_type: solar_ffp
+  subregion: CSA
+  iasr_aliases: [Bolivar Waste Water Treatment Solar Farm]
+
+Bomen_SAT:
+  location_type: project
+  location: Bomen
+  resource_type: solar_sat
+  zone: N6
+  iasr_aliases: [Bomen Solar Farm]
+
+Broken_Hill_FFP:
+  location_type: project
+  location: Broken_Hill
+  resource_type: solar_ffp
+  zone: N4
+  iasr_aliases: [Broken Hill Solar Farm]
+
+Bungala_One_SAT:
+  location_type: project
+  location: Bungala_One
+  resource_type: solar_sat
+  zone: S5
+  iasr_aliases: [Bungala One Solar Farm]
+
+Bungala_Two_SAT:
+  location_type: project
+  location: Bungala_Two
+  resource_type: solar_sat
+  zone: S5
+  iasr_aliases: [Bungala Two Solar Farm]
+
+Childers_SAT:
+  location_type: project
+  location: Childers
+  resource_type: solar_sat
+  zone: Q7
+  iasr_aliases: [Childers Solar Farm]
+
+Clare_SAT:
+  location_type: project
+  location: Clare
+  resource_type: solar_sat
+  zone: Q3
+  iasr_aliases: [Clare Solar Farm]
+
+Clermont_SAT:
+  location_type: project
+  location: Clermont
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Clermont Solar Farm]
+
+Cohuna_SAT:
+  location_type: project
+  location: Cohuna
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Cohuna Solar Farm]
+
+Coleambally_SAT:
+  location_type: project
+  location: Coleambally
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [Coleambally Solar Farm]
+
+Collinsville_FFP:
+  location_type: project
+  location: Collinsville
+  resource_type: solar_ffp
+  zone: Q4
+  iasr_aliases: [Collinsville Solar Farm]
+
+Columboola_SAT:
+  location_type: project
+  location: Columboola
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Columboola Solar Farm]
+
+Corowa_SAT:
+  location_type: project
+  location: Corowa
+  resource_type: solar_sat
+  zone: N5
+  iasr_aliases: [Corowa Solar Farm]
+
+Culcairn_SAT:
+  location_type: project
+  location: Culcairn
+  resource_type: solar_sat
+  zone: N6
+  iasr_aliases: [Culcairn Solar Farm]
+
+Cultana_SAT:
+  location_type: project
+  location: Cultana
+  resource_type: solar_sat
+  zone: S5
+  iasr_aliases: [Cultana Solar Farm]
+
+Darling_Downs_FFP:
+  location_type: project
+  location: Darling_Downs
+  resource_type: solar_ffp
+  zone: Q8
+  iasr_aliases: [Darling Downs Solar Farm]
+
+Darlington_Point_SAT:
+  location_type: project
+  location: Darlington_Point
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [Darlington Point Solar Farm]
+
+Daydream_SAT:
+  location_type: project
+  location: Daydream
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Daydream Solar Farm]
+
+Derby_SAT:
+  location_type: project
+  location: Derby
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Derby Solar Farm]
+
+Edenvale_SAT:
+  location_type: project
+  location: Edenvale
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Edenvale Solar Park]
+
+Emerald_SAT:
+  location_type: project
+  location: Emerald
+  resource_type: solar_sat
+  subregion: CQ
+  iasr_aliases: [Emerald Solar Farm]
+
+Finley_SAT:
+  location_type: project
+  location: Finley
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [Finley Solar Farm]
+
+Frasers_SAT:
+  location_type: project
+  location: Frasers
+  resource_type: solar_sat
+  zone: V5
+  iasr_aliases: [Frasers Solar Farm]
+
+Fulham_SAT:
+  location_type: project
+  location: Fulham
+  resource_type: solar_sat
+  zone: V5
+  iasr_aliases: [Fulham Solar Farm]
+
+Gangarri_SAT:
+  location_type: project
+  location: Gangarri
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Gangarri Solar Farm]
+
+Gannawarra_SAT:
+  location_type: project
+  location: Gannawarra
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Gannawarra Solar Farm]
+
+Girgarre_SAT:
+  location_type: project
+  location: Girgarre
+  resource_type: solar_sat
+  zone: V6
+  iasr_aliases: [Girgarre Solar Farm]
+
+Glenrowan_SAT:
+  location_type: project
+  location: Glenrowan
+  resource_type: solar_sat
+  zone: V6
+  iasr_aliases: [Glenrowan Solar Farm]
+
+Glenrowan_West_SAT:
+  location_type: project
+  location: Glenrowan_West
+  resource_type: solar_sat
+  zone: V6
+  iasr_aliases: [Glenrowan West Solar Farm]
+
+Goonumbla_SAT:
+  location_type: project
+  location: Goonumbla
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Goonumbla Solar Farm]
+
+Gullen_Range_FFP:
+  location_type: project
+  location: Gullen_Range
+  resource_type: solar_ffp
+  subregion: SNSW
+  iasr_aliases: [Gullen Range Solar Farm]
+
+Gunnedah_SAT:
+  location_type: project
+  location: Gunnedah
+  resource_type: solar_sat
+  zone: N1
+  iasr_aliases: [Gunnedah Solar Farm]
+
+Hamilton_SAT:
+  location_type: project
+  location: Hamilton
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Hamilton Solar Farm]
+
+Happy_Valley_SAT:
+  location_type: project
+  location: Happy_Valley
+  resource_type: solar_sat
+  subregion: CSA
+  iasr_aliases: [Happy Valley Reservoir]
+
+Haughton_SAT:
+  location_type: project
+  location: Haughton
+  resource_type: solar_sat
+  zone: Q3
+  iasr_aliases: [Haughton Solar Farm]
+
+Hayman_SAT:
+  location_type: project
+  location: Hayman
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Hayman Solar Farm]
+
+Hillston_SAT:
+  location_type: project
+  location: Hillston
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [Hillston Sun Farm]
+
+Horsham_SAT:
+  location_type: project
+  location: Horsham
+  resource_type: solar_sat
+  zone: V3
+  iasr_aliases: [Horsham Solar Farm]
+
+Hughenden_SAT:
+  location_type: project
+  location: Hughenden
+  resource_type: solar_sat
+  zone: Q2
+  iasr_aliases: [Hughenden Solar Farm]
+
+Jemalong_SAT:
+  location_type: project
+  location: Jemalong
+  resource_type: solar_sat
+  subregion: CNSW
+  iasr_aliases: [Jemalong Solar]
+
+Junee_SAT:
+  location_type: project
+  location: Junee
+  resource_type: solar_sat
+  zone: N6
+  iasr_aliases: [Junee Solar Farm]
+
+Karadoc_SAT:
+  location_type: project
+  location: Karadoc
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Karadoc Solar Farm]
+
+Kennedy_SAT:
+  location_type: project
+  location: Kennedy
+  resource_type: solar_sat
+  zone: Q2
+  iasr_aliases: [Kennedy Energy Park Solar Farm]
+
+Kiamal_SAT:
+  location_type: project
+  location: Kiamal
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Kiamal Solar Farm stage 1, "Kiamal Solar Farm \u2013 Stage 2"]
+
+Kidston_FFP:
+  location_type: project
+  location: Kidston
+  resource_type: solar_ffp
+  zone: Q2
+  iasr_aliases: [Kidston Solar Farm]
+
+Lilyvale_SAT:
+  location_type: project
+  location: Lilyvale
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Lilyvale Solar Farm]
+
+Limondale_One_SAT:
+  location_type: project
+  location: Limondale_One
+  resource_type: solar_sat
+  zone: N5
+  iasr_aliases: [Limondale Solar Farm 1]
+
+Limondale_Two_SAT:
+  location_type: project
+  location: Limondale_Two
+  resource_type: solar_sat
+  zone: N5
+  iasr_aliases: [Limondale Solar Farm 2]
+
+Lockhart_SAT:
+  location_type: project
+  location: Lockhart
+  resource_type: solar_sat
+  zone: N6
+  iasr_aliases: [Lockhart Hybrid Facility - Solar]
+
+Longreach_SAT:
+  location_type: project
+  location: Longreach
+  resource_type: solar_sat
+  zone: Q5
+  iasr_aliases: [Longreach Solar Farm]
+
+Manildra_SAT:
+  location_type: project
+  location: Manildra
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Manildra Solar Farm]
+
+Mannum-Adelaide_2_SAT:
+  location_type: project
+  location: Mannum-Adelaide_2
+  resource_type: solar_sat
+  zone: S1
+  iasr_aliases: [Mannum Adelaide Pumping Station No 2 - MAPL2 (Palmer)]
+
+Mannum-Adelaide_3_SAT:
+  location_type: project
+  location: Mannum-Adelaide_3
+  resource_type: solar_sat
+  zone: S1
+  iasr_aliases: [Mannum Adelaide Pumping Station No 3 - MAPL3 (Tungkillo)]
+
+Mannum_Two_SAT:
+  location_type: project
+  location: Mannum_Two
+  resource_type: solar_sat
+  zone: S2
+  iasr_aliases: [Mannum Solar Farm 2]
+
+Maryrorough_SAT:
+  location_type: project
+  location: Maryrorough
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Maryrorough Solar Farm]
+
+Metz_SAT:
+  location_type: project
+  location: Metz
+  resource_type: solar_sat
+  zone: N2
+  iasr_aliases: [Metz Solar Farm]
+
+Middlemount_SAT:
+  location_type: project
+  location: Middlemount
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Middlemount Solar Farm]
+
+Molong_SAT:
+  location_type: project
+  location: Molong
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Molong Solar Farm]
+
+Moree_SAT:
+  location_type: project
+  location: Moree
+  resource_type: solar_sat
+  zone: N1
+  iasr_aliases: [Moree Solar Farm]
+
+Morgan-Whyalla_1_SAT:
+  location_type: project
+  location: Morgan-Whyalla_1
+  resource_type: solar_sat
+  zone: S2
+  iasr_aliases: [Morgan To Whyalla Pipeline No 1 PS And Water Filtration Plant]
+
+Morgan-Whyalla_2_SAT:
+  location_type: project
+  location: Morgan-Whyalla_2
+  resource_type: solar_sat
+  zone: S2
+  iasr_aliases: [Morgan To Whyalla Pipeline No 2 PS]
+
+Morgan-Whyalla_3_SAT:
+  location_type: project
+  location: Morgan-Whyalla_3
+  resource_type: solar_sat
+  zone: S2
+  iasr_aliases: [Morgan To Whyalla Pipeline No 3 PS]
+
+Morgan-Whyalla_4_SAT:
+  location_type: project
+  location: Morgan-Whyalla_4
+  resource_type: solar_sat
+  zone: S2
+  iasr_aliases: [Morgan To Whyalla Pipeline No 4 PS]
+
+Moura_SAT:
+  location_type: project
+  location: Moura
+  resource_type: solar_sat
+  zone: Q6
+  iasr_aliases: [Moura Solar Farm]
+
+Murray_Bridge-Onkaparinga_2_SAT:
+  location_type: project
+  location: Murray_Bridge-Onkaparinga_2
+  resource_type: solar_sat
+  zone: S1
+  iasr_aliases: [Murray Bridge - Onkaparinga Pipeline Pump 2]
+
+Nevertire_SAT:
+  location_type: project
+  location: Nevertire
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Nevertire Solar Farm]
+
+New_England_SAT:
+  location_type: project
+  location: New_England
+  resource_type: solar_sat
+  zone: N2
+  iasr_aliases: [New England Solar Farm, New England Solar Farm - stage 2]
+
+Numurkah_One_SAT:
+  location_type: project
+  location: Numurkah_One
+  resource_type: solar_sat
+  zone: V6
+  iasr_aliases: [Numurkah Solar Farm]
+
+Nyngan_FFP:
+  location_type: project
+  location: Nyngan
+  resource_type: solar_ffp
+  zone: N3
+  iasr_aliases: [Nyngan Solar Plant]
+
+Oakey_One_FFP:
+  location_type: project
+  location: Oakey_One
+  resource_type: solar_ffp
+  zone: Q8
+  iasr_aliases: [Oakey 1 Solar Farm]
+
+Oakey_Two_SAT:
+  location_type: project
+  location: Oakey_Two
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Oakey 2 Solar Farm]
+
+Parkes_SAT:
+  location_type: project
+  location: Parkes
+  resource_type: solar_sat
+  subregion: CNSW
+  iasr_aliases: [Parkes Solar Farm]
+
+Port_Augusta_FFP:
+  location_type: project
+  location: Port_Augusta
+  resource_type: solar_ffp
+  zone: S5
+  iasr_aliases: [Port Augusta Renewable Energy Park - Solar]
+
+Quorn_Park_SAT:
+  location_type: project
+  location: Quorn_Park
+  resource_type: solar_sat
+  subregion: CNSW
+  iasr_aliases: [Quorn Park Solar Farm]
+
+Riverina_SAT:
+  location_type: project
+  location: Riverina
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [Riverina Solar Farm]
+
+Ross_River_SAT:
+  location_type: project
+  location: Ross_River
+  resource_type: solar_sat
+  zone: Q3
+  iasr_aliases: [Ross River Solar Farm]
+
+Rugby_Run_SAT:
+  location_type: project
+  location: Rugby_Run
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Rugby Run Solar Farm]
+
+Sebastopol_SAT:
+  location_type: project
+  location: Sebastopol
+  resource_type: solar_sat
+  zone: N6
+  iasr_aliases: [Sebastopol Solar Farm]
+
+Stubbo_SAT:
+  location_type: project
+  location: Stubbo
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Stubbo Solar Farm]
+
+Sun_Metals_FFP:
+  location_type: project
+  location: Sun_Metals
+  resource_type: solar_ffp
+  zone: Q3
+  iasr_aliases: [Sun Metals Corporation Solar Farm]
+
+Sunraysia_SAT:
+  location_type: project
+  location: Sunraysia
+  resource_type: solar_sat
+  zone: N5
+  iasr_aliases: [Sunraysia Solar Farm]
+
+Suntop_SAT:
+  location_type: project
+  location: Suntop
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Suntop Solar Farm]
+
+Susan_River_SAT:
+  location_type: project
+  location: Susan_River
+  resource_type: solar_sat
+  zone: Q7
+  iasr_aliases: [Susan River Solar Farm]
+
+Tailem_Bend_FFP:
+  location_type: project
+  location: Tailem_Bend
+  resource_type: solar_ffp
+  subregion: CSA
+  iasr_aliases: [Tailem Bend Solar Farm]
+
+Tailem_Bend_Stage_Two_SAT:
+  location_type: project
+  location: Tailem_Bend_Stage_Two
+  resource_type: solar_sat
+  subregion: CSA
+  iasr_aliases: [Tailem Bend Solar Farm - stage 2]
+
+Tamworth_SAT:
+  location_type: project
+  location: Tamworth
+  resource_type: solar_sat
+  zone: N2
+  iasr_aliases: [Tamworth Solar Farm]
+
+Tilbuster_SAT:
+  location_type: project
+  location: Tilbuster
+  resource_type: solar_sat
+  zone: N2
+  iasr_aliases: [Tilbuster Solar Farm]
+
+Wagga_North_SAT:
+  location_type: project
+  location: Wagga_North
+  resource_type: solar_sat
+  zone: N6
+  iasr_aliases: [Wagga North Solar Farm]
+
+Walla_Walla_SAT:
+  location_type: project
+  location: Walla_Walla
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [Walla Walla Solar Farm]
+
+Wandoan_SAT:
+  location_type: project
+  location: Wandoan
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Wandoan South Solar Farm - stage 1]
+
+Warwick_One_SAT:
+  location_type: project
+  location: Warwick_One
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Warwick Solar Farm]
+
+Warwick_Two_SAT:
+  location_type: project
+  location: Warwick_Two
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: []
+
+Wellington_SAT:
+  location_type: project
+  location: Wellington
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Wellington Solar Farm]
+
+Wellington_North_SAT:
+  location_type: project
+  location: Wellington_North
+  resource_type: solar_sat
+  zone: N3
+  iasr_aliases: [Wellington North Solar Farm (Lightsource)]
+
+Wemen_SAT:
+  location_type: project
+  location: Wemen
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Wemen Solar Farm]
+
+West_Wyalong_SAT:
+  location_type: project
+  location: West_Wyalong
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [West Wyalong Solar Farm]
+
+Western_Downs_Hub_SAT:
+  location_type: project
+  location: Western_Downs_Hub
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Western Downs Green Power Hub]
+
+White_Rock_FFP:
+  location_type: project
+  location: White_Rock
+  resource_type: solar_ffp
+  zone: N2
+  iasr_aliases: [White Rock Solar Farm]
+
+Whitsunday_SAT:
+  location_type: project
+  location: Whitsunday
+  resource_type: solar_sat
+  zone: Q4
+  iasr_aliases: [Whitsunday Solar Farm]
+
+Winton_SAT:
+  location_type: project
+  location: Winton
+  resource_type: solar_sat
+  zone: V6
+  iasr_aliases: [Winton Solar Farm]
+
+Wollar_SAT:
+  location_type: project
+  location: Wollar
+  resource_type: solar_sat
+  subregion: CNSW
+  iasr_aliases: [Wollar Solar Farm]
+
+Woolooga_SAT:
+  location_type: project
+  location: Woolooga
+  resource_type: solar_sat
+  zone: Q7
+  iasr_aliases: [Woolooga Solar Farm]
+
+Wunghnu_SAT:
+  location_type: project
+  location: Wunghnu
+  resource_type: solar_sat
+  subregion: VIC
+  iasr_aliases: [Wunghnu Solar Farm]
+
+Wyalong_SAT:
+  location_type: project
+  location: Wyalong
+  resource_type: solar_sat
+  subregion: SNSW
+  iasr_aliases: [Wyalong Solar Farm]
+
+Yarranlea_SAT:
+  location_type: project
+  location: Yarranlea
+  resource_type: solar_sat
+  zone: Q8
+  iasr_aliases: [Yarranlea Solar Farm]
+
+Yatpool_SAT:
+  location_type: project
+  location: Yatpool
+  resource_type: solar_sat
+  zone: V2
+  iasr_aliases: [Yatpool Solar Farm]
+
+
+# ---------------------------------------------------------------------------
+# Wind project traces.
+# ---------------------------------------------------------------------------
+
+ARWF1:
+  location_type: project
+  location: ARWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Ararat Wind Farm]
+
+BALDHWF1:
+  location_type: project
+  location: BALDHWF1
+  resource_type: wind
+  subregion: VIC
+  iasr_aliases: [Bald Hills Wind Farm]
+
+BANGOWF1:
+  location_type: project
+  location: BANGOWF1
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Bango 973 Wind Farm]
+
+BANGOWF2:
+  location_type: project
+  location: BANGOWF2
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Bango 999 Wind Farm]
+
+BLUFF1:
+  location_type: project
+  location: BLUFF1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Hallett 5 The Bluff Wind Farm]
+
+BOCORWF1:
+  location_type: project
+  location: BOCORWF1
+  resource_type: wind
+  zone: N8
+  iasr_aliases: [Boco Rock Wind Farm]
+
+BODWF1:
+  location_type: project
+  location: BODWF1
+  resource_type: wind
+  zone: N3
+  iasr_aliases: [Bodangora Wind Farm]
+
+BRYB1WF1:
+  location_type: project
+  location: BRYB1WF1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Berrybank Wind Farm]
+
+BULGANA1:
+  location_type: project
+  location: BULGANA1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Bulgana Green Power Hub - Wind Farm]
+
+CAPTL_WF:
+  location_type: project
+  location: CAPTL_WF
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Capital Wind Farm]
+
+CATHROCK:
+  location_type: project
+  location: CATHROCK
+  resource_type: wind
+  zone: S8
+  iasr_aliases: [Cathedral Rocks Wind Farm]
+
+CHALLHWF:
+  location_type: project
+  location: CHALLHWF
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Challicum Hills Wind Farm]
+
+CHYTWF1:
+  location_type: project
+  location: CHYTWF1
+  resource_type: wind
+  subregion: VIC
+  iasr_aliases: [Cherry Tree Wind Farm]
+
+CLEMGPWF:
+  location_type: project
+  location: CLEMGPWF
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Clements Gap Wind Farm]
+
+CLRKCWF1:
+  location_type: project
+  location: CLRKCWF1
+  resource_type: wind
+  zone: Q4
+  iasr_aliases: [Clarke Creek Wind Farm]
+
+CLRKCWF2:
+  location_type: project
+  location: CLRKCWF2
+  resource_type: wind
+  zone: Q4
+  iasr_aliases: [Clarke Creek Wind Farm]
+
+CNUNDAWF:
+  location_type: project
+  location: CNUNDAWF
+  resource_type: wind
+  zone: S1
+  iasr_aliases: [Canunda Wind Farm]
+
+COLWF01:
+  location_type: project
+  location: COLWF01
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Collector Wind Farm]
+
+COOPGWF1:
+  location_type: project
+  location: COOPGWF1
+  resource_type: wind
+  zone: Q8
+  iasr_aliases: [Coopers Gap Wind Farm]
+
+Coppabella:
+  location_type: project
+  location: Coppabella
+  resource_type: wind
+  zone: N7
+  iasr_aliases: [Coppabella Wind Farm]
+
+CROOKWF2:
+  location_type: project
+  location: CROOKWF2
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Crookwell 2 Wind Farm]
+
+Crookwell_3:
+  location_type: project
+  location: Crookwell_3
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Crookwell 3 Wind Farm]
+
+CROWLWF1:
+  location_type: project
+  location: CROWLWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Crowlands Wind Farm]
+
+CRURWF1:
+  location_type: project
+  location: CRURWF1
+  resource_type: wind
+  subregion: CNSW
+  iasr_aliases: [Crudine Ridge Wind Farm]
+
+CTHLWF1:
+  location_type: project
+  location: CTHLWF1
+  resource_type: wind
+  zone: T3
+  iasr_aliases: [Cattle Hill Wind Farm]
+
+CULLRGWF:
+  location_type: project
+  location: CULLRGWF
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Cullerin Range Wind Farm]
+
+DULAWF1:
+  location_type: project
+  location: DULAWF1
+  resource_type: wind
+  zone: Q8
+  iasr_aliases: [Dulacca Wind Farm]
+
+DUNDWF1:
+  location_type: project
+  location: DUNDWF1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Dundonnell Wind Farm]
+
+DUNDWF2:
+  location_type: project
+  location: DUNDWF2
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Dundonnell Wind Farm]
+
+DUNDWF3:
+  location_type: project
+  location: DUNDWF3
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Dundonnell Wind Farm]
+
+ELAINWF1:
+  location_type: project
+  location: ELAINWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Elaine Wind Farm]
+
+Flyers_Creek:
+  location_type: project
+  location: Flyers_Creek
+  resource_type: wind
+  zone: N3
+  iasr_aliases: [Flyers Creek Wind Farm]
+
+Golden_Plains_East:
+  location_type: project
+  location: Golden_Plains_East
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Golden Plains Wind Farm East]
+
+Goyder_South:
+  location_type: project
+  location: Goyder_South
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Goyder South Wind Farm 1A, Goyder South Wind Farm 1B]
+
+GRANWF1:
+  location_type: project
+  location: GRANWF1
+  resource_type: wind
+  zone: T2
+  iasr_aliases: [Granville Harbour Wind Farm]
+
+GULLRWF1:
+  location_type: project
+  location: GULLRWF1
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Gullen Range Wind Farm]
+
+GULLRWF2:
+  location_type: project
+  location: GULLRWF2
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Gullen Range Wind Farm 2]
+
+GUNNING1:
+  location_type: project
+  location: GUNNING1
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Gunning Wind Farm]
+
+HALLWF1:
+  location_type: project
+  location: HALLWF1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Hallett Stage 1 Brown Hill Wind Farm]
+
+HALLWF2:
+  location_type: project
+  location: HALLWF2
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Hallett Stage 2 Hallett Hill Wind Farm]
+
+Hawkesdale:
+  location_type: project
+  location: Hawkesdale
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Hawkesdale Wind Farm]
+
+HDWF1:
+  location_type: project
+  location: HDWF1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Hornsdale Wind Farm Stage 1]
+
+HDWF2:
+  location_type: project
+  location: HDWF2
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Hornsdale Wind Farm Stage 2]
+
+HDWF3:
+  location_type: project
+  location: HDWF3
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Hornsdale Wind Farm Stage 3]
+
+KABANWF1:
+  location_type: project
+  location: KABANWF1
+  resource_type: wind
+  zone: Q1
+  iasr_aliases: [Kaban Green Power Hub - Wind Farm]
+
+KEPWF1:
+  location_type: project
+  location: KEPWF1
+  resource_type: wind
+  zone: Q2
+  iasr_aliases: [Kennedy Energy Park Wind Farm]
+
+KIATAWF1:
+  location_type: project
+  location: KIATAWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Kiata Wind Farm]
+
+LGAPWF1:
+  location_type: project
+  location: LGAPWF1
+  resource_type: wind
+  zone: S5
+  iasr_aliases: [Lincoln Gap Wind Farm - stage 1]
+
+LGAPWF2:
+  location_type: project
+  location: LGAPWF2
+  resource_type: wind
+  zone: S5
+  iasr_aliases: [Lincoln Gap Wind Farm - stage 2]
+
+LKBONNY1:
+  location_type: project
+  location: LKBONNY1
+  resource_type: wind
+  zone: S1
+  iasr_aliases: [Lake Bonney 1 Wind Farm]
+
+LKBONNY2:
+  location_type: project
+  location: LKBONNY2
+  resource_type: wind
+  zone: S1
+  iasr_aliases: [Lake Bonney 2 Wind Farm]
+
+LKBONNY3:
+  location_type: project
+  location: LKBONNY3
+  resource_type: wind
+  zone: S1
+  iasr_aliases: [Lake Bonney 3 Wind Farm]
+
+MACARTH1:
+  location_type: project
+  location: MACARTH1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Macarthur Wind Farm]
+
+Macintyre:
+  location_type: project
+  location: Macintyre
+  resource_type: wind
+  zone: Q8
+  iasr_aliases: [MacIntyre Wind Farm]
+
+MERCER01:
+  location_type: project
+  location: MERCER01
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Mt Mercer Wind Farm]
+
+MEWF1:
+  location_type: project
+  location: MEWF1
+  resource_type: wind
+  zone: Q1
+  iasr_aliases: [Mount Emerald Wind Farm]
+
+MLWF1:
+  location_type: project
+  location: MLWF1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Mortons Lane Wind Farm]
+
+MOORAWF1:
+  location_type: project
+  location: MOORAWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Moorabool Wind Farm]
+
+MRTLSWF1:
+  location_type: project
+  location: MRTLSWF1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Mortlake South Wind Farm]
+
+MTGELWF1:
+  location_type: project
+  location: MTGELWF1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Mt Gellibrand Wind Farm]
+
+MTMILLAR:
+  location_type: project
+  location: MTMILLAR
+  resource_type: wind
+  zone: S8
+  iasr_aliases: [Mount Millar Wind Farm]
+
+MUSSELR1:
+  location_type: project
+  location: MUSSELR1
+  resource_type: wind
+  subregion: TAS
+  iasr_aliases: [Musselroe Wind Farm]
+
+MUWAWF1:
+  location_type: project
+  location: MUWAWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Murra Warra Wind Farm - stage 1]
+
+MUWAWF2:
+  location_type: project
+  location: MUWAWF2
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Murra Warra Wind Farm - stage 2]
+
+NBHWF1:
+  location_type: project
+  location: NBHWF1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Hallett 4 North Brown Hill Wind Farm]
+
+OAKLAND1:
+  location_type: project
+  location: OAKLAND1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Oaklands Hill Wind Farm]
+
+PAREPW1:
+  location_type: project
+  location: PAREPW1
+  resource_type: wind
+  zone: S5
+  iasr_aliases: [Port Augusta Renewable Energy Park - Wind]
+
+PORTWF:
+  location_type: project
+  location: PORTWF
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Portland Wind Farm]
+
+Ryan_Corner:
+  location_type: project
+  location: Ryan_Corner
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Ryan Corner Wind Farm]
+
+Rye_Park:
+  location_type: project
+  location: Rye_Park
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Rye Park Wind Farm]
+
+SALTCRK1:
+  location_type: project
+  location: SALTCRK1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Salt Creek Wind Farm]
+
+SAPHWF1:
+  location_type: project
+  location: SAPHWF1
+  resource_type: wind
+  zone: N2
+  iasr_aliases: [Sapphire Wind Farm]
+
+SNOWNTH1:
+  location_type: project
+  location: SNOWNTH1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Snowtown S2 Wind Farm]
+
+SNOWSTH1:
+  location_type: project
+  location: SNOWSTH1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Snowtown S2 Wind Farm]
+
+SNOWTWN1:
+  location_type: project
+  location: SNOWTWN1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Snowtown Wind Farm]
+
+STARHLWF:
+  location_type: project
+  location: STARHLWF
+  resource_type: wind
+  subregion: CSA
+  iasr_aliases: [Starfish Hill Wind Farm]
+
+STOCKYD1:
+  location_type: project
+  location: STOCKYD1
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Stockyard Hill Wind Farm]
+
+STWF1:
+  location_type: project
+  location: STWF1
+  resource_type: wind
+  zone: N4
+  iasr_aliases: [Silverton Wind Farm]
+
+TARALGA1:
+  location_type: project
+  location: TARALGA1
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Taralga Wind Farm]
+
+Uungula:
+  location_type: project
+  location: Uungula
+  resource_type: wind
+  zone: N3
+  iasr_aliases: [Uungula Wind Farm]
+
+Wambo:
+  location_type: project
+  location: Wambo
+  resource_type: wind
+  zone: Q8
+  iasr_aliases: [Wambo Wind Farm]
+
+WATERLWF:
+  location_type: project
+  location: WATERLWF
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Waterloo Wind Farm]
+
+WAUBRAWF:
+  location_type: project
+  location: WAUBRAWF
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Waubra Wind Farm]
+
+WGWF1:
+  location_type: project
+  location: WGWF1
+  resource_type: wind
+  zone: S3
+  iasr_aliases: [Willogoleche Wind Farm]
+
+WOODLWN1:
+  location_type: project
+  location: WOODLWN1
+  resource_type: wind
+  subregion: SNSW
+  iasr_aliases: [Woodlawn Wind Farm]
+
+WOOLNTH1:
+  location_type: project
+  location: WOOLNTH1
+  resource_type: wind
+  subregion: TAS
+  iasr_aliases: [Woolnorth Wind Farm]
+
+Woolsthorpe:
+  location_type: project
+  location: Woolsthorpe
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Woolsthorpe Wind Farm]
+
+WPWF:
+  location_type: project
+  location: WPWF
+  resource_type: wind
+  zone: S4
+  iasr_aliases: [Wattle Point Wind Farm]
+
+WRWF1:
+  location_type: project
+  location: WRWF1
+  resource_type: wind
+  zone: N2
+  iasr_aliases: [White Rock Wind Farm - Stage 1]
+
+YAMBUKWF:
+  location_type: project
+  location: YAMBUKWF
+  resource_type: wind
+  zone: V4
+  iasr_aliases: [Yambuk Wind Farm]
+
+YENDWF1:
+  location_type: project
+  location: YENDWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Yendon Wind Farm]
+
+YSWF1:
+  location_type: project
+  location: YSWF1
+  resource_type: wind
+  zone: V3
+  iasr_aliases: [Yaloak South Wind Farm]
+
+
+# ---------------------------------------------------------------------------
+# Zone-level solar traces.
+# ---------------------------------------------------------------------------
+
+REZ_N0_NSW_Non-REZ_SAT:
+  location_type: zone
+  location: N0
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N0_NSW_Non-REZ_CST:
+  location_type: zone
+  location: N0
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N1_North_West_NSW_SAT:
+  location_type: zone
+  location: N1
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N1_North_West_NSW_CST:
+  location_type: zone
+  location: N1
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N2_New_England_SAT:
+  location_type: zone
+  location: N2
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N2_New_England_CST:
+  location_type: zone
+  location: N2
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N3_Central-West_Orana_SAT:
+  location_type: zone
+  location: N3
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N3_Central-West_Orana_CST:
+  location_type: zone
+  location: N3
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N4_Broken_Hill_SAT:
+  location_type: zone
+  location: N4
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N4_Broken_Hill_CST:
+  location_type: zone
+  location: N4
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N5_South_West_NSW_SAT:
+  location_type: zone
+  location: N5
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N5_South_West_NSW_CST:
+  location_type: zone
+  location: N5
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N6_Wagga_Wagga_SAT:
+  location_type: zone
+  location: N6
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N6_Wagga_Wagga_CST:
+  location_type: zone
+  location: N6
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N7_Tumut_SAT:
+  location_type: zone
+  location: N7
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N7_Tumut_CST:
+  location_type: zone
+  location: N7
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N8_Cooma-Monaro_SAT:
+  location_type: zone
+  location: N8
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N8_Cooma-Monaro_CST:
+  location_type: zone
+  location: N8
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_N9_Hunter-Central_Coast_SAT:
+  location_type: zone
+  location: N9
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_N9_Hunter-Central_Coast_CST:
+  location_type: zone
+  location: N9
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_V0_VIC_Non-REZ_SAT:
+  location_type: zone
+  location: V0
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_V0_VIC_Non-REZ_CST:
+  location_type: zone
+  location: V0
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_V1_Ovens_Murray_SAT:
+  location_type: zone
+  location: V1
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_V1_Ovens_Murray_CST:
+  location_type: zone
+  location: V1
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_V2_Murray_River_SAT:
+  location_type: zone
+  location: V2
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_V2_Murray_River_CST:
+  location_type: zone
+  location: V2
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_V3_Western_Victoria_SAT:
+  location_type: zone
+  location: V3
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_V3_Western_Victoria_CST:
+  location_type: zone
+  location: V3
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_V4_South_West_Victoria_SAT:
+  location_type: zone
+  location: V4
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_V4_South_West_Victoria_CST:
+  location_type: zone
+  location: V4
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_V5_Gippsland_SAT:
+  location_type: zone
+  location: V5
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_V5_Gippsland_CST:
+  location_type: zone
+  location: V5
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_V6_Central_North_Vic_SAT:
+  location_type: zone
+  location: V6
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_V6_Central_North_Vic_CST:
+  location_type: zone
+  location: V6
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q1_Far_North_QLD_SAT:
+  location_type: zone
+  location: Q1
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q1_Far_North_QLD_CST:
+  location_type: zone
+  location: Q1
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q2_North_Qld_Clean_Energy_Hub_SAT:
+  location_type: zone
+  location: Q2
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q2_North_Qld_Clean_Energy_Hub_CST:
+  location_type: zone
+  location: Q2
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q3_Northern_Qld_SAT:
+  location_type: zone
+  location: Q3
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q3_Northern_Qld_CST:
+  location_type: zone
+  location: Q3
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q4_Isaac_SAT:
+  location_type: zone
+  location: Q4
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q4_Isaac_CST:
+  location_type: zone
+  location: Q4
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q5_Barcaldine_SAT:
+  location_type: zone
+  location: Q5
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q5_Barcaldine_CST:
+  location_type: zone
+  location: Q5
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q6_Fitzroy_SAT:
+  location_type: zone
+  location: Q6
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q6_Fitzroy_CST:
+  location_type: zone
+  location: Q6
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q7_Wide_Bay_SAT:
+  location_type: zone
+  location: Q7
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q7_Wide_Bay_CST:
+  location_type: zone
+  location: Q7
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q8_Darling_Downs_SAT:
+  location_type: zone
+  location: Q8
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q8_Darling_Downs_CST:
+  location_type: zone
+  location: Q8
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_Q9_Banana_SAT:
+  location_type: zone
+  location: Q9
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_Q9_Banana_CST:
+  location_type: zone
+  location: Q9
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S1_South_East_SA_SAT:
+  location_type: zone
+  location: S1
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S1_South_East_SA_CST:
+  location_type: zone
+  location: S1
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S2_Riverland_SAT:
+  location_type: zone
+  location: S2
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S2_Riverland_CST:
+  location_type: zone
+  location: S2
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S3_Mid-North_SA_SAT:
+  location_type: zone
+  location: S3
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S3_Mid-North_SA_CST:
+  location_type: zone
+  location: S3
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S4_Yorke_Peninsula_SAT:
+  location_type: zone
+  location: S4
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S4_Yorke_Peninsula_CST:
+  location_type: zone
+  location: S4
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S5_Northern_SA_SAT:
+  location_type: zone
+  location: S5
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S5_Northern_SA_CST:
+  location_type: zone
+  location: S5
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S6_Leigh_Creek_SAT:
+  location_type: zone
+  location: S6
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S6_Leigh_Creek_CST:
+  location_type: zone
+  location: S6
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S7_Roxby_Downs_SAT:
+  location_type: zone
+  location: S7
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S7_Roxby_Downs_CST:
+  location_type: zone
+  location: S7
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S8_Eastern_Eyre_Peninsula_SAT:
+  location_type: zone
+  location: S8
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S8_Eastern_Eyre_Peninsula_CST:
+  location_type: zone
+  location: S8
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_S9_Western_Eyre_Peninsula_SAT:
+  location_type: zone
+  location: S9
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_S9_Western_Eyre_Peninsula_CST:
+  location_type: zone
+  location: S9
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_T1_North_East_Tasmania_SAT:
+  location_type: zone
+  location: T1
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_T1_North_East_Tasmania_CST:
+  location_type: zone
+  location: T1
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_T2_North_West_Tasmania_SAT:
+  location_type: zone
+  location: T2
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_T2_North_West_Tasmania_CST:
+  location_type: zone
+  location: T2
+  resource_type: solar_cst
+  iasr_aliases: []
+
+REZ_T3_Central_Highlands_SAT:
+  location_type: zone
+  location: T3
+  resource_type: solar_sat
+  iasr_aliases: []
+
+REZ_T3_Central_Highlands_CST:
+  location_type: zone
+  location: T3
+  resource_type: solar_cst
+  iasr_aliases: []
+
+
+# ---------------------------------------------------------------------------
+# Zone-level wind traces.
+# ---------------------------------------------------------------------------
+
+N0_WH_NSW_Non-REZ:
+  location_type: zone
+  location: N0
+  resource_type: wind_high
+  iasr_aliases: []
+
+N0_WM_NSW_Non-REZ:
+  location_type: zone
+  location: N0
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N1_WH_North_West_NSW:
+  location_type: zone
+  location: N1
+  resource_type: wind_high
+  iasr_aliases: []
+
+N1_WM_North_West_NSW:
+  location_type: zone
+  location: N1
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N2_WH_New_England:
+  location_type: zone
+  location: N2
+  resource_type: wind_high
+  iasr_aliases: []
+
+N2_WM_New_England:
+  location_type: zone
+  location: N2
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N3_WH_Central-West_Orana:
+  location_type: zone
+  location: N3
+  resource_type: wind_high
+  iasr_aliases: []
+
+N3_WM_Central-West_Orana:
+  location_type: zone
+  location: N3
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N4_WH_Broken_Hill:
+  location_type: zone
+  location: N4
+  resource_type: wind_high
+  iasr_aliases: []
+
+N4_WM_Broken_Hill:
+  location_type: zone
+  location: N4
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N5_WH_South_West_NSW:
+  location_type: zone
+  location: N5
+  resource_type: wind_high
+  iasr_aliases: []
+
+N5_WM_South_West_NSW:
+  location_type: zone
+  location: N5
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N6_WH_Wagga_Wagga:
+  location_type: zone
+  location: N6
+  resource_type: wind_high
+  iasr_aliases: []
+
+N6_WM_Wagga_Wagga:
+  location_type: zone
+  location: N6
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N7_WH_Tumut:
+  location_type: zone
+  location: N7
+  resource_type: wind_high
+  iasr_aliases: []
+
+N7_WM_Tumut:
+  location_type: zone
+  location: N7
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N8_WH_Cooma-Monaro:
+  location_type: zone
+  location: N8
+  resource_type: wind_high
+  iasr_aliases: []
+
+N8_WM_Cooma-Monaro:
+  location_type: zone
+  location: N8
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N9_WH_Hunter-Central_Coast:
+  location_type: zone
+  location: N9
+  resource_type: wind_high
+  iasr_aliases: []
+
+N9_WM_Hunter-Central_Coast:
+  location_type: zone
+  location: N9
+  resource_type: wind_medium
+  iasr_aliases: []
+
+N10_WFL_Hunter_Coast:
+  location_type: zone
+  location: N10
+  resource_type: wind_offshore_floating
+  iasr_aliases: []
+
+N10_WFX_Hunter_Coast:
+  location_type: zone
+  location: N10
+  resource_type: wind_offshore_fixed
+  iasr_aliases: []
+
+N11_WFL_Illawarra_Coast:
+  location_type: zone
+  location: N11
+  resource_type: wind_offshore_floating
+  iasr_aliases: []
+
+N11_WFX_Illawarra_Coast:
+  location_type: zone
+  location: N11
+  resource_type: wind_offshore_fixed
+  iasr_aliases: []
+
+V0_WH_VIC_Non-REZ:
+  location_type: zone
+  location: V0
+  resource_type: wind_high
+  iasr_aliases: []
+
+V0_WM_VIC_Non-REZ:
+  location_type: zone
+  location: V0
+  resource_type: wind_medium
+  iasr_aliases: []
+
+V1_WH_Ovens_Murray:
+  location_type: zone
+  location: V1
+  resource_type: wind_high
+  iasr_aliases: []
+
+V1_WM_Ovens_Murray:
+  location_type: zone
+  location: V1
+  resource_type: wind_medium
+  iasr_aliases: []
+
+V2_WH_Murray_River:
+  location_type: zone
+  location: V2
+  resource_type: wind_high
+  iasr_aliases: []
+
+V2_WM_Murray_River:
+  location_type: zone
+  location: V2
+  resource_type: wind_medium
+  iasr_aliases: []
+
+V3_WH_Western_Victoria:
+  location_type: zone
+  location: V3
+  resource_type: wind_high
+  iasr_aliases: []
+
+V3_WM_Western_Victoria:
+  location_type: zone
+  location: V3
+  resource_type: wind_medium
+  iasr_aliases: []
+
+V4_WH_South_West_Victoria:
+  location_type: zone
+  location: V4
+  resource_type: wind_high
+  iasr_aliases: []
+
+V4_WM_South_West_Victoria:
+  location_type: zone
+  location: V4
+  resource_type: wind_medium
+  iasr_aliases: []
+
+V5_WH_Gippsland:
+  location_type: zone
+  location: V5
+  resource_type: wind_high
+  iasr_aliases: []
+
+V5_WM_Gippsland:
+  location_type: zone
+  location: V5
+  resource_type: wind_medium
+  iasr_aliases: []
+
+V6_WH_Central_North_Vic:
+  location_type: zone
+  location: V6
+  resource_type: wind_high
+  iasr_aliases: []
+
+V6_WM_Central_North_Vic:
+  location_type: zone
+  location: V6
+  resource_type: wind_medium
+  iasr_aliases: []
+
+V7_WFL_Gippsland_Coast:
+  location_type: zone
+  location: V7
+  resource_type: wind_offshore_floating
+  iasr_aliases: []
+
+V7_WFX_Gippsland_Coast:
+  location_type: zone
+  location: V7
+  resource_type: wind_offshore_fixed
+  iasr_aliases: []
+
+V8_WFL_Portland_Coast:
+  location_type: zone
+  location: V8
+  resource_type: wind_offshore_floating
+  iasr_aliases: []
+
+V8_WFX_Portland_Coast:
+  location_type: zone
+  location: V8
+  resource_type: wind_offshore_fixed
+  iasr_aliases: []
+
+Q1_WH_Far_North_QLD:
+  location_type: zone
+  location: Q1
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q1_WM_Far_North_QLD:
+  location_type: zone
+  location: Q1
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q2_WH_North_Qld_Clean_Energy_Hub:
+  location_type: zone
+  location: Q2
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q2_WM_North_Qld_Clean_Energy_Hub:
+  location_type: zone
+  location: Q2
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q3_WH_Northern_Qld:
+  location_type: zone
+  location: Q3
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q3_WM_Northern_Qld:
+  location_type: zone
+  location: Q3
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q4_WH_Isaac:
+  location_type: zone
+  location: Q4
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q4_WM_Isaac:
+  location_type: zone
+  location: Q4
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q5_WH_Barcaldine:
+  location_type: zone
+  location: Q5
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q5_WM_Barcaldine:
+  location_type: zone
+  location: Q5
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q6_WH_Fitzroy:
+  location_type: zone
+  location: Q6
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q6_WM_Fitzroy:
+  location_type: zone
+  location: Q6
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q7_WH_Wide_Bay:
+  location_type: zone
+  location: Q7
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q7_WM_Wide_Bay:
+  location_type: zone
+  location: Q7
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q8_WH_Darling_Downs:
+  location_type: zone
+  location: Q8
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q8_WM_Darling_Downs:
+  location_type: zone
+  location: Q8
+  resource_type: wind_medium
+  iasr_aliases: []
+
+Q9_WH_Banana:
+  location_type: zone
+  location: Q9
+  resource_type: wind_high
+  iasr_aliases: []
+
+Q9_WM_Banana:
+  location_type: zone
+  location: Q9
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S1_WH_South_East_SA:
+  location_type: zone
+  location: S1
+  resource_type: wind_high
+  iasr_aliases: []
+
+S1_WM_South_East_SA:
+  location_type: zone
+  location: S1
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S2_WH_Riverland:
+  location_type: zone
+  location: S2
+  resource_type: wind_high
+  iasr_aliases: []
+
+S2_WM_Riverland:
+  location_type: zone
+  location: S2
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S3_WH_Mid-North_SA:
+  location_type: zone
+  location: S3
+  resource_type: wind_high
+  iasr_aliases: []
+
+S3_WM_Mid-North_SA:
+  location_type: zone
+  location: S3
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S4_WH_Yorke_Peninsula:
+  location_type: zone
+  location: S4
+  resource_type: wind_high
+  iasr_aliases: []
+
+S4_WM_Yorke_Peninsula:
+  location_type: zone
+  location: S4
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S5_WH_Northern_SA:
+  location_type: zone
+  location: S5
+  resource_type: wind_high
+  iasr_aliases: []
+
+S5_WM_Northern_SA:
+  location_type: zone
+  location: S5
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S6_WH_Leigh_Creek:
+  location_type: zone
+  location: S6
+  resource_type: wind_high
+  iasr_aliases: []
+
+S6_WM_Leigh_Creek:
+  location_type: zone
+  location: S6
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S7_WH_Roxby_Downs:
+  location_type: zone
+  location: S7
+  resource_type: wind_high
+  iasr_aliases: []
+
+S7_WM_Roxby_Downs:
+  location_type: zone
+  location: S7
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S8_WH_Eastern_Eyre_Peninsula:
+  location_type: zone
+  location: S8
+  resource_type: wind_high
+  iasr_aliases: []
+
+S8_WM_Eastern_Eyre_Peninsula:
+  location_type: zone
+  location: S8
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S9_WH_Western_Eyre_Peninsula:
+  location_type: zone
+  location: S9
+  resource_type: wind_high
+  iasr_aliases: []
+
+S9_WM_Western_Eyre_Peninsula:
+  location_type: zone
+  location: S9
+  resource_type: wind_medium
+  iasr_aliases: []
+
+S10_WFL_South_East_SA_Coast:
+  location_type: zone
+  location: S10
+  resource_type: wind_offshore_floating
+  iasr_aliases: []
+
+S10_WFX_South_East_SA_Coast:
+  location_type: zone
+  location: S10
+  resource_type: wind_offshore_fixed
+  iasr_aliases: []
+
+T1_WH_North-East_Tasmania:
+  location_type: zone
+  location: T1
+  resource_type: wind_high
+  iasr_aliases: []
+
+T1_WM_North-East_Tasmania:
+  location_type: zone
+  location: T1
+  resource_type: wind_medium
+  iasr_aliases: []
+
+T2_WH_North-West_Tasmania:
+  location_type: zone
+  location: T2
+  resource_type: wind_high
+  iasr_aliases: []
+
+T2_WM_North-West_Tasmania:
+  location_type: zone
+  location: T2
+  resource_type: wind_medium
+  iasr_aliases: []
+
+T3_WH_Central_Highlands:
+  location_type: zone
+  location: T3
+  resource_type: wind_high
+  iasr_aliases: []
+
+T3_WM_Central_Highlands:
+  location_type: zone
+  location: T3
+  resource_type: wind_medium
+  iasr_aliases: []
+
+T4_WFL_North_West_Tasmania_Coast:
+  location_type: zone
+  location: T4
+  resource_type: wind_offshore_floating
+  iasr_aliases: []
+
+T4_WFX_North_West_Tasmania_Coast:
+  location_type: zone
+  location: T4
+  resource_type: wind_offshore_fixed
+  iasr_aliases: []
+
+T5_WFL_North_East_Tasmania_Coast:
+  location_type: zone
+  location: T5
+  resource_type: wind_offshore_floating
+  iasr_aliases: []
+
+T5_WFX_North_East_Tasmania_Coast:
+  location_type: zone
+  location: T5
+  resource_type: wind_offshore_fixed
+  iasr_aliases: []
