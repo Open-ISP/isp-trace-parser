@@ -1,0 +1,77 @@
+# 2024 ISP geographic topography (based on the 2024 IASR workbook).
+#
+# Maps renewable energy zones (REZ) -> ISP subregions -> regions. Each
+# entry's value is its parent in the topography hierarchy.
+#
+# AEMO 2024 trace data includes two "non-REZ" REZ trace files (N0, V0)
+# for new entrant technologies, attributed to specific subregions:
+#   - "New South Wales Non-REZ" -> CNSW
+#   - "Victoria Non-REZ"        -> VIC
+#
+# Existing projects that sit outside any formal REZ are attributed at
+# subregion resolution directly on their `resources.yaml` entry (via
+# `subregion` instead of `zone`).
+
+
+regions: [NSW, VIC, QLD, SA, TAS]
+
+subregions:
+  CNSW: NSW
+  NNSW: NSW
+  SNSW: NSW
+  SNW: NSW
+  VIC: VIC
+  CQ: QLD
+  NQ: QLD
+  SQ: QLD
+  CSA: SA
+  SESA: SA
+  TAS: TAS
+
+zones:
+  N0: CNSW  # AEMO non-REZ NSW
+  V0: VIC   # AEMO non-REZ VIC
+  Q1: NQ  # Far North QLD
+  Q2: NQ  # North Qld Clean Energy Hub
+  Q3: NQ  # Northern Qld
+  Q4: CQ  # Isaac
+  Q5: CQ  # Barcaldine
+  Q6: CQ  # Fitzroy
+  Q7: SQ  # Wide Bay
+  Q8: SQ  # Darling Downs
+  Q9: CQ  # Banana
+  N1: NNSW  # North West NSW
+  N2: NNSW  # New England
+  N3: CNSW  # Central-West Orana
+  N4: SNSW  # Broken Hill
+  N5: SNSW  # South West NSW
+  N6: SNSW  # Wagga Wagga
+  N7: SNSW  # Tumut
+  N8: SNSW  # Cooma-Monaro
+  N9: CNSW  # Hunter-Central Coast
+  N10: SNW  # Hunter Coast
+  N11: SNW  # Illawarra Coast
+  N12: SNW  # Illawarra
+  V1: VIC  # Ovens Murray
+  V2: VIC  # Murray River
+  V3: VIC  # Western Victoria
+  V4: VIC  # South West Victoria
+  V5: VIC  # Gippsland
+  V6: VIC  # Central North Vic
+  V7: VIC  # Gippsland Coast
+  V8: VIC  # Southern Ocean
+  S1: SESA  # South East SA
+  S2: CSA  # Riverland
+  S3: CSA  # Mid-North SA
+  S4: CSA  # Yorke Peninsula
+  S5: CSA  # Northern SA
+  S6: CSA  # Leigh Creek
+  S7: CSA  # Roxby Downs
+  S8: CSA  # Eastern Eyre Peninsula
+  S9: CSA  # Western Eyre Peninsula
+  S10: SESA  # South East SA Coast
+  T1: TAS  # North East Tasmania
+  T2: TAS  # North West Tasmania
+  T3: TAS  # Central Highlands
+  T4: TAS  # North West Tasmania Coast
+  T5: TAS  # North East Tasmania Coast
