@@ -137,10 +137,18 @@ def parse_wind_traces(
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_wind_files(files)
 
-    project_name_mappings = mappings.load("wind_project_mapping")
-    project_name_mappings = restructure_wind_project_mapping(project_name_mappings)
+    resource_mapping = mappings.load("resources")
+    zone_name_mappings = {
+        val["location"]: val["location"]
+        for key, val in resource_mapping.items()
+        if val["location_type"] == "zone"
+    }
 
-    zone_name_mappings = mappings.load("wind_zone_mapping")
+    project_name_mappings = {
+        alias: val["location"]
+        for key, val in resource_mapping.items()
+        for alias in val["iasr_aliases"]
+    }
 
     project_and_zone_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata
