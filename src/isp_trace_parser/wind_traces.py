@@ -137,10 +137,18 @@ def parse_wind_traces(
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_wind_files(files)
 
-    project_name_mappings = mappings.load("wind_project_mapping")
-    project_name_mappings = restructure_wind_project_mapping(project_name_mappings)
+    resource_mapping = mappings.load("resources")
+    zone_name_mappings = {
+        val["location"]: val["location"]
+        for key, val in resource_mapping.items()
+        if val["location_type"] == "zone"
+    }
 
-    zone_name_mappings = mappings.load("wind_zone_mapping")
+    project_name_mappings = {
+        alias: val["location"]
+        for key, val in resource_mapping.items()
+        for alias in val["iasr_aliases"]
+    }
 
     project_and_zone_input_names = get_unique_project_and_zone_names_in_input_files(
         file_metadata
@@ -310,18 +318,6 @@ def write_output_wind_zone_filename(metadata: dict) -> str:
     m = metadata
     name = m["name"].replace(" ", "_")
     return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
-
-
-def restructure_wind_project_mapping(project_name_mapping: dict) -> dict:
-    """
-    Simplifies the wind project name mapping.
-
-    Returns a dict with the workbook project names as keys and CSV file project names as values.
-    """
-    return {
-        name: mapping_data["CSVFile"]
-        for name, mapping_data in project_name_mapping.items()
-    }
 
 
 def extract_metadata_for_all_wind_files(filepaths: list) -> dict:

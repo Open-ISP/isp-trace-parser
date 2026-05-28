@@ -135,8 +135,19 @@ def parse_solar_traces(
 
     files = get_all_filepaths(input_directory)
     file_metadata = extract_metadata_for_all_solar_files(files)
-    project_name_mapping = mappings.load("solar_project_mapping")
-    zone_name_mapping = mappings.load("solar_zone_mapping")
+    resource_mapping = mappings.load("resources")
+
+    project_name_mapping = {
+        alias: val["location"]
+        for key, val in resource_mapping.items()
+        for alias in val["iasr_aliases"]
+    }
+    zone_name_mapping = {
+        val["location"]: val["location"]
+        for key, val in resource_mapping.items()
+        if val["location_type"] == "zone"
+    }
+
     name_mappings = {**project_name_mapping, **zone_name_mapping}
 
     project_and_zone_input_names = get_unique_project_and_zone_names_in_input_files(

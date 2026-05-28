@@ -59,4 +59,4 @@ select = [
 where = ["src"]
 
 [tool.setuptools.package-data]
-isp_trace_parser = ["mappings/*.yaml", "remote/manifests/**/*.txt"]
+isp_trace_parser = ["mappings/**/*.yaml", "remote/manifests/**/*.txt"]
