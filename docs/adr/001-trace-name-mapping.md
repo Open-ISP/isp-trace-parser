@@ -20,8 +20,8 @@ Characteristics of the current approach:
 
 - **Filename reconstruction in code.** Metadata is extracted from input filenames via regex, then output filenames are reconstructed from that metadata. Every new AEMO filename pattern requires a regex change.
 - **Partial mapping also exits:**  Mapping does exist, but for trace names to IASR names only)
-		- **Four mapping files per ISP version.** `solar_project_mapping.yaml`,`wind_project_mapping.yaml`, `solar_zone_mapping.yaml`,`wind_zone_mapping.yaml` (each with its own conventions - and the zone_maps being largely redundant)
-		- (**Coupling to IASR naming.** - downstream issue, but parsed output filenames are rewritten to IASR conventions, which couples)
+  - **Four mapping files per ISP version.** `solar_project_mapping.yaml`,`wind_project_mapping.yaml`, `solar_zone_mapping.yaml`,`wind_zone_mapping.yaml` (each with its own conventions - and the zone_maps being largely redundant)
+  - (**Coupling to IASR naming.** - downstream issue, but parsed output filenames are rewritten to IASR conventions, which couples)
 - **Project/zone split.** The parser distinguishes "project"  (named generator) from "zone" (REZ) traces, but the CSVs   are all co-located in a single folder per reference year (the distinction is also re-derived from filename shape).
 - **Silent misclassification & misses classificiation.** Some patterns match
   *any* `*_RefYear<year>.csv`, so unrecognised filenames silently fall
@@ -31,12 +31,12 @@ Characteristics of the current approach:
 1) The 2026 data includes new  that don't fit the project/zone split cleanly: Distributed Resources are at ISP subregion resolution; DREZs are REZ-like but distinct.
 
 2) AEMO's conventions also differ across ISP versions:
-	- **ISP-2024**: no formal IASR identifier. Generators are referred to by  a human-readable name (e.g. `"Bango 973 Wind Farm"`).
-	- **ISP-2026**: introduces a formal IASR ID, in addition to the human-readable name.
+  - **ISP-2024**: no formal IASR identifier. Generators are referred to by  a human-readable name (e.g. `"Bango 973 Wind Farm"`).
+  - **ISP-2026**: introduces a formal IASR ID, in addition to the human-readable name.
 
-- 3) Maintaining regex patterns that work across multiple / new AEMO formats sound like a literal nightmare (noting that we will continue to get  updated traces in the future)
+3) Maintaining regex patterns that work across multiple / new AEMO formats sound like a literal nightmare (noting that we will continue to get  updated traces in the future)
 
-- 4)  Maintaining 4 resource maps per ISP also annoying (noting that IASR ID doesn't exist for 2024 ISP, and the mappings are already not internally consistent structures anyway)
+4)  Maintaining 4 resource maps per ISP also annoying (noting that IASR ID doesn't exist for 2024 ISP, and the mappings are already not internally consistent structures anyway)
 
 We already do (partial) mapping with - this ADR proposes a full ***explicit*** mapping for each ISP (or source) version
 
@@ -131,15 +131,15 @@ The parser would extract `reference_year` by a single `rpartition("_RefYear")`sp
 ### Notes:
 
 1) **Asymmetric parent storage.** Only `project` entries carry an explicit parent (`zone:` or `subregion:`, whichever is tightest). Every other entry type omits a parent field — the parent is resolved by looking the entry's `location` up in `topography.yaml`:
-	- **project**  `zone:` on the entry when the project sits inside a   formal REZ; otherwise `subregion:` as the tightest known parent.   Topography does not track projects, so resources must carry this.
-	- **zone** / **drez**: parent subregion is `topography["zones"][location]`.
-	- **subregion**: parent region is `topography["subregions"][location]`.
+  - **project**  `zone:` on the entry when the project sits inside a   formal REZ; otherwise `subregion:` as the tightest known parent.   Topography does not track projects, so resources must carry this.
+  - **zone** / **drez**: parent subregion is `topography["zones"][location]`.
+  - **subregion**: parent region is `topography["subregions"][location]`.
 
-	The resolver would be a single small python function (not yet implemented).
-	- **Schema validation could be implemented**:  (in a way that a parallels the resolver)
+  The resolver would be a single small python function (not yet implemented).
+  - **Schema validation could be implemented**:  (in a way that a parallels the resolver)
 
 2) **`iasr_aliases` is always a list, including the empty list**.  Idea is that keeps downstream code on a single branch and distinguishes "no IASR equivalent" (empty list) from "schema error" (missing key).
-	1) Chose  more neutral "iasr_alias" -  "iasr_id" is new (and maybe might change? - and there is no "iasr_id" in 2024 ISP, but there is human readable generator names). Ie. the type of identifier not encoded in scheme .
+  1) Chose  more neutral "iasr_alias" -  "iasr_id" is new (and maybe might change? - and there is no "iasr_id" in 2024 ISP, but there is human readable generator names). Ie. the type of identifier not encoded in scheme .
 
 
 ### 3. Topography YAML: normalised hierarchy
@@ -173,7 +173,7 @@ zones:
 ```
 
 Each subregion/zone entry's value is its parent in the hierarchy
-	- in future, if something else needed here (e.g. display names / human readable names can be easily added - some extra details includes as comments for now )
+  - in future, if something else needed here (e.g. display names / human readable names can be easily added - some extra details includes as comments for now )
 
 AEMO's non-REZ  zones (`N0`, `V0`) parent at a real  subregion like every other zone (AEMO attributes "NSW Non-REZ" to `CNSW` and "Victoria Non-REZ" to `VIC` in its new-entrants modelling
 inputs). This keeps every zone on the same `zone -> subregion -> region`
@@ -228,7 +228,7 @@ Unknown filenames raise `KeyError` rather than silently misclassifying. The mapp
 ### Negative
 
 - **Update cost.** New ISP versions require writing the resources  YAML up front.
-	- (though easier than updating regex!)
+  - (though easier than updating regex!)
 - **Redundancy on moderately common case.** For 1:1 traces, the key duplicates
   one entry of `iasr_aliases`. Acceptable redundancy
 - **Different YAML shapes.** Resources are entity-keyed; demand is  option-keyed; geography is a small dimension file.
@@ -245,8 +245,8 @@ Rejected because:
 
 - Most 2024 entries have no IASR  generator identifier, forcing the something else to be the key anyway.
 - The parser ingest path is filename → metadata
-	- (trace-keyed gives   that direct, IASR-keyed requires a reverse index).
-	- Checks and look up between YAML and `ZipFile.namelist()` are easier  when keyed by trace stem.
+  - (trace-keyed gives   that direct, IASR-keyed requires a reverse index).
+  - Checks and look up between YAML and `ZipFile.namelist()` are easier  when keyed by trace stem.
 
 The reverse index (alias → trace stems) needed by user-facing `get_data`is straight forward for uses that want to select processed data by IASR names or ID's (iasr_alias)
 
