@@ -11,8 +11,8 @@ This ADR *only* relates to format of trace *mapping* data - not it's downstream 
 
 ## Context
 
-The 2026 ISP trace data introduces new filename patterns (DREZs, Distributed Resources, split Q8 zones - see issue #36) that the existing regex-based metadata extractors
-misclassify (issue #40).
+The 2026 ISP trace data introduces new filename patterns (DREZs, Distributed Resources, split Q8 zones - see issue #36 ) that the existing regex-based metadata extractors
+misclassify (issue #40 ).
 
 Updating / integrating these new traces presents an opportunity to streamline and improve the current approach.
 
@@ -25,7 +25,7 @@ Characteristics of the current approach:
 - **Project/zone split.** The parser distinguishes "project"  (named generator) from "zone" (REZ) traces, but the CSVs   are all co-located in a single folder per reference year (the distinction is also re-derived from filename shape).
 - **Silent misclassification & misses classificiation.** Some patterns match
   *any* `*_RefYear<year>.csv`, so unrecognised filenames silently fall
-  through with `file_type="project"`, `resource_type="WIND"` (see # issue 36). Some trace
+  through with `file_type="project"`, `resource_type="WIND"` (see issue #36 ). Some trace
 
 ### Issues with current approach and new data:
 1) The 2026 data includes new  that don't fit the project/zone split cleanly: Distributed Resources are at ISP subregion resolution; DREZs are REZ-like but distinct.
