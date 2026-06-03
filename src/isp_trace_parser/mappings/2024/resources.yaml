@@ -2457,12 +2457,12 @@ T4_WFX_North_West_Tasmania_Coast:
 
 T5_WFL_North_East_Tasmania_Coast:
   location_type: zone
-  location: T5
+  location: T4
   resource_type: wind_offshore_floating
   iasr_aliases: []
 
 T5_WFX_North_East_Tasmania_Coast:
   location_type: zone
-  location: T5
+  location: T4
   resource_type: wind_offshore_fixed
   iasr_aliases: []
