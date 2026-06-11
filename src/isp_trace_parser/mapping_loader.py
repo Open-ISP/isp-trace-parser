@@ -2,6 +2,20 @@ from pathlib import Path
 
 from isp_trace_parser import mappings
 
+# Temporrary mapping that translates the YAML's resource_type vocabulary to the legacy
+# short codes still used downstream  for now (filters, parquet columns, output filenames).
+
+_RESOURCE_TYPE_CODES: dict[str, str] = {
+    "solar_sat": "SAT",
+    "solar_ffp": "FFP",
+    "solar_cst": "CST",
+    "wind": "wind",  # lowercase to match WindMetadataFilter Literal
+    "wind_high": "WH",
+    "wind_medium": "WM",
+    "wind_offshore_fixed": "WFX",
+    "wind_offshore_floating": "WFL",
+}
+
 
 def resource_file_metadata(
     files: list[Path],
@@ -22,7 +36,7 @@ def resource_file_metadata(
         file_metadata[path] = {
             "name": entry["location"],
             "reference_year": int(ref),
-            "resource_type": entry["resource_type"].removeprefix("solar_").upper(),
+            "resource_type": _RESOURCE_TYPE_CODES[entry["resource_type"]],
             "file_type": entry["location_type"],
         }
     return file_metadata
