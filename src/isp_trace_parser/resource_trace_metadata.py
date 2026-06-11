@@ -17,7 +17,7 @@ _RESOURCE_TYPE_CODES: dict[str, str] = {
 }
 
 
-def resource_file_metadata(
+def build(
     files: list[Path],
     version: str,
 ) -> dict[Path, dict[str, str]]:

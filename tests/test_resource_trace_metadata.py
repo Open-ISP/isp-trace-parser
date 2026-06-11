@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from isp_trace_parser.mapping_loader import resource_file_metadata
+from isp_trace_parser import resource_trace_metadata
 
 
-def test_resource_file_metadata():
+def test_build():
     """One test covers function logic compared with regex approach
 
     Solar zones / wind zones / extra reference years add no new code-path
@@ -13,7 +13,7 @@ def test_resource_file_metadata():
         Path("Adelaide_Desal_FFP_RefYear2011.csv"),
         Path("BLUFF1_RefYear2011.csv"),
     ]
-    metadata = resource_file_metadata(files, version="2024")
+    metadata = resource_trace_metadata.build(files, version="2024")
 
     assert metadata[files[0]] == {
         "name": "Adelaide_Desal",

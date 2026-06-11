@@ -6,8 +6,7 @@ from typing import Literal, Optional
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
-from isp_trace_parser import input_validation, mappings
-from isp_trace_parser.mapping_loader import resource_file_metadata
+from isp_trace_parser import input_validation, mappings, resource_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
     check_filter_by_metadata,
     get_all_filepaths,
