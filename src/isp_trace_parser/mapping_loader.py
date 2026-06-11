@@ -9,7 +9,7 @@ _RESOURCE_TYPE_CODES: dict[str, str] = {
     "solar_sat": "SAT",
     "solar_ffp": "FFP",
     "solar_cst": "CST",
-    "wind": "wind",  # lowercase to match WindMetadataFilter Literal
+    "wind": "WIND",  # lowercase to match WindMetadataFilter Literal
     "wind_high": "WH",
     "wind_medium": "WM",
     "wind_offshore_fixed": "WFX",
