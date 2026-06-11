@@ -134,7 +134,7 @@ def parse_wind_traces(
     parsed_directory = input_validation.parsed_directory(parsed_directory)
 
     files = get_all_filepaths(input_directory)
-    file_metadata = resource_file_metadata(files, version="2024")
+    file_metadata = resource_trace_metadata.build(files, version="2024")
 
     resource_mapping = mappings.load("resources")
     zone_name_mappings = {
