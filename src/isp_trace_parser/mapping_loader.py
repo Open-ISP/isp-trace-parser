@@ -9,7 +9,7 @@ _RESOURCE_TYPE_CODES: dict[str, str] = {
     "solar_sat": "SAT",
     "solar_ffp": "FFP",
     "solar_cst": "CST",
-    "wind": "WIND",  # lowercase to match WindMetadataFilter Literal
+    "wind": "WIND",
     "wind_high": "WH",
     "wind_medium": "WM",
     "wind_offshore_fixed": "WFX",
@@ -23,8 +23,8 @@ def resource_file_metadata(
 ) -> dict[Path, dict[str, str]]:
     """Build metadata for resource files by lookup in the resource mapping.
 
-    The mapping key is the trace stem — the filename with `_RefYear<year>.csv`
-    stripped — so `<stem>_RefYear<year>.csv` decomposes back to (stem, year).
+    The mapping key is the trace stem (the filename with `_RefYear<year>.csv`
+    stripped) so `<stem>_RefYear<year>.csv` decomposes back to (stem, year).
     """
 
     resource_mapping = mappings.load("resources", version=version)
