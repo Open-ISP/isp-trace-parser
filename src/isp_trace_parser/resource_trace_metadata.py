@@ -32,6 +32,8 @@ def build(
     file_metadata: dict[Path, dict[str, str]] = {}
     for path in files:
         stem, sep, ref = path.stem.rpartition("_RefYear")
+        if not sep or not ref.isdigit() or stem not in resource_mapping:
+            raise ValueError(f"Unexpected trace filename: {path.name}")
         entry = resource_mapping[stem]
         file_metadata[path] = {
             "name": entry["location"],
