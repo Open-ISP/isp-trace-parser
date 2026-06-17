@@ -20,7 +20,7 @@ _RESOURCE_TYPE_CODES: dict[str, str] = {
 def build(
     files: list[Path],
     version: str,
-) -> dict[Path, dict[str, str]]:
+) -> dict[Path, dict[str, str | int]]:
     """Build metadata for resource files by lookup in the resource mapping.
 
     The mapping key is the trace stem (the filename with `_RefYear<year>.csv`
