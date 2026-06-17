@@ -6,8 +6,7 @@ from typing import Literal, Optional
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
-from isp_trace_parser import input_validation, mappings
-from isp_trace_parser.metadata_extractors import extract_solar_trace_metadata
+from isp_trace_parser import input_validation, mappings, resource_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
     check_filter_by_metadata,
     get_all_filepaths,
@@ -134,7 +133,7 @@ def parse_solar_traces(
     parsed_directory = input_validation.parsed_directory(parsed_directory)
 
     files = get_all_filepaths(input_directory)
-    file_metadata = extract_metadata_for_all_solar_files(files)
+    file_metadata = resource_trace_metadata.build(files, version="2024")
     resource_mapping = mappings.load("resources")
 
     project_name_mapping = {
@@ -262,22 +261,6 @@ def write_output_solar_filename(metadata: dict[str, str]) -> str:
     m = metadata
     name = m["name"].replace(" ", "_")
     return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
-
-
-def extract_metadata_for_all_solar_files(
-    filepaths: list[Path],
-) -> dict[Path, dict[str, str]]:
-    """
-    Extracts metadata for all solar trace files.
-
-    Args:
-        filepaths: List of Path objects representing the solar trace files.
-
-    Returns:
-        A dictionary with filepaths as keys and metadata dicts as values.
-    """
-    file_metadata = [extract_solar_trace_metadata(str(f.name)) for f in filepaths]
-    return dict(zip(filepaths, file_metadata))
 
 
 def get_unique_resource_types_in_metadata(

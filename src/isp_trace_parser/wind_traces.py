@@ -6,8 +6,7 @@ from typing import Literal, Optional
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
-from isp_trace_parser import input_validation, mappings
-from isp_trace_parser.metadata_extractors import extract_wind_trace_metadata
+from isp_trace_parser import input_validation, mappings, resource_trace_metadata
 from isp_trace_parser.trace_restructure_helper_functions import (
     check_filter_by_metadata,
     filter_mapping_by_names_in_input_files,
@@ -135,7 +134,7 @@ def parse_wind_traces(
     parsed_directory = input_validation.parsed_directory(parsed_directory)
 
     files = get_all_filepaths(input_directory)
-    file_metadata = extract_metadata_for_all_wind_files(files)
+    file_metadata = resource_trace_metadata.build(files, version="2024")
 
     resource_mapping = mappings.load("resources")
     zone_name_mappings = {
@@ -318,16 +317,6 @@ def write_output_wind_zone_filename(metadata: dict) -> str:
     m = metadata
     name = m["name"].replace(" ", "_")
     return f"RefYear{m['reference_year']}_{name}_{m['resource_type']}.parquet"
-
-
-def extract_metadata_for_all_wind_files(filepaths: list) -> dict:
-    """
-    Extracts metadata for all wind trace files.
-
-    Returns a dict with filepaths as keys and metadata dicts as values.
-    """
-    file_metadata = [extract_wind_trace_metadata(str(f.name)) for f in filepaths]
-    return dict(zip(filepaths, file_metadata))
 
 
 def get_unique_resource_types_in_metadata(
