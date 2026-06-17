@@ -8,7 +8,13 @@
 # Valid filename are the product of these following options (
 # with subregion, sourced from topography.yaml) and reference_year.
 
-scenarios: [STEP_CHANGE, PROGRESSIVE_CHANGE, HYDROGEN_EXPORT]
+# scenarios: raw AEMO filename code -> IASR workbook display name.
+# Keys appear in the filename; values are used in output filenames and
+# in the `scenario` column of the parsed parquet.
+scenarios:
+  STEP_CHANGE: Step Change
+  PROGRESSIVE_CHANGE: Progressive Change
+  HYDROGEN_EXPORT: Green Energy Exports
 
 poe_levels: [POE10, POE50]
 
