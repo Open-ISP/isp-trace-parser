@@ -1,0 +1,15 @@
+# 2024 ISP demand trace metadata
+#(based on the 2024 traces and IASR workbook).
+#
+# 2024 AEMO demand trace filenames take the form:
+# <subregion>_RefYear_<year>_<scenario>_<poe>_<demand_type>.csv
+# e.g. CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv
+#
+# Valid filename are the product of these following options (
+# with subregion, sourced from topography.yaml) and reference_year.
+
+scenarios: [STEP_CHANGE, PROGRESSIVE_CHANGE, HYDROGEN_EXPORT]
+
+poe_levels: [POE10, POE50]
+
+demand_types: [OPSO_MODELLING, OPSO_MODELLING_PVLITE, PV_TOT]
