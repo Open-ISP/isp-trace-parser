@@ -170,6 +170,8 @@ def restructure_demand_file(
 
     Args:
         input_filepath: Path object representing the input demand trace file.
+        all_input_file_metadata: Pre-built dict mapping every input filepath to its metadata (subregion,
+            reference_year, scenario, poe, demand_type).
         demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
         output_directory: Directory where restructured files will be saved.
         filters: DemandMetadataFilter or None, specifies which traces to parse based on metadata.
