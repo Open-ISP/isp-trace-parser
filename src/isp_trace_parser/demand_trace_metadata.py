@@ -12,26 +12,26 @@ def build(
     The demand YAML is option-keyed, so `_expand_lookup` first expands the
     dimensions into a `(location_prefix, dimensions_suffix)`-keyed dict;
     each filename then decomposes into those two literal slices (either
-    side of `_RefYear_<year>_`) for a single lookup.
+    side of `_RefYear_<refyear>_`) for a single lookup.
     """
     lookup = _expand_lookup(version)
 
     file_metadata: dict[Path, dict[str, str | int]] = {}
     for path in files:
         location_prefix, _, after = path.stem.partition("_RefYear_")
-        year, _, dimensions_suffix = after.partition("_")
+        refyear, _, dimensions_suffix = after.partition("_")
         key = (location_prefix, dimensions_suffix)
-        if not year.isdigit() or key not in lookup:
+        if not refyear.isdigit() or key not in lookup:
             raise ValueError(f"Unexpected trace filename: {path.name}")
-        file_metadata[path] = {**lookup[key], "reference_year": int(year)}
+        file_metadata[path] = {**lookup[key], "reference_year": int(refyear)}
     return file_metadata
 
 
 def _expand_lookup(version: str) -> dict[tuple[str, str], dict[str, str]]:
-    """Expand the demand dimensions into a year-agnostic lookup.
+    """Expand the demand dimensions into a refyear-agnostic lookup.
 
     Keyed by `(location_prefix, dimensions_suffix)` — the two literal
-    slices of the filename either side of `_RefYear_<year>_`. For 2024,
+    slices of the filename either side of `_RefYear_<refyear>_`. For 2024,
     `location_prefix` is the subregion and `dimensions_suffix` is
     `<scenario>_<poe>_<demand_type>`. `reference_year` is added by `build`.
     """
