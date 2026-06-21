@@ -10,39 +10,40 @@ def build(
     """Build metadata for demand files by lookup in the demand mapping.
 
     The demand YAML is option-keyed, so `_expand_lookup` first expands the
-    dimensions into a stem-keyed dict; each filename then decomposes
-    into (subregion, year, scenario_poe_demand_type) for a single lookup.
+    dimensions into a `(location_prefix, dimensions_suffix)`-keyed dict;
+    each filename then decomposes into those two literal slices (either
+    side of `_RefYear_<year>_`) for a single lookup.
     """
     lookup = _expand_lookup(version)
 
     file_metadata: dict[Path, dict[str, str | int]] = {}
     for path in files:
-        subregion, sep, after = path.stem.partition("_RefYear_")
-        if not sep:
+        location_prefix, _, after = path.stem.partition("_RefYear_")
+        year, _, dimensions_suffix = after.partition("_")
+        key = (location_prefix, dimensions_suffix)
+        if not year.isdigit() or key not in lookup:
             raise ValueError(f"Unexpected trace filename: {path.name}")
-        year_str, _, rest = after.partition("_")
-        key = f"{subregion}_{rest}"
-        if not year_str.isdigit() or not rest or key not in lookup:
-            raise ValueError(f"Unexpected trace filename: {path.name}")
-        file_metadata[path] = {**lookup[key], "reference_year": int(year_str)}
+        file_metadata[path] = {**lookup[key], "reference_year": int(year)}
     return file_metadata
 
 
-def _expand_lookup(version: str) -> dict[str, dict[str, str]]:
-    """Expand the demand dimensions into a year-agnostic stem-keyed dict.
+def _expand_lookup(version: str) -> dict[tuple[str, str], dict[str, str]]:
+    """Expand the demand dimensions into a year-agnostic lookup.
 
-    Keyed by `<subregion>_<scenario>_<poe>_<demand_type>` (i.e. the stem
-    with `_RefYear_<year>_` removed). `reference_year` is added by `build`.
+    Keyed by `(location_prefix, dimensions_suffix)` — the two literal
+    slices of the filename either side of `_RefYear_<year>_`. For 2024,
+    `location_prefix` is the subregion and `dimensions_suffix` is
+    `<scenario>_<poe>_<demand_type>`. `reference_year` is added by `build`.
     """
     demand = mappings.load("demand", version=version)
     topography = mappings.load("topography", version=version)
 
-    lookup: dict[str, dict[str, str]] = {}
+    lookup: dict[tuple[str, str], dict[str, str]] = {}
     for subregion in topography["subregions"]:
-        for scenario in demand["scenarios"].keys():
+        for scenario in demand["scenarios"]:
             for poe in demand["poe_levels"]:
                 for demand_type in demand["demand_types"]:
-                    key = f"{subregion}_{scenario}_{poe}_{demand_type}"
+                    key = (subregion, f"{scenario}_{poe}_{demand_type}")
                     lookup[key] = {
                         "subregion": subregion,
                         "scenario": scenario,
