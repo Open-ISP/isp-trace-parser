@@ -129,6 +129,7 @@ def parse_demand_traces(
     """
     input_directory = input_validation.input_directory(input_directory)
     parsed_directory = input_validation.parsed_directory(parsed_directory)
+    parsed_directory.mkdir(parents=True, exist_ok=True)
 
     files = get_all_filepaths(input_directory)
     file_metadata = demand_trace_metadata.build(files, version="2024")
