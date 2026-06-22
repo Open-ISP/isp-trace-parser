@@ -194,9 +194,7 @@ def restructure_demand_file(
     """
     file_metadata = dict(all_input_file_metadata[input_filepath])
 
-    file_metadata["scenario"] = get_save_scenario_for_demand_trace(
-        file_metadata, demand_scenario_mapping
-    )
+    file_metadata["scenario"] = demand_scenario_mapping[file_metadata["scenario"]]
 
     parse_file = check_filter_by_metadata(file_metadata, filters)
     if parse_file:
