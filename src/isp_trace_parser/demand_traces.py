@@ -70,17 +70,16 @@ def parse_demand_traces(
     contains metadata in the following format "<subregionID>_RefYear_<reference year>_<scenario>_<poe>_<data type>.csv".
     For example, "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv".
 
-    The trace parser reformats the data and stores the data files in parquet format with metadata columns,
-    which match the IASR workbook conventions.
+    The trace parser reformats the data and stores the data files in parquet format with metadata columns.
     The data format is changed to include a column "datetime" specifying the end of the half hour period
     the measurement is for in the format %Y-%m-%d %H:%M:%S, a column "value" specifying the measurement
     value, and metadata columns (subregion, reference_year, scenario, poe, demand_type). The scenario
-    column contains the mapped scenario name from the IASR workbook. Files are saved with a new naming
-    convention: "<mapped_scenario>_RefYear<reference_year>_<subregion>_<poe>_<demand_type>.parquet".
+    column contains the mapped scenario name from the IASR workbook. Output files keep the AEMO input
+    stem, with the .csv suffix replaced by .parquet.
 
     For the CSV example above, the parsed filename would be:
 
-        "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+        "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
 
     By default, all trace data in the input directory is parsed. However, a DemandMetadataFilter can be provided
     to filter the traces based on metadata. If a metadata type is present in the filter then only traces with a
@@ -162,11 +161,13 @@ def restructure_demand_file(
     filters: DemandMetadataFilter | None = None,
 ) -> None:
     """
-    Restructures a single demand trace file and saves it in a parquet format.
+    Restructures a single demand trace file and saves it as parquet.
 
-    This function processes a demand trace file, restructures and saves it in a new format, with the original
-    input filename stem and a .parquet extension. It handles the mapping of scenario names and applies filters
-    if provided.
+    The output filename is the AEMO input stem with the .csv suffix replaced by
+    .parquet (e.g. CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv
+    becomes CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet).
+    The scenario *column* is currently  translated to the IASR workbook name; filters
+    are applied before any reading.
 
     Args:
         input_filepath: Path object representing the input demand trace file.
