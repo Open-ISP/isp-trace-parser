@@ -137,7 +137,6 @@ def parse_demand_traces(
 
     partial_func = functools.partial(
         restructure_demand_file,
-        all_input_file_metadata=file_metadata,
         demand_scenario_mapping=demand_scenario_mapping,
         output_directory=parsed_directory,
         filters=filters,
@@ -146,16 +145,19 @@ def parse_demand_traces(
     if use_concurrency:
         max_workers = os.cpu_count() - 2
 
-        Parallel(n_jobs=max_workers)(delayed(partial_func)(file) for file in files)
+        Parallel(n_jobs=max_workers)(
+            delayed(partial_func)(file, metadata)
+            for file, metadata in file_metadata.items()
+        )
 
     else:
-        for file in files:
-            partial_func(file)
+        for file, metadata in file_metadata.items():
+            partial_func(file, metadata)
 
 
 def restructure_demand_file(
     input_filepath: Path,
-    all_input_file_metadata: dict[Path, dict[str, str | int]],
+    file_metadata: dict[str, str | int],
     demand_scenario_mapping: dict[str, str],
     output_directory: Path,
     filters: DemandMetadataFilter | None = None,
@@ -171,7 +173,7 @@ def restructure_demand_file(
 
     Args:
         input_filepath: Path object representing the input demand trace file.
-        all_input_file_metadata: Metadata for all input files.
+        file_metadata: Metadata for this trace file.
         demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
         output_directory: Directory where restructured files will be saved.
         filters: DemandMetadataFilter or None, specifies which traces to parse based on metadata.
@@ -192,8 +194,6 @@ def restructure_demand_file(
 
         # This will process the input file and save it in parquet format in the specified output directory
     """
-    file_metadata = dict(all_input_file_metadata[input_filepath])
-
     file_metadata["scenario"] = demand_scenario_mapping[file_metadata["scenario"]]
 
     parse_file = check_filter_by_metadata(file_metadata, filters)
@@ -202,9 +202,7 @@ def restructure_demand_file(
         trace = trace_formatter(trace)
         trace = _frame_with_metadata(trace, file_metadata)
 
-        save_filepath = output_directory / input_filepath.with_suffix(".parquet").name
-        save_filepath.parent.mkdir(parents=True, exist_ok=True)
-
+        save_filepath = output_directory / f"{input_filepath.stem}.parquet"
         trace.write_parquet(save_filepath)
 
 
