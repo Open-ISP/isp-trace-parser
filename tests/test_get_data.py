@@ -149,7 +149,7 @@ def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
-        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+        / "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
     )
 
     start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type="fy")
@@ -182,7 +182,7 @@ def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path):
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
-        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+        / "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
     )
 
     test_df = (
@@ -366,7 +366,7 @@ def test_demand_single_reference_year(parsed_trace_trace_directory: Path):
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
-        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+        / "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
     )
 
     start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type="fy")
@@ -399,7 +399,7 @@ def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path):
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
-        / "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
+        / "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
     )
 
     test_df = (
