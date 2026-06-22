@@ -7,8 +7,7 @@ import polars as pl
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
 
-from isp_trace_parser import input_validation, mappings
-from isp_trace_parser.metadata_extractors import extract_demand_trace_metadata
+from isp_trace_parser import demand_trace_metadata, input_validation, mappings
 from isp_trace_parser.trace_restructure_helper_functions import (
     check_filter_by_metadata,
     get_all_filepaths,
@@ -133,11 +132,13 @@ def parse_demand_traces(
     parsed_directory = input_validation.parsed_directory(parsed_directory)
 
     files = get_all_filepaths(input_directory)
+    file_metadata = demand_trace_metadata.build(files, version="2024")
 
-    demand_scenario_mapping = mappings.load("demand_scenario_mapping")
+    demand_scenario_mapping = mappings.load("demand", version="2024")["scenarios"]
 
     partial_func = functools.partial(
         restructure_demand_file,
+        all_input_file_metadata=file_metadata,
         demand_scenario_mapping=demand_scenario_mapping,
         output_directory=parsed_directory,
         filters=filters,
@@ -155,6 +156,7 @@ def parse_demand_traces(
 
 def restructure_demand_file(
     input_filepath: Path,
+    all_input_file_metadata: dict[Path, dict[str, str | int]],
     demand_scenario_mapping: dict[str, str],
     output_directory: Path,
     filters: DemandMetadataFilter | None = None,
@@ -168,6 +170,7 @@ def restructure_demand_file(
 
     Args:
         input_filepath: Path object representing the input demand trace file.
+        all_input_file_metadata: Metadata for all input files.
         demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
         output_directory: Directory where restructured files will be saved.
         filters: DemandMetadataFilter or None, specifies which traces to parse based on metadata.
@@ -188,7 +191,7 @@ def restructure_demand_file(
 
         # This will process the input file and save it in parquet format in the specified output directory
     """
-    file_metadata = extract_demand_trace_metadata(input_filepath.name)
+    file_metadata = dict(all_input_file_metadata[input_filepath])
 
     file_metadata["scenario"] = get_save_scenario_for_demand_trace(
         file_metadata, demand_scenario_mapping
@@ -255,19 +258,3 @@ def write_new_demand_filename(metadata: dict[str, str]) -> str:
     scenario = m["scenario"].replace(" ", "_")
 
     return f"{scenario}_RefYear{m['reference_year']}_{subregion}_{m['poe']}_{m['demand_type']}.parquet"
-
-
-def extract_metadata_for_all_demand_files(
-    filenames: list[Path],
-) -> dict[Path, dict[str, str]]:
-    """
-    Extracts metadata for all demand trace files.
-
-    Args:
-        filenames: List of Path objects representing the demand trace files.
-
-    Returns:
-        A dictionary with filepaths as keys and metadata dicts as values.
-    """
-    file_metadata = [extract_demand_trace_metadata(str(f.name)) for f in filenames]
-    return dict(zip(filenames, file_metadata))
