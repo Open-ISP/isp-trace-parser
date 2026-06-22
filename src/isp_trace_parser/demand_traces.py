@@ -169,12 +169,13 @@ def restructure_demand_file(
     The output filename is the AEMO input stem with the .csv suffix replaced by
     .parquet (e.g. CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv
     becomes CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet).
-    The scenario *column* is currently  translated to the IASR workbook name; filters
-    are applied before any reading.
+    The scenario column is translated to the IASR workbook name before filtering,
+    so filter values must use the IASR names. `file_metadata` is mutated in place
+    to hold the translated scenario (for now - may change).
 
     Args:
         input_filepath: Path object representing the input demand trace file.
-        file_metadata: Metadata for this trace file.
+        file_metadata: Metadata for this trace file (sceanrio name mutated in place).
         demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
         output_directory: Directory where restructured files will be saved.
         filters: DemandMetadataFilter or None, specifies which traces to parse based on metadata.
@@ -185,10 +186,19 @@ def restructure_demand_file(
     Example:
         >>> input_filepath = Path('CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv')
 
+        >>> file_metadata = {
+        ...     'subregion': 'CNSW',
+        ...     'scenario': 'HYDROGEN_EXPORT',
+        ...     'poe': 'POE10',
+        ...     'demand_type': 'OPSO_MODELLING',
+        ...     'reference_year': 2011,
+        ... }
+
         >>> demand_scenario_mapping = {'HYDROGEN_EXPORT': 'Green Energy Exports'}
 
         >>> restructure_demand_file(
         ...     input_filepath=input_filepath,
+        ...     file_metadata=file_metadata,
         ...     demand_scenario_mapping=demand_scenario_mapping,
         ...     output_directory='/path/to/output'
         ... )  # doctest: +SKIP
