@@ -222,19 +222,3 @@ def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFra
         poe=pl.lit(file_metadata["poe"]),
         demand_type=pl.lit(file_metadata["demand_type"]),
     )
-
-
-def get_save_scenario_for_demand_trace(
-    file_metadata: dict[str, str], demand_scenario_mapping: dict[str, str]
-) -> str:
-    """
-    Maps the raw scenario name to the IASR workbook scenario name.
-
-    Args:
-        file_metadata: Dictionary containing metadata for the demand trace file.
-        demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
-
-    Returns:
-        The mapped scenario name as a string.
-    """
-    return demand_scenario_mapping[file_metadata["scenario"]]
