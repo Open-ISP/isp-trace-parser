@@ -203,9 +203,7 @@ def restructure_demand_file(
         trace = trace_formatter(trace)
         trace = _frame_with_metadata(trace, file_metadata)
 
-        save_filepath = output_directory / write_new_demand_filename(
-            metadata=file_metadata
-        )
+        save_filepath = output_directory / input_filepath.with_suffix(".parquet").name
         save_filepath.parent.mkdir(parents=True, exist_ok=True)
 
         trace.write_parquet(save_filepath)
@@ -241,20 +239,3 @@ def get_save_scenario_for_demand_trace(
         The mapped scenario name as a string.
     """
     return demand_scenario_mapping[file_metadata["scenario"]]
-
-
-def write_new_demand_filename(metadata: dict[str, str]) -> str:
-    """
-    Generates the output filename for a demand trace file.
-
-    Args:
-        metadata: Dictionary containing metadata for the demand trace file.
-
-    Returns:
-        A string representing the filename.
-    """
-    m = metadata
-    subregion = m["subregion"].replace(" ", "_")
-    scenario = m["scenario"].replace(" ", "_")
-
-    return f"{scenario}_RefYear{m['reference_year']}_{subregion}_{m['poe']}_{m['demand_type']}.parquet"
