@@ -169,9 +169,9 @@ def restructure_demand_file(
     The output filename is the AEMO input stem with the .csv suffix replaced by
     .parquet (e.g. CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv
     becomes CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet).
-    The scenario column is translated to the IASR workbook name before filtering,
-    so filter values must use the IASR names. `file_metadata` is mutated in place
-    to hold the translated scenario (for now - may change).
+
+    `file_metadata` is changed in place to hold the translated scenario (for including
+    and storing within the dataframe).
 
     Args:
         input_filepath: Path object representing the input demand trace file.
