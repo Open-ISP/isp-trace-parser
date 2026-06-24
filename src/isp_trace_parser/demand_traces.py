@@ -75,7 +75,7 @@ def parse_demand_traces(
     the measurement is for in the format %Y-%m-%d %H:%M:%S, a column "value" specifying the measurement
     value, and metadata columns (subregion, reference_year, scenario, poe, demand_type). The scenario
     column contains the mapped scenario name from the IASR workbook. Output files keep the AEMO input
-    stem, with the .csv suffix replaced by .parquet.
+    filename, with the .csv suffix replaced by .parquet.
 
     For the CSV example above, the parsed filename would be:
 
@@ -166,7 +166,7 @@ def restructure_demand_file(
     """
     Restructures a single demand trace file and saves it as parquet.
 
-    The output filename is the AEMO input stem with the .csv suffix replaced by
+    The output filename is the AEMO input filename with the .csv suffix replaced by
     .parquet (e.g. CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv
     becomes CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet).
 
@@ -175,7 +175,7 @@ def restructure_demand_file(
 
     Args:
         input_filepath: Path object representing the input demand trace file.
-        file_metadata: Metadata for this trace file (sceanrio name mutated in place).
+        file_metadata: Metadata for this trace file (scenario name mutated in place).
         demand_scenario_mapping: Dictionary mapping raw scenario names to IASR workbook scenario names.
         output_directory: Directory where restructured files will be saved.
         filters: DemandMetadataFilter or None, specifies which traces to parse based on metadata.
