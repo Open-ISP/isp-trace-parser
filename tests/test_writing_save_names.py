@@ -51,17 +51,3 @@ def test_write_wind_save_names():
     )
 
     assert str(save_filepath) == "RefYear1_a_x.parquet"
-
-
-def test_write_demand_save_names():
-    meta_data = {
-        "scenario": "a",
-        "reference_year": "1",
-        "subregion": "x",
-        "poe": "poe10",
-        "demand_type": "y",
-    }
-
-    save_filepath = isp_trace_parser.demand_traces.write_new_demand_filename(meta_data)
-
-    assert str(save_filepath) == "a_RefYear1_x_poe10_y.parquet"

@@ -14,9 +14,7 @@ TEST_DATA = Path(__file__).parent / "test_data"
 def test_demand_trace_parsing(use_concurrency: bool):
     """Test demand trace parsing produces expected parquet output."""
     test_demand_csv_directory = TEST_DATA / "demand"
-    expected_filename = (
-        "Green_Energy_Exports_RefYear2011_CNSW_POE10_OPSO_MODELLING.parquet"
-    )
+    expected_filename = "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
     test_demand_output_parquet = TEST_DATA / "output" / expected_filename
 
     with tempfile.TemporaryDirectory() as tmp_parsed_directory:
