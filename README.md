@@ -63,7 +63,9 @@ The zipped data is also archived in publicly accessible object storage ([data.op
 ```python
 from isp_trace_parser.remote import fetch_trace_data
 
-fetch_trace_data("full", dataset_src="isp_2024", save_directory="data/archive", data_format="archive")
+fetch_trace_data(
+    "full", dataset_src="isp_2024", save_directory="data/archive", data_format="archive"
+)
 ```
 
 This will download all the archived zip files into the provided directory with the following structure:
@@ -84,7 +86,12 @@ Trace data that has been processed into the hive-partitioned format is also avai
 from isp_trace_parser.remote import fetch_trace_data
 
 # Download example dataset (2018 reference year only)
-fetch_trace_data("example", dataset_src="isp_2024", save_directory="data/trace_data", data_format="processed")
+fetch_trace_data(
+    "example",
+    dataset_src="isp_2024",
+    save_directory="data/trace_data",
+    data_format="processed",
+)
 ```
 
 This will download the processed parquet files with the following structure:
@@ -147,42 +154,42 @@ from isp_trace_parser import (
     parse_wind_traces,
     WindMetadataFilter,
     parse_demand_traces,
-    DemandMetadataFilter
+    DemandMetadataFilter,
 )
 
 # Note: to not filter on a component of the metadata it can be excluded from the filter definition.
 
 filters = SolarMetadataFilter(file_type=["project"])
 parse_solar_traces(
-    input_directory='<path/to/aemo/solar/traces>',
-    parsed_directory='<path/to/store/project>',
-    filters = filters,
+    input_directory="<path/to/aemo/solar/traces>",
+    parsed_directory="<path/to/store/project>",
+    filters=filters,
 )
 
 filters = WindMetadataFilter(file_type=["project"])
 parse_wind_traces(
-    input_directory='<path/to/aemo/wind/traces>',
-    parsed_directory='<path/to/store/project>',
-    filters = filters,
+    input_directory="<path/to/aemo/wind/traces>",
+    parsed_directory="<path/to/store/project>",
+    filters=filters,
 )
 
 filters = SolarMetadataFilter(file_type=["zone"])
 parse_solar_traces(
-    input_directory='<path/to/aemo/solar/traces>',
-    parsed_directory='<path/to/store/zone>',
-    filters = filters,
+    input_directory="<path/to/aemo/solar/traces>",
+    parsed_directory="<path/to/store/zone>",
+    filters=filters,
 )
 
 filters = WindMetadataFilter(file_type=["zone"])
 parse_wind_traces(
-    input_directory='<path/to/aemo/wind/traces>',
-    parsed_directory='<path/to/store/zone>',
-    filters = filters,
+    input_directory="<path/to/aemo/wind/traces>",
+    parsed_directory="<path/to/store/zone>",
+    filters=filters,
 )
 
 parse_demand_traces(
-    input_directory='<path/to/aemo/demand/traces>',
-    parsed_directory='<path/to/store/demand>',
+    input_directory="<path/to/aemo/demand/traces>",
+    parsed_directory="<path/to/store/demand>",
 )
 ```
 
@@ -196,14 +203,18 @@ The following code illustrates how the parsed parquet files can be consolidated 
 from isp_trace_parser import optimise_parquet
 
 # For optimising `zone` and `project`, suggest partitioning on reference year
-optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/zone|project>",
-                                             output_directory="<path/to/store/optimised_zone|optimised_project>",
-                                             partition_cols=["reference_year"])
+optimise_parquet.partition_traces_by_columns(
+    input_directory="<path/to/store/zone|project>",
+    output_directory="<path/to/store/optimised_zone|optimised_project>",
+    partition_cols=["reference_year"],
+)
 
 # For optimising `demand`, suggest partitioning on scenario and reference year
-optimise_parquet.partition_traces_by_columns(input_directory="<path/to/store/demand>",
-                                             output_directory="<path/to/store/optimised_demand>",
-                                             partition_cols=["scenario", "reference_year"])
+optimise_parquet.partition_traces_by_columns(
+    input_directory="<path/to/store/demand>",
+    output_directory="<path/to/store/optimised_demand>",
+    partition_cols=["scenario", "reference_year"],
+)
 ```
 
 
@@ -228,11 +239,9 @@ from isp_trace_parser import get_data
 
 # Define location of parsed data.
 
-parsed_workbook_data = Path(
-    "/path/to/parsed/workbook/data"
-)
+parsed_workbook_data = Path("/path/to/parsed/workbook/data")
 
-parsed_solar_data = Path('path/to/parsed/solar/traces')
+parsed_solar_data = Path("path/to/parsed/solar/traces")
 
 # Wind and solar generator names are stored across four IASR workbook tables
 
@@ -259,30 +268,29 @@ generator_tables = [
     existing_generators,
     committed_generators,
     anticipated_generators,
-    additional_generators
+    additional_generators,
 ]
 
 for table in generator_tables:
-    table.rename(
-        columns={table.columns.values[0]: "Generator"},
-        inplace=True
-    )
+    table.rename(columns={table.columns.values[0]: "Generator"}, inplace=True)
 
 generator_data = pd.concat(generator_tables)
 
 
 # The names of solar and wind projects/generators can be retrieved by filtering
 
-solar_generators = generator_data[generator_data['Technology type'] == 'Large scale Solar PV']
+solar_generators = generator_data[
+    generator_data["Technology type"] == "Large scale Solar PV"
+]
 
-solar_generator_names = list(solar_generators['Generator'])
+solar_generator_names = list(solar_generators["Generator"])
 
 print(solar_generator_names)
 # ['Avonlie Solar Farm', 'Beryl Solar Farm', 'Bomen Solar Farm', 'Broken Hill Solar Farm' . . .
 
-wind_generators = generator_data[generator_data['Technology type'] == 'Wind']
+wind_generators = generator_data[generator_data["Technology type"] == "Wind"]
 
-wind_generator_names = list(wind_generators['Generator'])
+wind_generator_names = list(wind_generators["Generator"])
 
 print(wind_generator_names)
 # ['Bango 973 Wind Farm', 'Bango 999 Wind Farm', 'Boco Rock Wind Farm', 'Bodangora Wind Farm' . . .
@@ -295,9 +303,8 @@ solar_traces = get_data.get_project_single_reference_year(
     end_year=2030,
     reference_year=2011,
     project=solar_generator_names,
-    directory="parsed_project_data"
-    )
-
+    directory="parsed_project_data",
+)
 ```
 
 </details>
@@ -316,32 +323,32 @@ from isp_trace_parser import get_data
 
 # Define location of parsed data.
 
-parsed_workbook_data = Path(
-    "/path/to/parsed/workbook/data"
-)
+parsed_workbook_data = Path("/path/to/parsed/workbook/data")
 
-parsed_wind_data = Path('path/to/parsed/wind/traces')
+parsed_wind_data = Path("path/to/parsed/wind/traces")
 
 # ISP REZ IDs and wind resource types can be retrieved from the parsed workbook data
 
-build_limits = pd.read_csv(
-    parsed_workbook_data / Path("initial_build_limits.csv")
-)
+build_limits = pd.read_csv(parsed_workbook_data / Path("initial_build_limits.csv"))
 
 # If a unit has a non-nan offshore floating build limit then it will have the wind
 # resource qualities WFL and WFX (wind offshore floating and wind offshore fixed).
 
-offshore_rezs = build_limits[~build_limits["Wind generation total limits (MW)_Offshore -floating"].isna()]
+offshore_rezs = build_limits[
+    ~build_limits["Wind generation total limits (MW)_Offshore -floating"].isna()
+]
 
-print(list(offshore_rezs['REZ ID']))
+print(list(offshore_rezs["REZ ID"]))
 # ['N10', 'N11', 'V7', 'V8', 'S10', 'T4']
 
 # If a unit has a nonzero high build limit then it will be an on shore REZ and have the wind
 # resource qualities WH and WM (wind high and wind medium).
 
-onshore_rezs = build_limits[build_limits["Wind generation total limits (MW)_High"] > 0.1]
+onshore_rezs = build_limits[
+    build_limits["Wind generation total limits (MW)_High"] > 0.1
+]
 
-print(list(onshore_rezs['REZ ID']))
+print(list(onshore_rezs["REZ ID"]))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
 # These sets of onshore and offshore REZ IDs can the be used to retrieve a dataframes containing all relevant traces, which can be filtered by REZ name using the 'zone' column"
@@ -350,20 +357,19 @@ wind_offshore_rez_traces = get_data.get_zone_single_reference_year(
     start_year=2025,
     end_year=2026,
     reference_year=2011,
-    zone=list(offshore_rezs['REZ ID']),
+    zone=list(offshore_rezs["REZ ID"]),
     resource_type="WFL",
-    directory="parsed_zone_data"
+    directory="parsed_zone_data",
 )
 
 wind_onshore_rez_traces = get_data.get_zone_single_reference_year(
     start_year=2025,
     end_year=2026,
     reference_year=2011,
-    zone=list(onshore_rezs['REZ ID']),
+    zone=list(onshore_rezs["REZ ID"]),
     resource_type="WH",
-    directory="parsed_zone_data"
+    directory="parsed_zone_data",
 )
-
 ```
 </details>
 
@@ -381,24 +387,22 @@ from isp_trace_parser import get_data
 
 # Define location of parsed data.
 
-parsed_workbook_data = Path(
-    "/path/to/parsed/workbook/data"
-)
+parsed_workbook_data = Path("/path/to/parsed/workbook/data")
 
-parsed_solar_data = Path('path/to/parsed/wind/traces')
+parsed_solar_data = Path("path/to/parsed/wind/traces")
 
 # ISP REZ IDs and types can be retrieved from the parsed workbook data
 
-build_limits = pd.read_csv(
-    parsed_workbook_data / Path("initial_build_limits.csv")
-)
+build_limits = pd.read_csv(parsed_workbook_data / Path("initial_build_limits.csv"))
 
 # If a unit has a nonzero high build limit then it will be an onshore REZ and have the
 # solar traces for SAT (single axis tracking) and CST (concentrating solar thermal).
 
-onshore_solar_rezs = build_limits[build_limits["Solar PV plus Solar thermal Limits (MW)_Solar"] > 0.1]
+onshore_solar_rezs = build_limits[
+    build_limits["Solar PV plus Solar thermal Limits (MW)_Solar"] > 0.1
+]
 
-print(list(onshore_solar_rezs['REZ ID']))
+print(list(onshore_solar_rezs["REZ ID"]))
 # ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', . . .
 
 # The set of REZ IDs can be used to retrieves a dataframe containing all REZ traces, which can be filtered by REZ name using the 'zone' column"
@@ -407,11 +411,10 @@ single_axis_tracking_traces = get_data.get_zone_single_reference_year(
     start_year=2025,
     end_year=2026,
     reference_year=2011,
-    zone=onshore_solar_rezs['REZ ID'],
+    zone=onshore_solar_rezs["REZ ID"],
     resource_type="SAT",
-    directory="parsed_zone_data"
+    directory="parsed_zone_data",
 )
-
 ```
 
 </details>
@@ -430,17 +433,13 @@ from isp_trace_parser import get_data
 
 # Define location of parsed data.
 
-parsed_workbook_data = Path(
-    "/path/to/parsed/workbook/data"
-)
+parsed_workbook_data = Path("/path/to/parsed/workbook/data")
 
-parsed_demand_data  = Path('path/to/parsed/demand/traces')
+parsed_demand_data = Path("path/to/parsed/demand/traces")
 
 # ISP Subregion ID can be retrieved from renewable energy zones table
 
-rez_definitions = pd.read_csv(
-    parsed_workbook_data / Path("renewable_energy_zones.csv")
-)
+rez_definitions = pd.read_csv(parsed_workbook_data / Path("renewable_energy_zones.csv"))
 
 subregions = list(set(rez_definitions["ISP Sub-region"]))
 print(subregions)
@@ -456,8 +455,8 @@ demand_trace = get_demand_single_reference_year(
     subregion=subregions,
     demand_type="OPSO_MODELLING",
     poe="POE50",
-    directory="parsed_data/demand"
-     )
+    directory="parsed_data/demand",
+)
 ```
 
 </details>
@@ -473,18 +472,22 @@ Once trace data has been parsed it can also queried using legacy API functionali
 ```python
 from isp_trace_parser import get_data
 
-solar_project_trace_single_reference_year = get_data.solar_project_single_reference_year(
-    start_year=2022,
-    end_year=2024,
-    reference_year=2011,
-    project='Adelaide Desalination Plant Solar Farm',
-    directory='example_project_data/'
+solar_project_trace_single_reference_year = (
+    get_data.solar_project_single_reference_year(
+        start_year=2022,
+        end_year=2024,
+        reference_year=2011,
+        project="Adelaide Desalination Plant Solar Farm",
+        directory="example_project_data/",
+    )
 )
 
-solar_project_trace_many_reference_years = get_data.solar_project_multiple_reference_years(
-    reference_years={2022: 2011, 2024: 2012},
-    project='Adelaide Desalination Plant Solar Farm',
-    directory='example_project_data/'
+solar_project_trace_many_reference_years = (
+    get_data.solar_project_multiple_reference_years(
+        reference_years={2022: 2011, 2024: 2012},
+        project="Adelaide Desalination Plant Solar Farm",
+        directory="example_project_data/",
+    )
 )
 ```
 
@@ -496,20 +499,21 @@ solar_project_trace_many_reference_years = get_data.solar_project_multiple_refer
 
 ```python
 from isp_trace_parser import get_data
+
 solar_rez_trace_single_reference_years = get_data.solar_area_single_reference_year(
     start_year=2022,
     end_year=2024,
     reference_year=2011,
-    area='Q1',
-    technology='SAT',
-    directory='example_rez_data/'
+    area="Q1",
+    technology="SAT",
+    directory="example_rez_data/",
 )
 
 solar_rez_trace_many_reference_years = get_data.solar_area_multiple_reference_years(
     reference_years={2022: 2011, 2024: 2012},
-    area='Q1',
-    technology='SAT',
-    directory='example_rez_data/'
+    area="Q1",
+    technology="SAT",
+    directory="example_rez_data/",
 )
 ```
 
@@ -521,18 +525,21 @@ solar_rez_trace_many_reference_years = get_data.solar_area_multiple_reference_ye
 
 ```python
 from isp_trace_parser import get_data
+
 wind_project_trace_single_reference_years = get_data.wind_project_single_reference_year(
     start_year=2022,
     end_year=2024,
     reference_year=2011,
-    project='Bango 973 Wind Farm',
-    directory='parsed_project_data/'
+    project="Bango 973 Wind Farm",
+    directory="parsed_project_data/",
 )
 
-wind_project_trace_many_reference_years = get_data.wind_project_multiple_reference_years(
-    reference_years={2022: 2011, 2024: 2012},
-    project='Bango 973 Wind Farm',
-    directory='parsed_project_data/'
+wind_project_trace_many_reference_years = (
+    get_data.wind_project_multiple_reference_years(
+        reference_years={2022: 2011, 2024: 2012},
+        project="Bango 973 Wind Farm",
+        directory="parsed_project_data/",
+    )
 )
 ```
 
@@ -544,20 +551,21 @@ wind_project_trace_many_reference_years = get_data.wind_project_multiple_referen
 
 ```python
 from isp_trace_parser import get_data
+
 wind_rez_trace_single_reference_years = get_data.wind_area_single_reference_year(
     start_year=2022,
     end_year=2024,
     reference_year=2011,
-    area='Q1',
-    resource_quality='WH',
-    directory='parsed_rez_data/'
+    area="Q1",
+    resource_quality="WH",
+    directory="parsed_rez_data/",
 )
 
 wind_rez_trace_many_reference_years = get_data.wind_area_multiple_reference_years(
     reference_years={2022: 2011, 2024: 2012},
-    area='Q1',
-    resource_quality='WH',
-    directory='parsed_rez_data/'
+    area="Q1",
+    resource_quality="WH",
+    directory="parsed_rez_data/",
 )
 ```
 
@@ -569,26 +577,26 @@ wind_rez_trace_many_reference_years = get_data.wind_area_multiple_reference_year
 
 ```python
 from isp_trace_parser import get_data
+
 demand_subregion_trace_single_reference_years = get_data.demand_single_reference_year(
     start_year=2024,
     end_year=2024,
     reference_year=2011,
-    subregion='CNSW',
-    scenario='Green Energy Exports',
-    poe='POE10',
-    demand_type='OPSO_MODELLING',
-    directory='parsed_demand_data/'
+    subregion="CNSW",
+    scenario="Green Energy Exports",
+    poe="POE10",
+    demand_type="OPSO_MODELLING",
+    directory="parsed_demand_data/",
 )
 
 demand_subregion_trace_many_reference_years = get_data.demand_multiple_reference_years(
     reference_years={2024: 2011},
-    subregion='CNSW',
-    scenario='Green Energy Exports',
-    poe='POE10',
-    demand_type='OPSO_MODELLING',
-    directory='parsed_demand_data/'
+    subregion="CNSW",
+    scenario="Green Energy Exports",
+    poe="POE10",
+    demand_type="OPSO_MODELLING",
+    directory="parsed_demand_data/",
 )
-
 ```
 
 </details>
@@ -626,14 +634,16 @@ import polars as pl
 import pandas as pd
 from isp_trace_parser import trace_formatter
 
-aemo_format_data = pd.DataFrame({
-    'Year': [2024, 2024],
-    'Month': [6, 6],
-    'Day': [1, 2],
-    '01': [11.2, 15.3],
-    '02': [30.7, 20.4],
-    '48': [17.1, 18.9]
-})
+aemo_format_data = pd.DataFrame(
+    {
+        "Year": [2024, 2024],
+        "Month": [6, 6],
+        "Day": [1, 2],
+        "01": [11.2, 15.3],
+        "02": [30.7, 20.4],
+        "48": [17.1, 18.9],
+    }
+)
 
 aemo_format_data_as_polars = pl.from_pandas(aemo_format_data)
 
