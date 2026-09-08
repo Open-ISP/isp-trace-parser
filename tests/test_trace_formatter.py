@@ -4,7 +4,7 @@ from polars.testing import assert_frame_equal
 from isp_trace_parser import trace_formatter, trace_restructure_helper_functions
 
 
-def test_trace_formatter():
+def test_trace_formatter() -> None:
     # Test trace formatting works by using formatting function works by performing formatting and then
     # reversing the formatting changes and checking the result matches the original data.
     filepath = (

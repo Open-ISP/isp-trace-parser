@@ -158,5 +158,5 @@ def filter_mapping_by_names_in_input_files(
     return filtered_mapping
 
 
-def get_just_filepaths(metadata_for_files):
+def get_just_filepaths(metadata_for_files) -> list:
     return [file for file, metadata in metadata_for_files.items()]

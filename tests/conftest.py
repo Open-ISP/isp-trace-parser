@@ -9,7 +9,7 @@ TEST_DATA = Path(__file__).parent / "test_data"
 
 
 @pytest.fixture(params=[True, False], ids=["concurrent", "sequential"], scope="module")
-def parsed_trace_trace_directory(request):
+def parsed_trace_trace_directory(request) -> Path:
     """Fixture that performs parsing of wind and solar trace directory once, providing
     the output directory to multiple test cases that validate different files.
 

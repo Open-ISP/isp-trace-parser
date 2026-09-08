@@ -63,7 +63,7 @@ def parse_demand_traces(
     parsed_directory: str | Path,
     use_concurrency: bool = True,
     filters: DemandMetadataFilter | None = None,
-):
+) -> None:
     """Takes a directory with AEMO demand trace data and reformats the data, saving it to a new directory.
 
     AEMO demand trace data comes in CSVs with columns specifying the year, day, and month, and data columns

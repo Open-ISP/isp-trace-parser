@@ -5,7 +5,7 @@ import pytest
 from isp_trace_parser import resource_trace_metadata
 
 
-def test_build():
+def test_build() -> None:
     """One test covers function logic compared with regex approach
 
     Solar zones / wind zones / extra reference years add no new code-path
@@ -35,6 +35,6 @@ def test_build():
         "Mystery_Plant_RefYear2011.csv",  # stem not in mapping
     ],
 )
-def test_build_rejects_unexpected_filename(filename):
+def test_build_rejects_unexpected_filename(filename) -> None:
     with pytest.raises(ValueError, match="Unexpected trace filename"):
         resource_trace_metadata.build([Path(filename)], version="2024")

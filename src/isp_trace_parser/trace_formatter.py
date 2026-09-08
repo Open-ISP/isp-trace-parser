@@ -65,7 +65,7 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         value_name="value",
     )
 
-    def get_hour(time_label):
+    def get_hour(time_label) -> int:
         return timedelta(hours=int(time_label) // 2)
 
     def get_minute(time_label):

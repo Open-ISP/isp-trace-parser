@@ -31,7 +31,7 @@ from isp_trace_parser import (
         },
     ],
 )
-def test_solar_metadata_filter_valid(valid_input):
+def test_solar_metadata_filter_valid(valid_input) -> None:
     assert SolarMetadataFilter(**valid_input)
 
 
@@ -44,7 +44,7 @@ def test_solar_metadata_filter_valid(valid_input):
         ({"name": 123}, "Input should be a valid list"),
     ],
 )
-def test_solar_metadata_filter_invalid(invalid_input, expected_error):
+def test_solar_metadata_filter_invalid(invalid_input, expected_error) -> None:
     with pytest.raises(ValidationError, match=expected_error):
         SolarMetadataFilter(**invalid_input)
 
@@ -64,7 +64,7 @@ def test_solar_metadata_filter_invalid(invalid_input, expected_error):
         },
     ],
 )
-def test_wind_metadata_filter_valid(valid_input):
+def test_wind_metadata_filter_valid(valid_input) -> None:
     assert WindMetadataFilter(**valid_input)
 
 
@@ -80,7 +80,7 @@ def test_wind_metadata_filter_valid(valid_input):
         ({"name": 123}, "Input should be a valid list"),
     ],
 )
-def test_wind_metadata_filter_invalid(invalid_input, expected_error):
+def test_wind_metadata_filter_invalid(invalid_input, expected_error) -> None:
     with pytest.raises(ValidationError, match=expected_error):
         WindMetadataFilter(**invalid_input)
 
@@ -102,7 +102,7 @@ def test_wind_metadata_filter_invalid(invalid_input, expected_error):
         },
     ],
 )
-def test_demand_metadata_filter_valid(valid_input):
+def test_demand_metadata_filter_valid(valid_input) -> None:
     assert DemandMetadataFilter(**valid_input)
 
 
@@ -122,7 +122,7 @@ def test_demand_metadata_filter_valid(valid_input):
         ({"subregion": 123}, "Input should be a valid list"),
     ],
 )
-def test_demand_metadata_filter_invalid(invalid_input, expected_error):
+def test_demand_metadata_filter_invalid(invalid_input, expected_error) -> None:
     with pytest.raises(ValidationError, match=expected_error):
         DemandMetadataFilter(**invalid_input)
 
@@ -145,7 +145,7 @@ def test_demand_metadata_filter_invalid(invalid_input, expected_error):
         },
     ],
 )
-def test_parse_traces_validation(invalid_input):
+def test_parse_traces_validation(invalid_input) -> None:
     with pytest.raises(ValidationError):
         parse_solar_traces(**invalid_input)
     with pytest.raises(ValidationError):
@@ -163,12 +163,12 @@ def test_parse_traces_validation(invalid_input):
         {"start_year": 2030, "end_year": 2035, "reference_years": [2011, "x", 2018]},
     ],
 )
-def test_construct_reference_year_mapping_validation_invalid(invalid_input):
+def test_construct_reference_year_mapping_validation_invalid(invalid_input) -> None:
     with pytest.raises(ValidationError):
         construct_reference_year_mapping(**invalid_input)
 
 
-def test_construct_reference_year_mapping_validation_valid():
+def test_construct_reference_year_mapping_validation_valid() -> None:
     result = construct_reference_year_mapping(
         start_year=2030, end_year=2035, reference_years=[2011, 2013, 2018]
     )
@@ -178,7 +178,7 @@ def test_construct_reference_year_mapping_validation_valid():
 
 
 # Tests for custom input validation functions
-def test_input_directory(tmp_path):
+def test_input_directory(tmp_path) -> None:
     valid_dir = tmp_path / "valid_dir"
     valid_dir.mkdir()
     assert input_validation.input_directory(valid_dir) == valid_dir
@@ -194,7 +194,7 @@ def test_input_directory(tmp_path):
         Path("/valid/path"),
     ],
 )
-def test_parsed_directory_valid(valid_path):
+def test_parsed_directory_valid(valid_path) -> None:
     result = input_validation.parsed_directory(valid_path)
     assert isinstance(result, Path)
 
@@ -207,7 +207,7 @@ def test_parsed_directory_valid(valid_path):
         [],
     ],
 )
-def test_parsed_directory_invalid(invalid_path):
+def test_parsed_directory_invalid(invalid_path) -> None:
     with pytest.raises(ValueError, match="Invalid parsed directory path"):
         input_validation.parsed_directory(invalid_path)
 
@@ -219,7 +219,7 @@ def test_parsed_directory_invalid(invalid_path):
         Path("/valid/path"),
     ],
 )
-def test_is_valid_path_valid(valid_path):
+def test_is_valid_path_valid(valid_path) -> None:
     result = input_validation.is_valid_path(valid_path)
     assert isinstance(result, Path)
 
@@ -232,7 +232,7 @@ def test_is_valid_path_valid(valid_path):
         [],
     ],
 )
-def test_is_valid_path_invalid(invalid_path):
+def test_is_valid_path_invalid(invalid_path) -> None:
     with pytest.raises(ValueError, match="Invalid parsed directory path"):
         input_validation.is_valid_path(invalid_path)
 
@@ -245,7 +245,7 @@ def test_is_valid_path_invalid(invalid_path):
         (-10, 0),
     ],
 )
-def test_start_year_before_end_year_valid(start, end):
+def test_start_year_before_end_year_valid(start, end) -> None:
     assert input_validation.start_year_before_end_year(start, end) is None
 
 
@@ -257,6 +257,6 @@ def test_start_year_before_end_year_valid(start, end):
         (2020, 2019),
     ],
 )
-def test_start_year_before_end_year_invalid(start, end):
+def test_start_year_before_end_year_invalid(start, end) -> None:
     with pytest.raises(ValueError, match="Start year .* < end year"):
         input_validation.start_year_before_end_year(start, end)

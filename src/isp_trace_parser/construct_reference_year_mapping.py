@@ -6,7 +6,7 @@ from isp_trace_parser import input_validation
 @validate_call
 def construct_reference_year_mapping(
     start_year: int, end_year: int, reference_years: list[int]
-):
+) -> dict:
     """Constructs a dictionary mapping a sequence of modeling years to a cycle of reference years.
 
     Examples:

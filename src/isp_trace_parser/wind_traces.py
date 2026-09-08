@@ -61,7 +61,7 @@ def parse_wind_traces(
     parsed_directory: str | Path,
     use_concurrency: bool = True,
     filters: WindMetadataFilter | None = None,
-):
+) -> None:
     """Takes a directory with AEMO wind trace data and reformats the data, saving it to a new directory.
 
     AEMO wind trace data comes in CSVs with columns specifying the year, day, and month, and data columns

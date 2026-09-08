@@ -9,7 +9,7 @@ from pydantic import validate_call
 
 def _year_range_to_dt_range(
     start_year: int, end_year: int, year_type: Literal["fy", "calendar"] = "fy"
-):
+) -> datetime.datetime:
     """
     Convert year range to datetime boundaries for efficient time filtering.
 
@@ -149,7 +149,7 @@ def get_project_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
-):
+) -> pd.DataFrame:
     """
     Query project trace data for a single reference year.
 
@@ -242,7 +242,7 @@ def get_zone_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
-):
+) -> pd.DataFrame:
     """
     Query zone trace data for a single reference year.
 
@@ -340,7 +340,7 @@ def get_demand_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
-):
+) -> pd.DataFrame:
     """
     Query demand trace data for a single reference year.
 
@@ -445,7 +445,7 @@ def get_project_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
-):
+) -> pd.DataFrame:
     """
     Query project trace data across multiple reference years.
 
@@ -535,7 +535,7 @@ def get_zone_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
-):
+) -> pd.DataFrame:
     """
     Query zone trace data across multiple reference years.
 
@@ -630,7 +630,7 @@ def get_demand_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] = None,
-):
+) -> pd.DataFrame:
     """
     Query demand trace data across multiple reference years.
 
