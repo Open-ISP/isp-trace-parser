@@ -41,7 +41,7 @@ def test_fetch_trace_data_with_test_manifest(monkeypatch) -> None:
         tmp_path = Path(tmp_path)
 
         # Point to test fixtures instead of production manifests
-        def mock_files(package):
+        def mock_files(package) -> Path:
             return Path(__file__).parent / "fixtures" / "manifests"
 
         monkeypatch.setattr("isp_trace_parser.remote.download.files", mock_files)
@@ -78,7 +78,7 @@ def test_fetch_trace_data(unquote: bool, monkeypatch) -> None:
         tmp_path = Path(tmp_path)
 
         # Point to test manifests instead of production manifests
-        def mock_files(package):
+        def mock_files(package) -> Path:
             return Path(__file__).parent / "fixtures" / "manifests"
 
         monkeypatch.setattr("isp_trace_parser.remote.download.files", mock_files)
@@ -121,7 +121,7 @@ def test_empty_manifest(monkeypatch) -> None:
         tmp_path = Path(tmp_path)
 
         # Point to test manifest instead of production manifests
-        def mock_files(package):
+        def mock_files(package) -> Path:
             return Path(__file__).parent / "fixtures" / "manifests"
 
         monkeypatch.setattr("isp_trace_parser.remote.download.files", mock_files)
