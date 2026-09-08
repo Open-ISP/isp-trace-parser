@@ -10,14 +10,12 @@ from isp_trace_parser.trace_formatter import trace_formatter
 def get_all_filepaths(directory: Path) -> list[Path]:
     if directory.is_dir():
         return [path for path in Path(directory).rglob("*.csv") if path.is_file()]
-    else:
-        raise ValueError(f"{directory} not found.")
+    raise ValueError(f"{directory} not found.")
 
 
 def read_trace_csv(file: Path) -> pl.DataFrame:
     pl_types = [pl.Int64] * 3 + [pl.Float64] * 48
-    data = pl.read_csv(file, schema_overrides=pl_types)
-    return data
+    return pl.read_csv(file, schema_overrides=pl_types)
 
 
 def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:
@@ -31,10 +29,9 @@ def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:
 
 def calculate_average_trace(traces: list[pl.DataFrame]) -> pl.DataFrame:
     combined_traces = pl.concat(traces)
-    average_trace = combined_traces.group_by("datetime").agg(
+    return combined_traces.group_by("datetime").agg(
         [pl.col("value").mean().alias("value")]
     )
-    return average_trace
 
 
 def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
@@ -87,12 +84,11 @@ def get_metadata_that_matches_trace_names(
 ) -> dict[Path, dict[str, str]]:
     if isinstance(trace_names, str):
         trace_names = [trace_names]
-    matching_meta_data = {
+    return {
         f: metadata.copy()
         for f, metadata in all_input_file_metadata.items()
         if metadata["name"] in trace_names
     }
-    return matching_meta_data
 
 
 def get_unique_reference_years_in_metadata(

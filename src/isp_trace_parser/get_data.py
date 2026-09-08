@@ -37,10 +37,11 @@ def _year_range_to_dt_range(
             end_year, 7, 1
         )
 
-    elif year_type == "calendar":
+    if year_type == "calendar":
         return datetime.datetime(start_year, 1, 1), datetime.datetime(
             end_year + 1, 1, 1
         )
+    raise ValueError(year_type)
 
 
 def _query_parquet_single_reference_year(
@@ -136,8 +137,7 @@ def _query_parquet_multiple_reference_years(
                 start_year=year, end_year=year, reference_year=reference_year, **kwargs
             )
         )
-    data = pd.concat(data).reset_index(drop=True)
-    return data
+    return pd.concat(data).reset_index(drop=True)
 
 
 @validate_call
