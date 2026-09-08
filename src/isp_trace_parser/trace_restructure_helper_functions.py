@@ -9,7 +9,7 @@ from isp_trace_parser.trace_formatter import trace_formatter
 def get_all_filepaths(directory: Path) -> list[Path]:
     if directory.is_dir():
         return [path for path in Path(directory).rglob("*.csv") if path.is_file()]
-    raise ValueError(f"{directory} not found.")
+    raise FileNotFoundError(directory)
 
 
 def read_trace_csv(file: Path) -> pl.DataFrame:

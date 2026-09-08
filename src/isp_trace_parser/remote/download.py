@@ -54,7 +54,7 @@ def _download_from_manifest(
     manifest_path = files("isp_trace_parser.remote.manifests") / f"{manifest_name}.txt"
 
     if not manifest_path.exists():
-        raise FileNotFoundError(f"Manifest file not found: {manifest_path}")
+        raise FileNotFoundError(manifest_path)
 
     # Read URLs from manifest
     with open(manifest_path) as f:
@@ -81,12 +81,13 @@ def _download_with_retry(
     for attempt in range(max_retries):
         try:
             _download_file(url, save_directory, strip_levels, unquote_path)
-            return
         except requests.exceptions.RequestException:
             if attempt < max_retries - 1:
                 time.sleep(2**attempt)
             else:
                 raise
+        else:
+            return
 
 
 def _download_file(

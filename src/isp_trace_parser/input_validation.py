@@ -4,7 +4,7 @@ from pathlib import Path
 def input_directory(path: Path | str) -> Path:
     path = is_valid_path(path)
     if not path.is_dir():
-        raise ValueError(f"Directory {path} does not exist")
+        raise FileNotFoundError(path)
     return path
 
 
