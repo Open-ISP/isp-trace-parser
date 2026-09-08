@@ -190,8 +190,7 @@ def test_input_directory(tmp_path: Path) -> None:
     valid_dir = tmp_path / "valid_dir"
     valid_dir.mkdir()
     assert input_validation.input_directory(valid_dir) == valid_dir
-
-    with pytest.raises(ValueError, match="Directory .* does not exist"):
+    with pytest.raises(FileNotFoundError):
         input_validation.input_directory(tmp_path / "non_existent_dir")
 
 
