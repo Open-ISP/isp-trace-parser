@@ -117,8 +117,6 @@ def test_wrong_type():
 
 def test_empty_manifest(monkeypatch):
     """Test that empty manifest raises ValueError."""
-    from importlib.resources import files
-
     with TemporaryDirectory() as tmp_path:
         tmp_path = Path(tmp_path)
 

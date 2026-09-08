@@ -1,7 +1,7 @@
 import functools
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call

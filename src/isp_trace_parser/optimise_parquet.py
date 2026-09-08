@@ -1,6 +1,5 @@
 from itertools import product
 from pathlib import Path
-from typing import Optional
 
 import duckdb
 from pydantic import validate_call

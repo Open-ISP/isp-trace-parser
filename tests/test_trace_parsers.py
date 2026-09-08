@@ -5,7 +5,7 @@ import polars as pl
 import pytest
 from polars.testing import assert_frame_equal
 
-from isp_trace_parser import demand_traces, solar_traces, wind_traces
+from isp_trace_parser import demand_traces
 
 TEST_DATA = Path(__file__).parent / "test_data"
 

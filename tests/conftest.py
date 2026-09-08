@@ -52,7 +52,7 @@ def parsed_trace_trace_directory(request):
 
         optimise_parquet.partition_traces_by_columns(
             input_directory=tmp_parsed_directory / "demand",
-            output_directory=tmp_parsed_directory / f"demand_optimised",
+            output_directory=tmp_parsed_directory / "demand_optimised",
             partition_cols=["scenario", "reference_year"],
         )
         yield tmp_parsed_directory

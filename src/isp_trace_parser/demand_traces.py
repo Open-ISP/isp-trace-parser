@@ -1,7 +1,7 @@
 import functools
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 import polars as pl
 from joblib import Parallel, delayed
