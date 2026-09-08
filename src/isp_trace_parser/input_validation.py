@@ -19,6 +19,6 @@ def is_valid_path(path: str | Path) -> Path:
         raise ValueError(f"Invalid parsed directory path: {path}")
 
 
-def start_year_before_end_year(start_year, end_year) -> None:
+def start_year_before_end_year(start_year: int, end_year: int) -> None:
     if end_year < start_year:
         raise ValueError(f"Start year {end_year} < end year {start_year}")

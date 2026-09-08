@@ -31,7 +31,7 @@ def test_download_with_retry() -> None:
         assert (tmp_path / "test" / "test" / "test_file.txt").exists()
 
 
-def test_fetch_trace_data_with_test_manifest(monkeypatch) -> None:
+def test_fetch_trace_data_with_test_manifest(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test downloading from a small, test manifest.
     The testing manifest, while still named "full_isp_2024" here, is just a test manifest
     with containing a single url ("https://data.openisp.au/test/test/test_file.txt")
@@ -68,7 +68,7 @@ def test_manifest_not_found() -> None:
 
 
 @pytest.mark.parametrize("unquote", [True, False])
-def test_fetch_trace_data(unquote: bool, monkeypatch) -> None:
+def test_fetch_trace_data(unquote: bool, monkeypatch: pytest.MonkeyPatch) -> None:
     """Test downloading via fetch_trace_data with test fixtures.
     This, while still download a dataset name "full", is just a pointing to a test manifest
     manifest with containing a single url ("https://data.openisp.au/test/test/test_file.txt")
@@ -115,7 +115,7 @@ def test_wrong_type() -> None:
         download.fetch_trace_data("other", "isp_2024", "/", "archive")
 
 
-def test_empty_manifest(monkeypatch) -> None:
+def test_empty_manifest(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test that empty manifest raises ValueError."""
     with TemporaryDirectory() as tmp_path:
         tmp_path = Path(tmp_path)

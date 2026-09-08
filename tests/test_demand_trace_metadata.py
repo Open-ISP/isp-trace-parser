@@ -40,6 +40,6 @@ def test_build() -> None:
         "VIC_RefYear_2011_MYSTERY_POE10_OPSO_MODELLING.csv",  # lookup miss
     ],
 )
-def test_build_rejects_unexpected_filename(filename) -> None:
+def test_build_rejects_unexpected_filename(filename: str) -> None:
     with pytest.raises(ValueError, match="Unexpected trace filename"):
         demand_trace_metadata.build([Path(filename)], version="2024")

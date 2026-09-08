@@ -44,7 +44,7 @@ def test_demand_trace_parsing(use_concurrency: bool) -> None:
     ],
 )
 def test_wind_trace_parsing(
-    parsed_trace_trace_directory, expected_filename, file_type
+    parsed_trace_trace_directory: Path, expected_filename: str, file_type: str
 ) -> None:
     """Test wind trace parsing produces expected parquet outputs (both for a sample wind project and wind zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename
@@ -65,7 +65,7 @@ def test_wind_trace_parsing(
     ],
 )
 def test_solar_trace_parsing(
-    parsed_trace_trace_directory, expected_filename, file_type
+    parsed_trace_trace_directory: Path, expected_filename: str, file_type: str
 ) -> None:
     """Test solar trace parsing produces expected parquet output (both for a sample solar project and solar zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename

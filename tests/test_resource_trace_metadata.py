@@ -35,6 +35,6 @@ def test_build() -> None:
         "Mystery_Plant_RefYear2011.csv",  # stem not in mapping
     ],
 )
-def test_build_rejects_unexpected_filename(filename) -> None:
+def test_build_rejects_unexpected_filename(filename: str) -> None:
     with pytest.raises(ValueError, match="Unexpected trace filename"):
         resource_trace_metadata.build([Path(filename)], version="2024")

@@ -43,7 +43,7 @@ def test_year_range_to_dt_range_calendar() -> None:
 
 @pytest.mark.parametrize("year_type", ["fy", "calendar"])
 def test_get_zone_single_reference_year(
-    parsed_trace_trace_directory: Path, year_type
+    parsed_trace_trace_directory: Path, year_type: str
 ) -> None:
     test_df_lazy = pl.scan_parquet(TEST_DATA / "output" / "RefYear2022_N2_CST.parquet")
 
@@ -212,7 +212,7 @@ def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path) 
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_explicit_select_columns(parsed_trace_trace_directory) -> None:
+def test_explicit_select_columns(parsed_trace_trace_directory: Path) -> None:
     df = get_zone_single_reference_year(
         start_year=2023,
         end_year=2024,
@@ -225,7 +225,7 @@ def test_explicit_select_columns(parsed_trace_trace_directory) -> None:
     assert list(df.columns) == ["datetime", "value", "zone"]
 
 
-def test_multi_value_filter(parsed_trace_trace_directory) -> None:
+def test_multi_value_filter(parsed_trace_trace_directory: Path) -> None:
     df = get_zone_single_reference_year(
         start_year=2023,
         end_year=2024,
@@ -238,7 +238,7 @@ def test_multi_value_filter(parsed_trace_trace_directory) -> None:
     assert "zone" in df.columns
 
 
-def test_wind_project_single_reference_year(parsed_trace_trace_directory) -> None:
+def test_wind_project_single_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Bodangora_Wind_Farm.parquet"
     )
@@ -264,7 +264,9 @@ def test_wind_project_single_reference_year(parsed_trace_trace_directory) -> Non
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_solar_project_single_reference_year(parsed_trace_trace_directory) -> None:
+def test_solar_project_single_reference_year(
+    parsed_trace_trace_directory: Path,
+) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet"
     )

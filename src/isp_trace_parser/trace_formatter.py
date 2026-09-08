@@ -65,10 +65,10 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         value_name="value",
     )
 
-    def get_hour(time_label) -> timedelta:
+    def get_hour(time_label: str) -> timedelta:
         return timedelta(hours=int(time_label) // 2)
 
-    def get_minute(time_label) -> timedelta:
+    def get_minute(time_label: str) -> timedelta:
         return timedelta(minutes=int(time_label) % 2 * 30)
 
     trace_data = trace_data.with_columns(
