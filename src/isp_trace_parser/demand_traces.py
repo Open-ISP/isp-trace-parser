@@ -42,10 +42,10 @@ class DemandMetadataFilter(BaseModel):
         scenario: list of scenarios, only including "Step Change", "Progressive Change", and "Green Energy Exports"
         poe: list of POE levels, only including "POE10" and "POE50"
         demand_type, list of demand types, only including "OPSO_MODELLING", "OPSO_MODELLING_PVLITE", and "PV_TOT"
-        reference_year: list of ints specifying reference_subregion
+        reference_year: list of ints specifying reference_years
     """
 
-    years: list[str] | None = None
+    subregion: list[str] | None = None
     scenario: (
         list[Literal["Step Change", "Progressive Change", "Green Energy Exports"]]
         | None
