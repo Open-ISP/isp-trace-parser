@@ -99,9 +99,7 @@ def get_unique_reference_years_in_metadata(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
     return list(
-        set(
-            metadata["reference_year"] for metadata in metadata_for_trace_files.values()
-        )
+        {metadata["reference_year"] for metadata in metadata_for_trace_files.values()}
     )
 
 

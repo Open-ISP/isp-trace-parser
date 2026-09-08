@@ -276,7 +276,7 @@ def get_unique_resource_types_in_metadata(
         A list of unique resource types.
     """
     return list(
-        set(metadata["resource_type"] for metadata in metadata_for_trace_files.values())
+        {metadata["resource_type"] for metadata in metadata_for_trace_files.values()}
     )
 
 
