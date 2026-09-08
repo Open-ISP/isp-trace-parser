@@ -49,10 +49,10 @@ class WindMetadataFilter(BaseModel):
         reference_year: list of ints specifying reference_years
     """
 
-    name: Optional[list[str]] = None
-    file_type: Optional[list[Literal["zone", "project"]]] = None
-    resource_type: Optional[list[Literal["WH", "WM", "WL", "WX", "wind"]]] = None
-    reference_year: Optional[list[int]] = None
+    name: list[str] | None = None
+    file_type: list[Literal["zone", "project"]] | None = None
+    resource_type: list[Literal["WH", "WM", "WL", "WX", "wind"]] | None = None
+    reference_year: list[int] | None = None
 
 
 @validate_call

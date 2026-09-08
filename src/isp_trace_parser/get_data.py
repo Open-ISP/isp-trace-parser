@@ -1,6 +1,6 @@
 import datetime
 from pathlib import Path
-from typing import List, Literal
+from typing import Literal
 
 import pandas as pd
 import polars as pl

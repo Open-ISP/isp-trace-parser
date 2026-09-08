@@ -23,7 +23,7 @@ def partition_traces_by_columns(
     input_directory: str | Path,
     output_directory: str | Path,
     partition_cols: list[str],
-    sort_by: Optional[list[str]] = ["datetime"],
+    sort_by: list[str] | None = ["datetime"],
 ) -> None:
     """Partition parquet traces by specified columns with optional sorting.
 
