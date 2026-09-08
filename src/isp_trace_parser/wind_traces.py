@@ -156,12 +156,14 @@ def parse_wind_traces(
     zone_name_mappings = filter_mapping_by_names_in_input_files(
         zone_name_mappings, project_and_zone_input_names
     )
-    zone_output_names, zone_input_names = zip(*zone_name_mappings.items())
+    zone_output_names, zone_input_names = zip(*zone_name_mappings.items(), strict=True)
 
     project_name_mappings = filter_mapping_by_names_in_input_files(
         project_name_mappings, project_and_zone_input_names
     )
-    project_output_names, project_input_names = zip(*project_name_mappings.items())
+    project_output_names, project_input_names = zip(
+        *project_name_mappings.items(), strict=True
+    )
 
     zone_partial_func = functools.partial(
         restructure_wind_zone_files,
@@ -182,21 +184,27 @@ def parse_wind_traces(
 
         Parallel(n_jobs=max_workers)(
             delayed(zone_partial_func)(save_name, old_trace_name)
-            for save_name, old_trace_name in zip(zone_output_names, zone_input_names)
+            for save_name, old_trace_name in zip(
+                zone_output_names, zone_input_names, strict=True
+            )
         )
 
         Parallel(n_jobs=max_workers)(
             delayed(project_partial_func)(save_name, old_trace_name)
             for save_name, old_trace_name in zip(
-                project_output_names, project_input_names
+                project_output_names, project_input_names, strict=True
             )
         )
 
     else:
-        for save_name, old_trace_name in zip(zone_output_names, zone_input_names):
+        for save_name, old_trace_name in zip(
+            zone_output_names, zone_input_names, strict=True
+        ):
             zone_partial_func(save_name, old_trace_name)
 
-        for save_name, old_trace_name in zip(project_output_names, project_input_names):
+        for save_name, old_trace_name in zip(
+            project_output_names, project_input_names, strict=True
+        ):
             project_partial_func(save_name, old_trace_name)
 
 

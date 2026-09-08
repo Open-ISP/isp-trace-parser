@@ -70,7 +70,7 @@ def partition_traces_by_columns(
 
     for partition_values in partitions:
         conditions = []
-        for col, val in zip(partition_cols, partition_values):
+        for col, val in zip(partition_cols, partition_values, strict=True):
             if isinstance(val, str):
                 conditions.append(f"{col}='{val}'")
             else:

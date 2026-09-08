@@ -157,7 +157,7 @@ def parse_solar_traces(
     }
 
     project_and_zone_output_names, project_and_zone_input_names = zip(
-        *name_mappings.items()
+        *name_mappings.items(), strict=True
     )
 
     partial_func = functools.partial(
@@ -172,12 +172,12 @@ def parse_solar_traces(
         Parallel(n_jobs=max_workers)(
             delayed(partial_func)(save_name, old_trace_name)
             for save_name, old_trace_name in zip(
-                project_and_zone_output_names, project_and_zone_input_names
+                project_and_zone_output_names, project_and_zone_input_names, strict=True
             )
         )
     else:
         for save_name, old_trace_name in zip(
-            project_and_zone_output_names, project_and_zone_input_names
+            project_and_zone_output_names, project_and_zone_input_names, strict=True
         ):
             partial_func(save_name, old_trace_name)
 
