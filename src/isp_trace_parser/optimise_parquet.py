@@ -69,8 +69,6 @@ def partition_traces_by_columns(
     partitions = [tuple(val[0] for val in vals) for vals in product(*distinct_values)]
 
     for partition_values in partitions:
-        # print(*partition_values)
-
         conditions = []
         for col, val in zip(partition_cols, partition_values):
             if isinstance(val, str):
