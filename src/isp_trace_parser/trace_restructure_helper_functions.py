@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 
-from datetime import timedelta
 from pathlib import Path
 
 import polars as pl
@@ -76,11 +75,7 @@ def process_and_save_files(
 ) -> None:
     traces = read_and_format_traces(files)
 
-    if len(traces) > 1:
-        trace = calculate_average_trace(traces)
-    else:
-        trace = traces[0]
-
+    trace = calculate_average_trace(traces) if len(traces) > 1 else traces[0]
     trace = _frame_with_metadata(trace, file_metadata)
 
     save_trace(trace, file_metadata, output_directory, write_output_filepath)
@@ -136,9 +131,12 @@ def check_filter_by_metadata(
         return True
 
     for field, allowed_values in filters.model_dump(exclude_unset=True).items():
-        if field in metadata and allowed_values is not None:
-            if metadata[field] not in allowed_values:
-                return False
+        if (
+            field in metadata
+            and allowed_values is not None
+            and metadata[field] not in allowed_values
+        ):
+            return False
 
     return True
 
@@ -146,9 +144,7 @@ def check_filter_by_metadata(
 def get_unique_project_and_zone_names_in_input_files(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
-    names = []
-    for filepath, meta_data in metadata_for_trace_files.items():
-        names.append(meta_data["name"])
+    names = [meta_data["name"] for meta_data in metadata_for_trace_files.values()]
     return list(set(names))
 
 

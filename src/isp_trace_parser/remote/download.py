@@ -7,6 +7,7 @@
 
 """Download data files from manifests."""
 
+import logging
 import time
 from importlib.resources import files
 from pathlib import Path
@@ -15,6 +16,9 @@ from urllib.parse import unquote, urlparse
 
 import requests
 from tqdm import tqdm
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger(__name__)
 
 
 def _download_from_manifest(
@@ -64,11 +68,12 @@ def _download_from_manifest(
         raise FileNotFoundError(manifest_path)
 
     # Read URLs from manifest
-    with open(manifest_path) as f:
+    with Path(manifest_path).open("r") as f:
         urls = [line.strip() for line in f if line.strip()]
 
     if not urls:
-        raise ValueError(f"No URLs found in manifest: {manifest_path}")
+        msg = f"No URLs found in manifest: {manifest_path}"
+        raise ValueError(msg)
 
     save_directory = Path(save_directory)
 
@@ -88,7 +93,7 @@ def _download_with_retry(
     for attempt in range(max_retries):
         try:
             _download_file(url, save_directory, strip_levels, unquote_path)
-        except requests.exceptions.RequestException:
+        except requests.exceptions.RequestException:  # noqa: PERF203
             if attempt < max_retries - 1:
                 time.sleep(2**attempt)
             else:
@@ -132,10 +137,9 @@ def _download_file(
     # Strip specified number of directory levels
     path_parts = url_path.split("/")
     if strip_levels >= len(path_parts):
-        raise ValueError(
-            f"Cannot strip {strip_levels} levels from path with only "
-            f"{len(path_parts)} parts: {url_path}"
-        )
+        msg = f"Cannot strip {strip_levels} levels from path with only "
+        f"{len(path_parts)} parts: {url_path}"
+        raise ValueError(msg)
 
     stripped_path = "/".join(path_parts[strip_levels:])
     destination = save_directory / stripped_path
@@ -152,7 +156,7 @@ def _download_file(
 
     # Write file with progress bar
     with (
-        open(destination, "wb") as f,
+        Path(destination).open("wb") as f,
         tqdm(
             total=total_size,
             unit="B",
@@ -219,23 +223,24 @@ def fetch_trace_data(
 
     # Validate inputs
     if dataset_type not in ["full", "example"]:
-        raise ValueError(
-            f"dataset_type must be 'full' or 'example', got: {dataset_type}"
-        )
+        msg = f"dataset_type must be 'full' or 'example', got: {dataset_type}"
+        raise ValueError(msg)
 
     if dataset_src != "isp_2024":
-        raise ValueError(f"Only isp_2024 is currently supported, got: {dataset_src}")
+        msg = f"Only isp_2024 is currently supported, got: {dataset_src}"
+        raise ValueError(msg)
 
     if data_format not in ["processed", "archive"]:
-        raise ValueError(
-            f"data_format must be 'processed' or 'archive', got: {data_format}"
-        )
+        msg = f"data_format must be 'processed' or 'archive', got: {data_format}"
+        raise ValueError(msg)
 
     # Construct manifest name and download
     manifest_name = f"{data_format}/{dataset_type}_{dataset_src}"
 
-    print(f"Downloading {dataset_type} {data_format} trace data for {dataset_src}")
+    logger.info(
+        "Downloading %s %s trace data for %s", dataset_type, data_format, dataset_src
+    )
     _download_from_manifest(
         manifest_name, save_directory, strip_levels=2, unquote_path=unquote_path
     )
-    print(f"Trace data saved to: {save_directory}")
+    logger.info("Trace data saved to: %s", save_directory)

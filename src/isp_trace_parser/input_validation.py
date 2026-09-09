@@ -22,10 +22,12 @@ def parsed_directory(path: str | Path) -> Path:
 def is_valid_path(path: str | Path) -> Path:
     try:
         return Path(path)
-    except (TypeError, ValueError):
-        raise ValueError(f"Invalid parsed directory path: {path}")
+    except (TypeError, ValueError) as exc:
+        msg = f"Invalid parsed directory path: {path}"
+        raise ValueError(msg) from exc
 
 
 def start_year_before_end_year(start_year: int, end_year: int) -> None:
     if end_year < start_year:
-        raise ValueError(f"Start year {end_year} < end year {start_year}")
+        msg = f"Start year {end_year} < end year {start_year}"
+        raise ValueError(msg)
