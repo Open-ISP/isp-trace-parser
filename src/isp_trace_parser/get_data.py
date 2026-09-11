@@ -7,7 +7,7 @@
 
 import datetime
 from pathlib import Path
-from typing import List, Literal
+from typing import Literal
 
 import pandas as pd
 import polars as pl
@@ -16,7 +16,7 @@ from pydantic import validate_call
 
 def _year_range_to_dt_range(
     start_year: int, end_year: int, year_type: Literal["fy", "calendar"] = "fy"
-):
+) -> datetime.datetime:
     """
     Convert year range to datetime boundaries for efficient time filtering.
 
@@ -44,10 +44,11 @@ def _year_range_to_dt_range(
             end_year, 7, 1
         )
 
-    elif year_type == "calendar":
+    if year_type == "calendar":
         return datetime.datetime(start_year, 1, 1), datetime.datetime(
             end_year + 1, 1, 1
         )
+    raise ValueError(year_type)
 
 
 def _query_parquet_single_reference_year(
@@ -55,8 +56,8 @@ def _query_parquet_single_reference_year(
     end_year: int,
     reference_year: int,
     directory: str | Path,
-    filters: dict[str, any] = None,
-    select_columns: list[str] = None,
+    filters: dict[str, any] | None = None,
+    select_columns: list[str] | None = None,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
     """
@@ -143,8 +144,7 @@ def _query_parquet_multiple_reference_years(
                 start_year=year, end_year=year, reference_year=reference_year, **kwargs
             )
         )
-    data = pd.concat(data).reset_index(drop=True)
-    return data
+    return pd.concat(data).reset_index(drop=True)
 
 
 @validate_call
@@ -152,11 +152,11 @@ def get_project_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
-    project: str | List,
+    project: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
-):
+    select_columns: list[str] | None = None,
+) -> pd.DataFrame:
     """
     Query project trace data for a single reference year.
 
@@ -244,12 +244,12 @@ def get_zone_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
-    zone: str | List,
-    resource_type: str | List,
+    zone: str | list,
+    resource_type: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
-):
+    select_columns: list[str] | None = None,
+) -> pd.DataFrame:
     """
     Query zone trace data for a single reference year.
 
@@ -340,14 +340,14 @@ def get_demand_single_reference_year(
     start_year: int,
     end_year: int,
     reference_year: int,
-    scenario: str | List,
-    subregion: str | List,
-    demand_type: str | List,
-    poe: str | List,
+    scenario: str | list,
+    subregion: str | list,
+    demand_type: str | list,
+    poe: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
-):
+    select_columns: list[str] | None = None,
+) -> pd.DataFrame:
     """
     Query demand trace data for a single reference year.
 
@@ -448,11 +448,11 @@ def get_demand_single_reference_year(
 @validate_call
 def get_project_multiple_reference_years(
     reference_year_mapping: dict[int, int],
-    project: str | List,
+    project: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
-):
+    select_columns: list[str] | None = None,
+) -> pd.DataFrame:
     """
     Query project trace data across multiple reference years.
 
@@ -537,12 +537,12 @@ def get_project_multiple_reference_years(
 @validate_call
 def get_zone_multiple_reference_years(
     reference_year_mapping: dict[int, int],
-    zone: str | List,
-    resource_type: str | List,
+    zone: str | list,
+    resource_type: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
-):
+    select_columns: list[str] | None = None,
+) -> pd.DataFrame:
     """
     Query zone trace data across multiple reference years.
 
@@ -630,14 +630,14 @@ def get_zone_multiple_reference_years(
 @validate_call
 def get_demand_multiple_reference_years(
     reference_year_mapping: dict[int, int],
-    scenario: str | List,
-    subregion: str | List,
-    demand_type: str | List,
-    poe: str | List,
+    scenario: str | list,
+    subregion: str | list,
+    demand_type: str | list,
+    poe: str | list,
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
-    select_columns: list[str] = None,
-):
+    select_columns: list[str] | None = None,
+) -> pd.DataFrame:
     """
     Query demand trace data across multiple reference years.
 

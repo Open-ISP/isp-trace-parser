@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 
-def generate_random_data(start_year, end_year):
+def generate_random_data(start_year: int, end_year: int) -> pd.DataFrame:
     # Generate date range from July 1st of the start year to July 1st of the end year (excluding end)
     date_range = pd.date_range(
         start=f"{start_year}-01-01", end=f"{end_year}-01-01", freq="D", inclusive="left"
@@ -31,14 +31,13 @@ def generate_random_data(start_year, end_year):
     half_hour_columns = [f"{i:02d}" for i in range(1, 49)]
 
     # Combine the date components with the random data
-    df = pd.concat([df, pd.DataFrame(random_data, columns=half_hour_columns)], axis=1)
-    return df
+    return pd.concat([df, pd.DataFrame(random_data, columns=half_hour_columns)], axis=1)
 
 
 data = generate_random_data(start_year=config.start, end_year=config.end)
 
 
-def simple_flatten(nested_list):
+def simple_flatten(nested_list: list) -> list:
     flattened = []
     for item in nested_list:
         if isinstance(item, list):
@@ -48,7 +47,7 @@ def simple_flatten(nested_list):
     return flattened
 
 
-def create_solar_csvs(directory):
+def create_solar_csvs(directory: Path) -> None:
     combos = itertools.product(config.reference_years, config.solar_projects)
     for y, project in combos:
         data.to_csv(directory / Path(f"{project}_FFP_RefYear{y}.csv"), index=False)
@@ -60,7 +59,7 @@ def create_solar_csvs(directory):
         )
 
 
-def create_wind_csvs(directory):
+def create_wind_csvs(directory: Path) -> None:
     combos = itertools.product(
         config.reference_years, simple_flatten(config.wind_projects.values())
     )
@@ -78,7 +77,7 @@ def create_wind_csvs(directory):
         )
 
 
-def create_demand_csvs(directory):
+def create_demand_csvs(directory: Path) -> None:
     combos = itertools.product(
         config.reference_years,
         config.sub_regions,

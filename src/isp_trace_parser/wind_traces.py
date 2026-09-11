@@ -8,7 +8,7 @@
 import functools
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
@@ -56,10 +56,10 @@ class WindMetadataFilter(BaseModel):
         reference_year: list of ints specifying reference_years
     """
 
-    name: Optional[list[str]] = None
-    file_type: Optional[list[Literal["zone", "project"]]] = None
-    resource_type: Optional[list[Literal["WH", "WM", "WL", "WX", "wind"]]] = None
-    reference_year: Optional[list[int]] = None
+    name: list[str] | None = None
+    file_type: list[Literal["zone", "project"]] | None = None
+    resource_type: list[Literal["WH", "WM", "WL", "WX", "wind"]] | None = None
+    reference_year: list[int] | None = None
 
 
 @validate_call
@@ -68,7 +68,7 @@ def parse_wind_traces(
     parsed_directory: str | Path,
     use_concurrency: bool = True,
     filters: WindMetadataFilter | None = None,
-):
+) -> None:
     """Takes a directory with AEMO wind trace data and reformats the data, saving it to a new directory.
 
     AEMO wind trace data comes in CSVs with columns specifying the year, day, and month, and data columns
@@ -163,12 +163,14 @@ def parse_wind_traces(
     zone_name_mappings = filter_mapping_by_names_in_input_files(
         zone_name_mappings, project_and_zone_input_names
     )
-    zone_output_names, zone_input_names = zip(*zone_name_mappings.items())
+    zone_output_names, zone_input_names = zip(*zone_name_mappings.items(), strict=True)
 
     project_name_mappings = filter_mapping_by_names_in_input_files(
         project_name_mappings, project_and_zone_input_names
     )
-    project_output_names, project_input_names = zip(*project_name_mappings.items())
+    project_output_names, project_input_names = zip(
+        *project_name_mappings.items(), strict=True
+    )
 
     zone_partial_func = functools.partial(
         restructure_wind_zone_files,
@@ -189,21 +191,27 @@ def parse_wind_traces(
 
         Parallel(n_jobs=max_workers)(
             delayed(zone_partial_func)(save_name, old_trace_name)
-            for save_name, old_trace_name in zip(zone_output_names, zone_input_names)
+            for save_name, old_trace_name in zip(
+                zone_output_names, zone_input_names, strict=True
+            )
         )
 
         Parallel(n_jobs=max_workers)(
             delayed(project_partial_func)(save_name, old_trace_name)
             for save_name, old_trace_name in zip(
-                project_output_names, project_input_names
+                project_output_names, project_input_names, strict=True
             )
         )
 
     else:
-        for save_name, old_trace_name in zip(zone_output_names, zone_input_names):
+        for save_name, old_trace_name in zip(
+            zone_output_names, zone_input_names, strict=True
+        ):
             zone_partial_func(save_name, old_trace_name)
 
-        for save_name, old_trace_name in zip(project_output_names, project_input_names):
+        for save_name, old_trace_name in zip(
+            project_output_names, project_input_names, strict=True
+        ):
             project_partial_func(save_name, old_trace_name)
 
 
@@ -330,7 +338,7 @@ def get_unique_resource_types_in_metadata(
     metadata_for_trace_files: dict[str:str],
 ) -> list:
     return list(
-        set(metadata["resource_type"] for metadata in metadata_for_trace_files.values())
+        {metadata["resource_type"] for metadata in metadata_for_trace_files.values()}
     )
 
 

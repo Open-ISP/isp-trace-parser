@@ -29,7 +29,8 @@ def build(
         refyear, _, dimensions_suffix = after.partition("_")
         key = (location_prefix, dimensions_suffix)
         if not refyear.isdigit() or key not in lookup:
-            raise ValueError(f"Unexpected trace filename: {path.name}")
+            msg = f"Unexpected trace filename: {path.name}"
+            raise ValueError(msg)
         file_metadata[path] = {**lookup[key], "reference_year": int(refyear)}
     return file_metadata
 

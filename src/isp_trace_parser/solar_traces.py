@@ -8,7 +8,7 @@
 import functools
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 from joblib import Parallel, delayed
 from pydantic import BaseModel, validate_call
@@ -56,10 +56,10 @@ class SolarMetadataFilter(BaseModel):
         reference_year: list of ints specifying reference_years
     """
 
-    name: Optional[list[str]] = None
-    file_type: Optional[list[Literal["zone", "project"]]] = None
-    resource_type: Optional[list[Literal["SAT", "FFP", "CST"]]] = None
-    reference_year: Optional[list[int]] = None
+    name: list[str] | None = None
+    file_type: list[Literal["zone", "project"]] | None = None
+    resource_type: list[Literal["SAT", "FFP", "CST"]] | None = None
+    reference_year: list[int] | None = None
 
 
 @validate_call
@@ -68,7 +68,7 @@ def parse_solar_traces(
     parsed_directory: str | Path,
     use_concurrency: bool = True,
     filters: SolarMetadataFilter | None = None,
-):
+) -> None:
     """Takes a directory with AEMO solar trace data and reformats the data, saving it to a new directory.
 
     AEMO solar trace data comes in CSVs with columns specifying the year, day, and month, and data columns
@@ -164,7 +164,7 @@ def parse_solar_traces(
     }
 
     project_and_zone_output_names, project_and_zone_input_names = zip(
-        *name_mappings.items()
+        *name_mappings.items(), strict=True
     )
 
     partial_func = functools.partial(
@@ -179,12 +179,12 @@ def parse_solar_traces(
         Parallel(n_jobs=max_workers)(
             delayed(partial_func)(save_name, old_trace_name)
             for save_name, old_trace_name in zip(
-                project_and_zone_output_names, project_and_zone_input_names
+                project_and_zone_output_names, project_and_zone_input_names, strict=True
             )
         )
     else:
         for save_name, old_trace_name in zip(
-            project_and_zone_output_names, project_and_zone_input_names
+            project_and_zone_output_names, project_and_zone_input_names, strict=True
         ):
             partial_func(save_name, old_trace_name)
 
@@ -283,7 +283,7 @@ def get_unique_resource_types_in_metadata(
         A list of unique resource types.
     """
     return list(
-        set(metadata["resource_type"] for metadata in metadata_for_trace_files.values())
+        {metadata["resource_type"] for metadata in metadata_for_trace_files.values()}
     )
 
 

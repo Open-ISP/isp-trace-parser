@@ -20,7 +20,9 @@ TEST_DATA = Path(__file__).parent / "test_data"
     "expected_data, file_type",
     [("zone_data_0.parquet", "zone"), ("project_data_0.parquet", "project")],
 )
-def test_optimisation(parsed_trace_trace_directory, expected_data, file_type):
+def test_optimisation(
+    parsed_trace_trace_directory: Path, expected_data: str, file_type: str
+) -> None:
     """Test wind trace parsing produces expected parquet outputs (both for a sample wind project and wind zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_data
 

@@ -40,7 +40,8 @@ def build(
     for path in files:
         stem, sep, ref = path.stem.rpartition("_RefYear")
         if not sep or not ref.isdigit() or stem not in resource_mapping:
-            raise ValueError(f"Unexpected trace filename: {path.name}")
+            msg = f"Unexpected trace filename: {path.name}"
+            raise ValueError(msg)
         entry = resource_mapping[stem]
         file_metadata[path] = {
             "name": entry["location"],

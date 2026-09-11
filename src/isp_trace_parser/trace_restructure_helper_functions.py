@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 
-from datetime import timedelta
 from pathlib import Path
 
 import polars as pl
@@ -17,14 +16,12 @@ from isp_trace_parser.trace_formatter import trace_formatter
 def get_all_filepaths(directory: Path) -> list[Path]:
     if directory.is_dir():
         return [path for path in Path(directory).rglob("*.csv") if path.is_file()]
-    else:
-        raise ValueError(f"{directory} not found.")
+    raise FileNotFoundError(directory)
 
 
 def read_trace_csv(file: Path) -> pl.DataFrame:
     pl_types = [pl.Int64] * 3 + [pl.Float64] * 48
-    data = pl.read_csv(file, schema_overrides=pl_types)
-    return data
+    return pl.read_csv(file, schema_overrides=pl_types)
 
 
 def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:
@@ -38,10 +35,9 @@ def read_and_format_traces(files: list[Path]) -> list[pl.DataFrame]:
 
 def calculate_average_trace(traces: list[pl.DataFrame]) -> pl.DataFrame:
     combined_traces = pl.concat(traces)
-    average_trace = combined_traces.group_by("datetime").agg(
+    return combined_traces.group_by("datetime").agg(
         [pl.col("value").mean().alias("value")]
     )
-    return average_trace
 
 
 def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
@@ -79,11 +75,7 @@ def process_and_save_files(
 ) -> None:
     traces = read_and_format_traces(files)
 
-    if len(traces) > 1:
-        trace = calculate_average_trace(traces)
-    else:
-        trace = traces[0]
-
+    trace = calculate_average_trace(traces) if len(traces) > 1 else traces[0]
     trace = _frame_with_metadata(trace, file_metadata)
 
     save_trace(trace, file_metadata, output_directory, write_output_filepath)
@@ -94,21 +86,18 @@ def get_metadata_that_matches_trace_names(
 ) -> dict[Path, dict[str, str]]:
     if isinstance(trace_names, str):
         trace_names = [trace_names]
-    matching_meta_data = {
+    return {
         f: metadata.copy()
         for f, metadata in all_input_file_metadata.items()
         if metadata["name"] in trace_names
     }
-    return matching_meta_data
 
 
 def get_unique_reference_years_in_metadata(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
     return list(
-        set(
-            metadata["reference_year"] for metadata in metadata_for_trace_files.values()
-        )
+        {metadata["reference_year"] for metadata in metadata_for_trace_files.values()}
     )
 
 
@@ -142,9 +131,12 @@ def check_filter_by_metadata(
         return True
 
     for field, allowed_values in filters.model_dump(exclude_unset=True).items():
-        if field in metadata and allowed_values is not None:
-            if metadata[field] not in allowed_values:
-                return False
+        if (
+            field in metadata
+            and allowed_values is not None
+            and metadata[field] not in allowed_values
+        ):
+            return False
 
     return True
 
@@ -152,9 +144,7 @@ def check_filter_by_metadata(
 def get_unique_project_and_zone_names_in_input_files(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
-    names = []
-    for filepath, meta_data in metadata_for_trace_files.items():
-        names.append(meta_data["name"])
+    names = [meta_data["name"] for meta_data in metadata_for_trace_files.values()]
     return list(set(names))
 
 
@@ -172,5 +162,5 @@ def filter_mapping_by_names_in_input_files(
     return filtered_mapping
 
 
-def get_just_filepaths(metadata_for_files):
+def get_just_filepaths(metadata_for_files: dict) -> list:
     return [file for file, metadata in metadata_for_files.items()]

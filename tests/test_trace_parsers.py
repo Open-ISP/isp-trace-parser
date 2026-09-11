@@ -12,13 +12,13 @@ import polars as pl
 import pytest
 from polars.testing import assert_frame_equal
 
-from isp_trace_parser import demand_traces, solar_traces, wind_traces
+from isp_trace_parser import demand_traces
 
 TEST_DATA = Path(__file__).parent / "test_data"
 
 
 @pytest.mark.parametrize("use_concurrency", [True, False])
-def test_demand_trace_parsing(use_concurrency: bool):
+def test_demand_trace_parsing(use_concurrency: bool) -> None:
     """Test demand trace parsing produces expected parquet output."""
     test_demand_csv_directory = TEST_DATA / "demand"
     expected_filename = "CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.parquet"
@@ -50,7 +50,9 @@ def test_demand_trace_parsing(use_concurrency: bool):
         ("RefYear2022_N1_WM.parquet", "zone"),
     ],
 )
-def test_wind_trace_parsing(parsed_trace_trace_directory, expected_filename, file_type):
+def test_wind_trace_parsing(
+    parsed_trace_trace_directory: Path, expected_filename: str, file_type: str
+) -> None:
     """Test wind trace parsing produces expected parquet outputs (both for a sample wind project and wind zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename
 
@@ -70,8 +72,8 @@ def test_wind_trace_parsing(parsed_trace_trace_directory, expected_filename, fil
     ],
 )
 def test_solar_trace_parsing(
-    parsed_trace_trace_directory, expected_filename, file_type
-):
+    parsed_trace_trace_directory: Path, expected_filename: str, file_type: str
+) -> None:
     """Test solar trace parsing produces expected parquet output (both for a sample solar project and solar zone)"""
     test_output_parquet = TEST_DATA / "output" / expected_filename
 

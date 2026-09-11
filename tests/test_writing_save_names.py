@@ -8,7 +8,7 @@
 import isp_trace_parser
 
 
-def test_write_solar_save_names():
+def test_write_solar_save_names() -> None:
     meta_data = {
         "name": "a",
         "reference_year": "1",
@@ -32,7 +32,7 @@ def test_write_solar_save_names():
     assert str(save_filepath) == "RefYear1_a_x.parquet"
 
 
-def test_write_wind_save_names():
+def test_write_wind_save_names() -> None:
     meta_data = {
         "name": "a",
         "reference_year": "1",

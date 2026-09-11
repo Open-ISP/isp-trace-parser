@@ -8,7 +8,7 @@
 import functools
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 import polars as pl
 from joblib import Parallel, delayed
@@ -52,15 +52,16 @@ class DemandMetadataFilter(BaseModel):
         reference_year: list of ints specifying reference_years
     """
 
-    subregion: Optional[list[str]] = None
-    scenario: Optional[
+    subregion: list[str] | None = None
+    scenario: (
         list[Literal["Step Change", "Progressive Change", "Green Energy Exports"]]
-    ] = None
-    poe: Optional[list[Literal["POE50", "POE10"]]] = None
-    demand_type: Optional[
-        list[Literal["OPSO_MODELLING", "OPSO_MODELLING_PVLITE", "PV_TOT"]]
-    ] = None
-    reference_year: Optional[list[int]] = None
+        | None
+    ) = None
+    poe: list[Literal["POE50", "POE10"]] | None = None
+    demand_type: (
+        list[Literal["OPSO_MODELLING", "OPSO_MODELLING_PVLITE", "PV_TOT"]] | None
+    ) = None
+    reference_year: list[int] | None = None
 
 
 @validate_call
@@ -69,7 +70,7 @@ def parse_demand_traces(
     parsed_directory: str | Path,
     use_concurrency: bool = True,
     filters: DemandMetadataFilter | None = None,
-):
+) -> None:
     """Takes a directory with AEMO demand trace data and reformats the data, saving it to a new directory.
 
     AEMO demand trace data comes in CSVs with columns specifying the year, day, and month, and data columns

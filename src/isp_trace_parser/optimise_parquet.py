@@ -7,7 +7,6 @@
 
 from itertools import product
 from pathlib import Path
-from typing import Optional
 
 import duckdb
 from pydantic import validate_call
@@ -30,7 +29,7 @@ def partition_traces_by_columns(
     input_directory: str | Path,
     output_directory: str | Path,
     partition_cols: list[str],
-    sort_by: Optional[list[str]] = ["datetime"],
+    sort_by: list[str] | None = None,
 ) -> None:
     """Partition parquet traces by specified columns with optional sorting.
 
@@ -60,6 +59,12 @@ def partition_traces_by_columns(
         ...     partition_cols=["scenario", "reference_year"]
         ... ) # doctest: +SKIP
     """
+
+    if sort_by is None:
+        # Avoid use of mutable data structure for argument defaults
+        # (see Ruff rule B006).
+        sort_by = ["datetime"]
+
     output_path = Path(output_directory)
     output_path.mkdir(parents=True, exist_ok=True)
 
@@ -71,23 +76,21 @@ def partition_traces_by_columns(
         values = con.execute(f"""
             SELECT DISTINCT {col}
             FROM read_parquet('{input_directory}')
-        """).fetchall()
+        """).fetchall()  # noqa: S608
         distinct_values.append(values)
 
     partitions = [tuple(val[0] for val in vals) for vals in product(*distinct_values)]
 
     for partition_values in partitions:
-        # print(*partition_values)
-
         conditions = []
-        for col, val in zip(partition_cols, partition_values):
+        for col, val in zip(partition_cols, partition_values, strict=True):
             if isinstance(val, str):
                 conditions.append(f"{col}='{val}'")
             else:
                 conditions.append(f"{col}={val}")
 
         where_clause = " AND ".join(conditions)
-        query = f"SELECT * FROM read_parquet('{input_directory}') WHERE {where_clause}"
+        query = f"SELECT * FROM read_parquet('{input_directory}') WHERE {where_clause}"  # noqa: S608
 
         if sort_by:
             query += f" ORDER BY {', '.join(sort_by)}"

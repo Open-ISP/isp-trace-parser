@@ -32,7 +32,7 @@ from isp_trace_parser.get_data import (
 TEST_DATA = Path(__file__).parent / "test_data"
 
 
-def test_year_range_to_dt_range_fy():
+def test_year_range_to_dt_range_fy() -> None:
     """Test financial year conversion."""
     start_dt, end_dt = _year_range_to_dt_range(2022, 2024, year_type="fy")
 
@@ -40,7 +40,7 @@ def test_year_range_to_dt_range_fy():
     assert end_dt == datetime.datetime(2024, 7, 1, 0, 0)
 
 
-def test_year_range_to_dt_range_calendar():
+def test_year_range_to_dt_range_calendar() -> None:
     """Test calendar year conversion."""
     start_dt, end_dt = _year_range_to_dt_range(2022, 2024, year_type="calendar")
 
@@ -49,7 +49,9 @@ def test_year_range_to_dt_range_calendar():
 
 
 @pytest.mark.parametrize("year_type", ["fy", "calendar"])
-def test_get_zone_single_reference_year(parsed_trace_trace_directory: Path, year_type):
+def test_get_zone_single_reference_year(
+    parsed_trace_trace_directory: Path, year_type: str
+) -> None:
     test_df_lazy = pl.scan_parquet(TEST_DATA / "output" / "RefYear2022_N2_CST.parquet")
 
     start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type=year_type)
@@ -76,7 +78,7 @@ def test_get_zone_single_reference_year(parsed_trace_trace_directory: Path, year
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_get_zone_multiple_reference_year(parsed_trace_trace_directory: Path):
+def test_get_zone_multiple_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(TEST_DATA / "output" / "RefYear2022_N1_WM.parquet")
 
     test_df = (
@@ -100,7 +102,7 @@ def test_get_zone_multiple_reference_year(parsed_trace_trace_directory: Path):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_get_project_single_reference_year(parsed_trace_trace_directory: Path):
+def test_get_project_single_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Bodangora_Wind_Farm.parquet"
     )
@@ -127,7 +129,9 @@ def test_get_project_single_reference_year(parsed_trace_trace_directory: Path):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_get_project_multiple_reference_year(parsed_trace_trace_directory: Path):
+def test_get_project_multiple_reference_year(
+    parsed_trace_trace_directory: Path,
+) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet"
     )
@@ -152,7 +156,7 @@ def test_get_project_multiple_reference_year(parsed_trace_trace_directory: Path)
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
+def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
@@ -185,7 +189,7 @@ def test_get_demand_single_reference_year(parsed_trace_trace_directory: Path):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path):
+def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
@@ -215,7 +219,7 @@ def test_get_demand_multiple_reference_year(parsed_trace_trace_directory: Path):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_explicit_select_columns(parsed_trace_trace_directory):
+def test_explicit_select_columns(parsed_trace_trace_directory: Path) -> None:
     df = get_zone_single_reference_year(
         start_year=2023,
         end_year=2024,
@@ -228,7 +232,7 @@ def test_explicit_select_columns(parsed_trace_trace_directory):
     assert list(df.columns) == ["datetime", "value", "zone"]
 
 
-def test_multi_value_filter(parsed_trace_trace_directory):
+def test_multi_value_filter(parsed_trace_trace_directory: Path) -> None:
     df = get_zone_single_reference_year(
         start_year=2023,
         end_year=2024,
@@ -241,7 +245,7 @@ def test_multi_value_filter(parsed_trace_trace_directory):
     assert "zone" in df.columns
 
 
-def test_wind_project_single_reference_year(parsed_trace_trace_directory):
+def test_wind_project_single_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Bodangora_Wind_Farm.parquet"
     )
@@ -267,7 +271,9 @@ def test_wind_project_single_reference_year(parsed_trace_trace_directory):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_solar_project_single_reference_year(parsed_trace_trace_directory):
+def test_solar_project_single_reference_year(
+    parsed_trace_trace_directory: Path,
+) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet"
     )
@@ -293,7 +299,9 @@ def test_solar_project_single_reference_year(parsed_trace_trace_directory):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_solar_project_multiple_reference_years(parsed_trace_trace_directory: Path):
+def test_solar_project_multiple_reference_years(
+    parsed_trace_trace_directory: Path,
+) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Broken_Hill_Solar_Farm_FFP.parquet"
     )
@@ -318,7 +326,9 @@ def test_solar_project_multiple_reference_years(parsed_trace_trace_directory: Pa
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_wind_project_multiple_reference_years(parsed_trace_trace_directory: Path):
+def test_wind_project_multiple_reference_years(
+    parsed_trace_trace_directory: Path,
+) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA / "output" / "RefYear2022_Bodangora_Wind_Farm.parquet"
     )
@@ -343,7 +353,7 @@ def test_wind_project_multiple_reference_years(parsed_trace_trace_directory: Pat
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path):
+def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(TEST_DATA / "output" / "RefYear2022_N2_CST.parquet")
 
     start_dt, end_dt = _year_range_to_dt_range(2023, 2024, year_type="fy")
@@ -369,7 +379,7 @@ def test_solar_area_single_reference_year(parsed_trace_trace_directory: Path):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_demand_single_reference_year(parsed_trace_trace_directory: Path):
+def test_demand_single_reference_year(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
@@ -402,7 +412,7 @@ def test_demand_single_reference_year(parsed_trace_trace_directory: Path):
     pd.testing.assert_frame_equal(test_df, df)
 
 
-def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path):
+def test_demand_multiple_reference_years(parsed_trace_trace_directory: Path) -> None:
     test_df_lazy = pl.scan_parquet(
         TEST_DATA
         / "output"
