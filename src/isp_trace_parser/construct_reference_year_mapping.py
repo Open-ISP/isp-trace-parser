@@ -14,10 +14,9 @@ from isp_trace_parser import input_validation
 def construct_reference_year_mapping(
     start_year: int, end_year: int, reference_years: list[int]
 ) -> dict:
-    """Constructs a dictionary mapping a sequence of modeling years to a cycle of reference years.
+    """Construct a dictionary mapping a sequence of modeling years to a cycle of reference years.
 
     Examples:
-
     >>> construct_reference_year_mapping(
     ... start_year=2030,
     ... end_year=2035,
@@ -29,6 +28,7 @@ def construct_reference_year_mapping(
         start_year: int, first year in sequence of modelling years
         end_year: int, last year in sequence of modelling years
         reference_years: list[int], list of reference years to cycle through when constructing the mapping.
+
     """
     input_validation.start_year_before_end_year(start_year, end_year)
     years = range(start_year, end_year + 1)

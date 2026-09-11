@@ -35,7 +35,6 @@ class SolarMetadataFilter(BaseModel):
     included then only traces with metadata matching the values in the corresponding list will be parsed.
 
     Examples:
-
     Filter for only projects or zones that are in a list of names.
 
     >>> metadata_filters = SolarMetadataFilter(
@@ -54,6 +53,7 @@ class SolarMetadataFilter(BaseModel):
         file_type: list of 'project' and/or 'zone' (zone typically refers to REZs)
         resource_type: list of resource types of traces, only including 'SAT', 'FFP', or 'CST'.
         reference_year: list of ints specifying reference_years
+
     """
 
     name: list[str] | None = None
@@ -69,7 +69,7 @@ def parse_solar_traces(
     use_concurrency: bool = True,
     filters: SolarMetadataFilter | None = None,
 ) -> None:
-    """Takes a directory with AEMO solar trace data and reformats the data, saving it to a new directory.
+    """Take a directory with AEMO solar trace data and reformats the data, saving it to a new directory.
 
     AEMO solar trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the solar generation values for each half hour of the day. The file name of the CSV
@@ -97,7 +97,6 @@ def parse_solar_traces(
     metadata value present in the corresponding filter list will be parsed, see examples below.
 
     Examples:
-
     Parse whole directory of trace data.
 
     >>> parse_solar_traces(
@@ -135,6 +134,7 @@ def parse_solar_traces(
             attribute is not set, no filtering on that attribute occurs. See example.
 
     Returns: None
+
     """
     input_directory = input_validation.input_directory(input_directory)
     parsed_directory = input_validation.parsed_directory(parsed_directory)
@@ -196,8 +196,7 @@ def restructure_solar_files(
     output_directory: str | Path,
     filters: SolarMetadataFilter = None,
 ) -> None:
-    """
-    Restructures solar trace files and saves them in a new format.
+    """Restructures solar trace files and saves them in a new format.
 
     This function processes solar trace files, restructures them based on the provided metadata,
     and saves them in a new format. It handles both project and zone solar trace files.
@@ -226,8 +225,8 @@ def restructure_solar_files(
         ... )  # doctest: +SKIP
 
         # This will process 'file1.csv' and save it with the new name 'NewProject1' in the specified output directory
-    """
 
+    """
     metadata_for_trace_files = get_metadata_that_matches_trace_names(
         input_trace_names, all_input_file_metadata
     )
@@ -256,14 +255,14 @@ def restructure_solar_files(
 
 
 def write_output_solar_filename(metadata: dict[str, str]) -> str:
-    """
-    Generates the output filename for a solar trace file.
+    """Generate the output filename for a solar trace file.
 
     Args:
         metadata: Dictionary containing metadata for the solar trace file.
 
     Returns:
         A string representing the filename.
+
     """
     m = metadata
     name = m["name"].replace(" ", "_")
@@ -273,14 +272,14 @@ def write_output_solar_filename(metadata: dict[str, str]) -> str:
 def get_unique_resource_types_in_metadata(
     metadata_for_trace_files: dict[Path, dict[str, str]],
 ) -> list[str]:
-    """
-    Gets unique resource types from the metadata of trace files.
+    """Get unique resource types from the metadata of trace files.
 
     Args:
         metadata_for_trace_files: Dictionary containing metadata for trace files.
 
     Returns:
         A list of unique resource types.
+
     """
     return list(
         {metadata["resource_type"] for metadata in metadata_for_trace_files.values()}
@@ -290,8 +289,7 @@ def get_unique_resource_types_in_metadata(
 def get_metadata_that_matches_resource_type(
     resource_type: str, metadata_for_trace_files: dict[Path, dict[str, str]]
 ) -> dict[Path, dict[str, str]]:
-    """
-    Filters metadata to only include files matching a specific resource type.
+    """Filter metadata to only include files matching a specific resource type.
 
     Args:
         resource_type: The resource type to filter by.
@@ -299,6 +297,7 @@ def get_metadata_that_matches_resource_type(
 
     Returns:
         A dictionary of metadata for files matching the specified resource type.
+
     """
     return {
         f: metadata

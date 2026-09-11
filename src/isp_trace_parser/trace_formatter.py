@@ -13,8 +13,7 @@ from pydantic import config, validate_call
 
 @validate_call(config=config.ConfigDict(arbitrary_types_allowed=True))
 def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
-    """
-    Takes trace data in the AEMO format and converts it to a format with 'datetime' and 'value' columns.
+    """Take trace data in the AEMO format and converts it to a format with 'datetime' and 'value' columns.
 
     AEMO provides ISP trace data with separate columns for 'Year', 'Month', and 'Day', and individual data columns
     labeled '01', '02', ..., '48', representing half-hour intervals. This function converts that data format into
@@ -22,7 +21,6 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
     the corresponding values.
 
     Example:
-
     Input format (example):
 
     >>> aemo_format_data = pl.DataFrame({
@@ -59,8 +57,8 @@ def trace_formatter(trace_data: pl.DataFrame) -> pl.DataFrame:
         A `polars.DataFrame` with:
         - 'datetime': A column specifying the end time of each half-hour period.
         - 'value': A column containing the data for each half-hour period.
-    """
 
+    """
     # Need both padded 1-9 and not padded because AEMO data files can have both.
     value_vars = [f"{i:02d}" for i in range(1, 49)] + [str(i) for i in range(1, 10)]
     value_vars = [v for v in value_vars if v in trace_data.columns]
