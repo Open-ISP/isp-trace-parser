@@ -7,7 +7,6 @@
 
 """Download data files from manifests."""
 
-import logging
 import time
 from importlib.resources import files
 from pathlib import Path
@@ -16,9 +15,6 @@ from urllib.parse import unquote, urlparse
 
 import requests
 from tqdm import tqdm
-
-logging.basicConfig(level=logging.INFO, format="%(message)s")
-logger = logging.getLogger(__name__)
 
 
 def _download_from_manifest(
@@ -137,8 +133,10 @@ def _download_file(
     # Strip specified number of directory levels
     path_parts = url_path.split("/")
     if strip_levels >= len(path_parts):
-        msg = f"Cannot strip {strip_levels} levels from path with only "
-        f"{len(path_parts)} parts: {url_path}"
+        msg = (
+            f"Cannot strip {strip_levels} levels from path with only "
+            f"{len(path_parts)} parts: {url_path}"
+        )
         raise ValueError(msg)
 
     stripped_path = "/".join(path_parts[strip_levels:])
@@ -237,10 +235,8 @@ def fetch_trace_data(
     # Construct manifest name and download
     manifest_name = f"{data_format}/{dataset_type}_{dataset_src}"
 
-    logger.info(
-        "Downloading %s %s trace data for %s", dataset_type, data_format, dataset_src
-    )
+    print(f"Downloading {dataset_type} {data_format} trace data for {dataset_src}")
     _download_from_manifest(
         manifest_name, save_directory, strip_levels=2, unquote_path=unquote_path
     )
-    logger.info("Trace data saved to: %s", save_directory)
+    print(f"Trace data saved to: {save_directory}")
