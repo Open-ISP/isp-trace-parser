@@ -19,6 +19,7 @@ def load(name: str, version: str = "2024") -> dict:
 
     Returns:
         Parsed YAML contents.
+
     """
     resource = files(__package__).joinpath(version, f"{name}.yaml")
     with resource.open("r") as f:

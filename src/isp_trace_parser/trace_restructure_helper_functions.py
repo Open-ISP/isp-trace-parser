@@ -41,13 +41,10 @@ def calculate_average_trace(traces: list[pl.DataFrame]) -> pl.DataFrame:
 
 
 def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
-    """
-    Adds metadata fields as columns to a resource trace DataFrame.
+    """Add metadata fields as columns to a resource trace DataFrame.
 
     Name column dynamically named based on "file_type" (ie. project or zone)
-
     """
-
     return trace.with_columns(
         pl.lit(file_metadata["name"]).alias(file_metadata["file_type"]),
         pl.lit(file_metadata["reference_year"]).alias("reference_year"),

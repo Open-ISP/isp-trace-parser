@@ -30,7 +30,6 @@ class DemandMetadataFilter(BaseModel):
     included then only traces with metadata matching the values in the corresponding list will be parsed.
 
     Examples:
-
     Filter for only subregions that are in a list of names.
 
     >>> metadata_filters = DemandMetadataFilter(
@@ -50,6 +49,7 @@ class DemandMetadataFilter(BaseModel):
         poe: list of POE levels, only including "POE10" and "POE50"
         demand_type, list of demand types, only including "OPSO_MODELLING", "OPSO_MODELLING_PVLITE", and "PV_TOT"
         reference_year: list of ints specifying reference_years
+
     """
 
     subregion: list[str] | None = None
@@ -71,7 +71,7 @@ def parse_demand_traces(
     use_concurrency: bool = True,
     filters: DemandMetadataFilter | None = None,
 ) -> None:
-    """Takes a directory with AEMO demand trace data and reformats the data, saving it to a new directory.
+    """Take a directory with AEMO demand trace data and reformats the data, saving it to a new directory.
 
     AEMO demand trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the demand values for each half hour of the day. The file name of the CSV
@@ -94,7 +94,6 @@ def parse_demand_traces(
     metadata value present in the corresponding filter list will be passed, see examples below.
 
     Examples:
-
     Parse whole directory of trace data.
 
     >>> parse_demand_traces(
@@ -134,6 +133,7 @@ def parse_demand_traces(
             attribute is not set, no filtering on that attribute occurs. See example.
 
     Returns: None
+
     """
     input_directory = input_validation.input_directory(input_directory)
     parsed_directory = input_validation.parsed_directory(parsed_directory)
@@ -171,8 +171,7 @@ def restructure_demand_file(
     output_directory: Path,
     filters: DemandMetadataFilter | None = None,
 ) -> None:
-    """
-    Restructures a single demand trace file and saves it as parquet.
+    """Restructures a single demand trace file and saves it as parquet.
 
     The output filename is the AEMO input filename with the .csv suffix replaced by
     .parquet (e.g. CNSW_RefYear_2011_HYDROGEN_EXPORT_POE10_OPSO_MODELLING.csv
@@ -212,6 +211,7 @@ def restructure_demand_file(
         ... )  # doctest: +SKIP
 
         # This will process the input file and save it in parquet format in the specified output directory
+
     """
     file_metadata["scenario"] = demand_scenario_mapping[file_metadata["scenario"]]
 
@@ -226,11 +226,12 @@ def restructure_demand_file(
 
 
 def _frame_with_metadata(trace: pl.DataFrame, file_metadata: dict) -> pl.DataFrame:
-    """Adds metadata fields as columns to a trace DataFrame.
+    """Add metadata fields as columns to a trace DataFrame.
 
     Args:
         trace: The trace data Polars Dataframe to add data to.
         file_metadata: Dict containing metadata (subregion, reference_year, scenario, poe, and demand_type)
+
     """
     return trace.with_columns(
         subregion=pl.lit(file_metadata["subregion"]),
