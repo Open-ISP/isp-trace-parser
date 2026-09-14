@@ -17,6 +17,7 @@ def _delete_source_files(input_directory: str | Path) -> None:
 
     Args:
         input_directory: Directory containing parquet files to delete
+
     """
     input_path = Path(input_directory)
     files = list(input_path.rglob("*.parquet"))
@@ -58,8 +59,8 @@ def partition_traces_by_columns(
         ...     "optimized_demand/",
         ...     partition_cols=["scenario", "reference_year"]
         ... ) # doctest: +SKIP
-    """
 
+    """
     if sort_by is None:
         # Avoid use of mutable data structure for argument defaults
         # (see Ruff rule B006).

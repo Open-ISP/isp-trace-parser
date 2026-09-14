@@ -17,8 +17,7 @@ from pydantic import validate_call
 def _year_range_to_dt_range(
     start_year: int, end_year: int, year_type: Literal["fy", "calendar"] = "fy"
 ) -> datetime.datetime:
-    """
-    Convert year range to datetime boundaries for efficient time filtering.
+    """Convert year range to datetime boundaries for efficient time filtering.
 
     Handles both financial year (FY) and calendar year conventions. For FY, uses
     year-ending nomenclature where FY2022 spans July 1, 2021 to July 1, 2022.
@@ -37,8 +36,8 @@ def _year_range_to_dt_range(
 
         >>> _year_range_to_dt_range(2022, 2024, year_type="calendar")
         (datetime.datetime(2022, 1, 1, 0, 0), datetime.datetime(2025, 1, 1, 0, 0))
-    """
 
+    """
     if year_type == "fy":
         return datetime.datetime(start_year - 1, 7, 1), datetime.datetime(
             end_year, 7, 1
@@ -60,8 +59,7 @@ def _query_parquet_single_reference_year(
     select_columns: list[str] | None = None,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Generic function to query parquet files with flexible column filters.
+    """Query parquet files with flexible column filters.
 
     Args:
         start_year: Start of time window
@@ -78,6 +76,7 @@ def _query_parquet_single_reference_year(
 
     Returns:
         pd.DataFrame with selected columns, sorted by datetime
+
     """
     start_dt, end_dt = _year_range_to_dt_range(start_year, end_year, year_type)
 
@@ -124,8 +123,7 @@ def _query_parquet_single_reference_year(
 def _query_parquet_multiple_reference_years(
     reference_year_mapping: dict[int, int], **kwargs: any
 ) -> pd.DataFrame:
-    """
-    Query parquet files across multiple reference years.
+    """Query parquet files across multiple reference years.
 
     Iteratively calls _query_parquet_single_reference_year for each year-reference_year
     pair and concatenates the results.
@@ -136,6 +134,7 @@ def _query_parquet_multiple_reference_years(
 
     Returns:
         pd.DataFrame with concatenated results from all years
+
     """
     data = []
     for year, reference_year in reference_year_mapping.items():
@@ -157,8 +156,7 @@ def get_project_single_reference_year(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] | None = None,
 ) -> pd.DataFrame:
-    """
-    Query project trace data for a single reference year.
+    """Query project trace data for a single reference year.
 
     Retrieves trace data for one or more projects within a specified time window.
     When querying multiple projects (as a list), the 'project' column is automatically
@@ -227,6 +225,7 @@ def get_project_single_reference_year(
         70175 2024-07-01 00:00:00  0.076900  Bango 973 Wind Farm
         <BLANKLINE>
         [70176 rows x 3 columns]
+
     """
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -250,8 +249,7 @@ def get_zone_single_reference_year(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] | None = None,
 ) -> pd.DataFrame:
-    """
-    Query zone trace data for a single reference year.
+    """Query zone trace data for a single reference year.
 
     Retrieves trace data for one or more zones and resource types within a specified
     time window. When querying multiple zones (as a list), the 'zone' column is
@@ -323,6 +321,7 @@ def get_zone_single_reference_year(
         105263 2024-07-01 00:00:00    0.0   N1
         <BLANKLINE>
         [105264 rows x 3 columns]
+
     """
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -348,8 +347,7 @@ def get_demand_single_reference_year(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] | None = None,
 ) -> pd.DataFrame:
-    """
-    Query demand trace data for a single reference year.
+    """Query demand trace data for a single reference year.
 
     Retrieves demand trace data for specified scenario, subregion, demand type, and
     probability of exceedance (POE) within a time window. When querying with multiple
@@ -428,6 +426,7 @@ def get_demand_single_reference_year(
         140351 2025-07-01 00:00:00  1952.508153  OPSO_MODELLING       CSA
         <BLANKLINE>
         [140352 rows x 4 columns]
+
     """
     return _query_parquet_single_reference_year(
         start_year=start_year,
@@ -453,8 +452,7 @@ def get_project_multiple_reference_years(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] | None = None,
 ) -> pd.DataFrame:
-    """
-    Query project trace data across multiple reference years.
+    """Query project trace data across multiple reference years.
 
     Retrieves trace data for one or more projects across different years, each
     potentially using a different reference year. Results from all years are
@@ -524,6 +522,7 @@ def get_project_multiple_reference_years(
         70175 2025-07-01 00:00:00  0.037577  Bango 973 Wind Farm            2012
         <BLANKLINE>
         [70176 rows x 4 columns]
+
     """
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
@@ -543,8 +542,7 @@ def get_zone_multiple_reference_years(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] | None = None,
 ) -> pd.DataFrame:
-    """
-    Query zone trace data across multiple reference years.
+    """Query zone trace data across multiple reference years.
 
     Retrieves trace data for one or more zones and resource types across different
     years, each potentially using a different reference year. Results from all years
@@ -617,6 +615,7 @@ def get_zone_multiple_reference_years(
         105263 2025-07-01 00:00:00    0.0   N1            2012
         <BLANKLINE>
         [105264 rows x 4 columns]
+
     """
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
@@ -638,8 +637,7 @@ def get_demand_multiple_reference_years(
     year_type: Literal["fy", "calendar"] = "fy",
     select_columns: list[str] | None = None,
 ) -> pd.DataFrame:
-    """
-    Query demand trace data across multiple reference years.
+    """Query demand trace data across multiple reference years.
 
     Retrieves demand trace data for specified scenario, subregion, demand type, and
     probability of exceedance (POE) across different years, each potentially using a
@@ -719,6 +717,7 @@ def get_demand_multiple_reference_years(
         70175 2025-07-01 00:00:00  5659.380906       VIC            2012
         <BLANKLINE>
         [70176 rows x 4 columns]
+
     """
     return _query_parquet_multiple_reference_years(
         reference_year_mapping=reference_year_mapping,
@@ -752,13 +751,11 @@ def solar_project_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
     Examples:
-
     >>> solar_project_single_reference_year(
     ... start_year=2022,
     ... end_year=2024,
@@ -793,8 +790,8 @@ def solar_project_single_reference_year(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
-    """
 
+    """
     return get_project_single_reference_year(
         start_year=start_year,
         end_year=end_year,
@@ -814,11 +811,9 @@ def wind_project_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Examples:
-
     >>> wind_project_single_reference_year(
     ... start_year=2022,
     ... end_year=2024,
@@ -854,6 +849,7 @@ def wind_project_single_reference_year(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
+
     """
     return get_project_single_reference_year(
         start_year=start_year,
@@ -872,14 +868,12 @@ def solar_project_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Reads solar project trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
 
     Examples:
-
     >>> solar_project_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... project='Adelaide Desalination Plant Solar Farm',
@@ -912,6 +906,7 @@ def solar_project_multiple_reference_years(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
+
     """
     return get_project_multiple_reference_years(
         reference_year_mapping=reference_years,
@@ -930,13 +925,11 @@ def solar_area_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Reads solar area trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
     Examples:
-
     >>> solar_area_single_reference_year(
     ... start_year=2022,
     ... end_year=2024,
@@ -976,7 +969,6 @@ def solar_area_single_reference_year(
     Returns: pd.DataFrame with columns datetime and value
 
     """
-
     return get_zone_single_reference_year(
         start_year=start_year,
         end_year=end_year,
@@ -996,13 +988,11 @@ def solar_area_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Reads solar area trace data from an output directory created by isp_trace_parser.solar_trace_parser.
 
     Examples:
-
     >>> solar_area_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... area='Q1',
@@ -1037,8 +1027,8 @@ def solar_area_multiple_reference_years(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
-    """
 
+    """
     return get_zone_multiple_reference_years(
         reference_year_mapping=reference_years,
         zone=area,
@@ -1055,13 +1045,11 @@ def wind_project_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Reads wind project trace data from an output directory created by isp_trace_parser.wind_trace_parser.
 
     Examples:
-
     >>> wind_project_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... project='Bango 973 Wind Farm',
@@ -1094,8 +1082,8 @@ def wind_project_multiple_reference_years(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
-    """
 
+    """
     return get_project_multiple_reference_years(
         reference_year_mapping=reference_years,
         project=project,
@@ -1114,12 +1102,11 @@ def wind_area_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previous API.
+
     Reads wind area trace data from an output directory created by isp_trace_parser.wind_trace_parser.
 
     Examples:
-
     >>> wind_area_single_reference_year(
     ... start_year=2022,
     ... end_year=2024,
@@ -1157,8 +1144,8 @@ def wind_area_single_reference_year(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
-    """
 
+    """
     return get_zone_single_reference_year(
         start_year=start_year,
         end_year=end_year,
@@ -1179,12 +1166,11 @@ def demand_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Reads wind area trace data from an output directory created by isp_trace_parser.demand_trace_parser.
 
     Examples:
-
     >>> demand_multiple_reference_years(
     ... reference_years={2024: 2011},
     ... subregion='CNSW',
@@ -1223,8 +1209,8 @@ def demand_multiple_reference_years(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
-    """
 
+    """
     return get_demand_multiple_reference_years(
         reference_year_mapping=reference_years,
         scenario=scenario,
@@ -1244,11 +1230,9 @@ def wind_area_multiple_reference_years(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Reads wind area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
+    """Read wind area trace data from an output directory created by isp_trace_parser.restructure_solar_directory.
 
     Examples:
-
     >>> wind_area_multiple_reference_years(
     ... reference_years={2022: 2011, 2024: 2012},
     ... area='Q1',
@@ -1283,8 +1267,8 @@ def wind_area_multiple_reference_years(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
-    """
 
+    """
     return get_zone_multiple_reference_years(
         reference_year_mapping=reference_years,
         zone=area,
@@ -1306,13 +1290,11 @@ def demand_single_reference_year(
     directory: str | Path,
     year_type: Literal["fy", "calendar"] = "fy",
 ) -> pd.DataFrame:
-    """
-    Pass-through function to keep backwards capability with previos API
+    """Pass-through function to keep backwards capability with previos API.
 
     Reads demand trace data from an output directory created by isp_trace_parser.demand_trace_parser.
 
     Examples:
-
     >>> demand_single_reference_year(
     ... start_year=2024,
     ... end_year=2024,
@@ -1354,8 +1336,8 @@ def demand_single_reference_year(
             FY2015/2016). If 'calendar', then filtering is by calendar year.
 
     Returns: pd.DataFrame with columns datetime and value
-    """
 
+    """
     return get_demand_single_reference_year(
         start_year=start_year,
         end_year=end_year,

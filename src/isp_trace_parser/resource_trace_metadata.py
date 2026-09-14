@@ -33,7 +33,6 @@ def build(
     The mapping key is the trace stem (the filename with `_RefYear<year>.csv`
     stripped) so `<stem>_RefYear<year>.csv` decomposes back to (stem, year).
     """
-
     resource_mapping = mappings.load("resources", version=version)
 
     file_metadata: dict[Path, dict[str, str]] = {}

@@ -56,6 +56,7 @@ def _download_from_manifest(
         If any download fails
     OSError
         If there are filesystem errors (permissions, disk space, etc.)
+
     """
     # Construct manifest path
     manifest_path = files("isp_trace_parser.remote.manifests") / f"{manifest_name}.txt"
@@ -121,6 +122,7 @@ def _download_file(
         If the download fails
     OSError
         If there are filesystem errors
+
     """
     # Parse URL to extract path
     parsed_url = urlparse(url)
@@ -217,8 +219,8 @@ def fetch_trace_data(
 
     >>> fetch_trace_data("full", "isp_2024", "data/archive", "archive") # doctest: +SKIP
     # Downloads original zip files to: data/archive/...
-    """
 
+    """
     # Validate inputs
     if dataset_type not in ["full", "example"]:
         msg = f"dataset_type must be 'full' or 'example', got: {dataset_type}"

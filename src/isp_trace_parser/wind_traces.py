@@ -35,7 +35,6 @@ class WindMetadataFilter(BaseModel):
     included then only traces with metadata matching the values in the corresponding list will be parsed.
 
     Examples:
-
     Filter for only projects or zones that are in a list of names.
 
     >>> metadata_filters = WindMetadataFilter(
@@ -54,6 +53,7 @@ class WindMetadataFilter(BaseModel):
         file_type: list of 'project' and/or 'zone' (zone typically refers to REZs)
         resource_type: list of resource types, only including 'WH', 'WM', 'WL', 'WX', or 'wind'.
         reference_year: list of ints specifying reference_years
+
     """
 
     name: list[str] | None = None
@@ -69,7 +69,7 @@ def parse_wind_traces(
     use_concurrency: bool = True,
     filters: WindMetadataFilter | None = None,
 ) -> None:
-    """Takes a directory with AEMO wind trace data and reformats the data, saving it to a new directory.
+    """Take a directory with AEMO wind trace data and reformats the data, saving it to a new directory.
 
     AEMO wind trace data comes in CSVs with columns specifying the year, day, and month, and data columns
     (labeled 01, 02, ... 48) storing the wind generation values for each half hour of the day. The file name of the CSV
@@ -98,7 +98,6 @@ def parse_wind_traces(
     metadata value present in the corresponding filter list will be parsed, see examples below.
 
     Examples:
-
     Parse whole directory of trace data.
 
     >>> parse_wind_traces(
@@ -136,6 +135,7 @@ def parse_wind_traces(
             attribute is not set, no filtering on that attribute occurs. See example.
 
     Returns: None
+
     """
     input_directory = input_validation.input_directory(input_directory)
     parsed_directory = input_validation.parsed_directory(parsed_directory)
@@ -222,11 +222,9 @@ def restructure_wind_zone_files(
     output_directory: str | Path,
     filters: dict[str, list[str]] | None = None,
 ) -> None:
-    """
-    Restructures wind zone trace files and saves them in a new format.
+    """Restructures wind zone trace files and saves them in a new format.
 
     Examples:
-
         >>> all_metadata = {
         ...     'file1.csv': {'name': 'Zone1', 'year': '2020', 'resource_type': 'WH'},
         ...     'file2.csv': {'name': 'Zone1', 'year': '2021', 'resource_type': 'WM'},
@@ -252,6 +250,7 @@ def restructure_wind_zone_files(
 
     Returns:
         None: Files are saved to disk, but the function doesn't return any value.
+
     """
     metadata_for_trace_files = get_metadata_that_matches_trace_names(
         input_trace_names, all_input_file_metadata
@@ -287,9 +286,7 @@ def restructure_wind_project_files(
     output_directory: str | Path,
     filters: dict[str, list[str]] | None = None,
 ) -> None:
-    """
-    Restructures wind project trace files and saves them in a new format.
-    """
+    """Restructures wind project trace files and saves them in a new format."""
     metadata_for_trace_files = get_metadata_that_matches_trace_names(
         input_trace_names, all_input_file_metadata
     )
@@ -313,8 +310,7 @@ def restructure_wind_project_files(
 
 
 def write_output_wind_project_filename(metadata: dict) -> str:
-    """
-    Generates the output filename for a wind project trace file.
+    """Generate the output filename for a wind project trace file.
 
     Returns a string representing the filename.
     """
@@ -324,8 +320,7 @@ def write_output_wind_project_filename(metadata: dict) -> str:
 
 
 def write_output_wind_zone_filename(metadata: dict) -> str:
-    """
-    Generates the output filename for a wind zone trace file.
+    """Generate the output filename for a wind zone trace file.
 
     Returns a string representing the filename.
     """
