@@ -1,0 +1,9 @@
+https://data.openisp.au/processed/traces/isp_2026/project/reference_year=2018/data_0.parquet
+https://data.openisp.au/processed/traces/isp_2026/project/reference_year=2018/data_1.parquet
+https://data.openisp.au/processed/traces/isp_2026/project/reference_year=2018/data_2.parquet
+https://data.openisp.au/processed/traces/isp_2026/project/reference_year=2018/data_3.parquet
+https://data.openisp.au/processed/traces/isp_2026/zone/reference_year=2018/data_0.parquet
+https://data.openisp.au/processed/traces/isp_2026/zone/reference_year=2018/data_1.parquet
+https://data.openisp.au/processed/traces/isp_2026/zone/reference_year=2018/data_2.parquet
+https://data.openisp.au/processed/traces/isp_2026/demand/scenario=Step%20Change/reference_year=2018/data_0.parquet
+https://data.openisp.au/processed/traces/isp_2026/demand/scenario=Step%20Change/reference_year=2018/data_1.parquet
