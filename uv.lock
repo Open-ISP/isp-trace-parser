@@ -1,10 +1,10 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.9"
 resolution-markers = [
-    "python_full_version < '3.11'",
-    "python_full_version == '3.11.*'",
     "python_full_version >= '3.12'",
+    "python_full_version == '3.11.*'",
+    "python_full_version < '3.11'",
 ]
 
 [[package]]
@@ -406,7 +406,7 @@ wheels = [
 
 [[package]]
 name = "isp-trace-parser"
-version = "2.0.2"
+version = "2.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "duckdb" },

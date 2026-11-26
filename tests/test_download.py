@@ -138,3 +138,23 @@ def test_strip_levels_too_high():
         # TEST_URL has path "test/test/test_file.txt" = 3 parts
         with pytest.raises(ValueError, match="Cannot strip .* levels"):
             download._download_file(TEST_URL, tmp_path, strip_levels=10)
+
+
+@pytest.mark.parametrize(
+    "dataset_type, dataset_src",
+    [("full", "isp_2024"), ("example", "isp_2024"), ("example", "isp_2026")],
+)
+def test_processed_manifests_exist(dataset_type: str, dataset_src: str):
+    """Each published processed manifest has unique parquet URLs for its own vintage."""
+    from importlib.resources import files
+
+    manifest = (
+        files("isp_trace_parser.remote.manifests")
+        / "processed"
+        / f"{dataset_type}_{dataset_src}.txt"
+    )
+    urls = [line.strip() for line in manifest.read_text().splitlines() if line.strip()]
+    assert urls
+    prefix = f"https://data.openisp.au/processed/traces/{dataset_src}/"
+    assert all(url.startswith(prefix) and url.endswith(".parquet") for url in urls)
+    assert len(urls) == len(set(urls))

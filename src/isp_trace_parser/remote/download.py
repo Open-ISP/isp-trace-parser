@@ -9,6 +9,8 @@ from urllib.parse import unquote, urlparse
 import requests
 from tqdm import tqdm
 
+SUPPORTED_DATASET_SOURCES = ("isp_2024", "isp_2026")
+
 
 def _download_from_manifest(
     manifest_name: str,
@@ -176,7 +178,7 @@ def fetch_trace_data(
     dataset_type : {"full", "example"}
         Type of dataset to download
     dataset_src : str
-        Source of dataset (currently only isp_2024 is supported)
+        Source (ISP vintage) of dataset: "isp_2024" or "isp_2026"
     save_directory : Path | str
         Directory where trace data should be saved. Files will be organized
         in subdirectories preserving the structure from the manifest.
@@ -207,6 +209,10 @@ def fetch_trace_data(
 
     >>> fetch_trace_data("full", "isp_2024", "data/archive", "archive") # doctest: +SKIP
     # Downloads original zip files to: data/archive/...
+
+    >>> fetch_trace_data("example", "isp_2026", "data/traces", "processed")   # doctest: +SKIP
+    # Downloads to: data/traces/isp_2026/...
+    # (isp_2026 currently publishes the "example" processed dataset only, reference year 2018)
     """
 
     # Validate inputs
@@ -215,8 +221,10 @@ def fetch_trace_data(
             f"dataset_type must be 'full' or 'example', got: {dataset_type}"
         )
 
-    if dataset_src != "isp_2024":
-        raise ValueError(f"Only isp_2024 is currently supported, got: {dataset_src}")
+    if dataset_src not in SUPPORTED_DATASET_SOURCES:
+        raise ValueError(
+            f"dataset_src must be one of {SUPPORTED_DATASET_SOURCES}, got: {dataset_src}"
+        )
 
     if data_format not in ["processed", "archive"]:
         raise ValueError(

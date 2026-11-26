@@ -85,7 +85,13 @@ from isp_trace_parser.remote import fetch_trace_data
 
 # Download example dataset (2018 reference year only)
 fetch_trace_data("example", dataset_src="isp_2024", save_directory="data/trace_data", data_format="processed")
+
+# 2026 ISP vintage: example dataset only for now (2018 reference year; Step Change demand)
+fetch_trace_data("example", dataset_src="isp_2026", save_directory="data/trace_data", data_format="processed")
 ```
+
+> **ISP 2026 status:** only the `"example"` processed dataset is currently published for `isp_2026`.
+> The `"full"` processed dataset and the `"archive"` (original zip) data will follow in a later release.
 
 This will download the processed parquet files with the following structure:
 
